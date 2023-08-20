@@ -11,7 +11,7 @@ local temp = math.random(6)
 table.insert(set, ("abcdef"):sub(temp,temp)) -- random char
 temp = nil
 
-local gen = newcclosure(function(type)
+local gen = newcclosure(function(type) -- why is it wrapped in this i dont know
 	local main = type .. ": "
 	local _end = "0x"
 	local str = "123456789abcdefabcdef"
