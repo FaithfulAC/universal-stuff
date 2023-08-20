@@ -1,0 +1,34 @@
+-- it is really not recommended that you loadstring this raw text but instead just copy it and paste it onto auto execute
+-- userdatas and other stuff are not included in types feel free to add those yourself :)
+-- most effective once more on auto execute
+local types = {
+	"function", "table"
+}
+
+local set = {}
+table.insert(set, tostring(math.random(9))) -- random int
+local temp = math.random(6)
+table.insert(set, ("abcdef"):sub(temp,temp)) -- random char
+temp = nil
+
+local gen = newcclosure(function(type)
+	local main = type .. ": "
+	local _end = "0x"
+	local str = "123456789abcdefabcdef"
+
+	for i = 1, 15 do
+		local temp = math.random(21) -- len of str
+		_end = _end .. str:sub(temp,temp)
+	end
+	main = main .. _end .. set[math.random(2)]
+	return main
+end)
+
+local h;h=hookfunction(getrenv().tostring, function(...)
+	local trgt = ...
+	if not checkcaller() and table.find(types, type(trgt)) then
+		--if pcall(function() return v:IsA("Instance") end) then return h(...) end
+		return gen(type(trgt))
+	end
+	return h(...)
+end)
