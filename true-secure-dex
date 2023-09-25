@@ -1,5 +1,7 @@
 loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses"))()
 
+task.wait(.2)
+
 getgenv().Dex = game:GetObjects("rbxassetid://14878398926")[1]
 
 Dex.Parent = (gethui and gethui() ~= game:GetService("CoreGui")) or (function()
