@@ -21,6 +21,13 @@ local DexOptions = getgenv().DexOptions or {
 		Index = true
 	},
 	
+	SpoofPreloadAsync = { -- ok ludi
+		Enabled = true,
+		Waithook = false,
+		Namecall = true,
+		Index = true
+	},
+	
 	SpoofInstanceCount = {
 		Enabled = true,
 		Waithook = false
@@ -55,6 +62,7 @@ local hookmetamethod,hookfunction = hookmetamethod,hookfunction
 local getrenv = getrenv or getfenv
 local getgenv = getgenv or getfenv
 local getnamecallmethod = getnamecallmethod
+local getconnections = getconnections
 local getgc = getgc
 local checkcaller = checkcaller or function()
 	return false
@@ -65,6 +73,7 @@ local stats = cloneref(game:GetService("Stats"))
 local cgui = cloneref(game:GetService("CoreGui"))
 local uis = cloneref(game:GetService("UserInputService"))
 local guis = cloneref(game:GetService("GuiService"))
+local cprovider = cloneref(game:GetService("ContentProvider"))
 local pgui = game:GetService("Players").LocalPlayer:FindFirstChildWhichIsA("PlayerGui")
 local gui = Dex or Bypassed_Dex or cgui:FindFirstChild("RobloxGui") -- for textbox
 
@@ -305,7 +314,132 @@ task.spawn(function()
 	end)
 end)
 
--- no preloadasync bypass
+-- preloadasync spoof
+-- issues with previous preloadasync spoofer involve env and tostringing an instance and returning a string-filled table
+task.spawn(function()
+	local spooftbl = DexOptions.SpoofPreloadAsync
+	if spooftbl.Enabled == false then return end
+	local waithook = spooftbl.Waithook
+	
+	if waithook then
+		local h1;h1 = if not spooftbl.Namecall then nil else hookmetamethod(game,"__namecall", function(...)
+			local self, tbl, fnc = ...
+			local method = getnamecallmethod():gsub("^%u", string.lower)
+			
+			if not checkcaller() and self == cprovider and method == "preloadAsync" and type(tbl) == "table" and table.find(tbl,game) or table.find(tbl,game:GetService("CoreGui")) then
+				return wait(9e9)
+			end
+			
+			self,tbl,fnc=nil,nil,nil
+			return h1(...)
+		end)
+		local h2;h2 = if not spooftbl.Index then nil else hookfunction(cprovider.PreloadAsync, function(...)
+			local self, tbl, fnc = ...
+			local method = getnamecallmethod():gsub("^%u", string.lower)
+			
+			if not checkcaller() and self == cprovider and type(tbl) == "table" and table.find(tbl,game) or table.find(tbl,game:GetService("CoreGui")) then
+				return wait(9e9)
+			end
+			
+			self,tbl,fnc=nil,nil,nil
+			return h2(...)
+		end)
+		return
+	end
+	
+	local gametbl = {}
+	local coreguitbl = {}
+	local enumitem = Enum.AssetFetchStatus.Success
+	
+	cprovider:PreloadAsync({game}, function(a)
+		table.insert(gametbl,a)
+	end)
+	cprovider:PreloadAsync({cgui}, function(a)
+		table.insert(coreguitbl,a)
+	end)
+	
+	local randomizeTable = function(t) -- adultmouse
+		local n = #t
+		while n > 0 do
+			local k = math.random(n)
+			t[n], t[k] = t[k], t[n]
+			n -= 1
+		end
+		return t
+	end
+	
+	local safecheck = function(tbl)
+		for i, v in pairs(tbl) do
+			if type(v) ~= "string" and typeof(v) ~= "Instance" then
+				return false
+			end
+		end
+		return true
+	end
+	
+	local h1;h1 = if not spooftbl.Namecall then nil else hookmetamethod(game,"__namecall", function(...)
+		local self, tbl, fnc = ...
+		local method = getnamecallmethod():gsub("^%u", string.lower)
+
+		if not checkcaller() and self == cprovider and method == "preloadAsync" and type(tbl) == "table" and table.find(tbl,game) or table.find(tbl,game:GetService("CoreGui")) and safecheck(tbl) then
+			local targettbl = {}
+			for i, v in pairs(tbl) do
+				if v == game then
+					for _, v2 in pairs(randomizeTable(gametbl)) do
+						table.insert(targettbl,v2)
+					end
+				elseif v == cgui then
+					for _, v2 in pairs(randomizeTable(coreguitbl)) do
+						table.insert(targettbl,v2)
+					end
+				else
+					cprovider.PreloadAsync(cprovider, {v}, function(a)
+						table.insert(targettbl,a)
+					end)
+				end
+			end
+			return (function()
+				for i, v in pairs(targettbl) do
+					task.spawn(fnc, v, enumitem)
+				end
+			end)()
+		end
+
+		self,tbl,fnc=nil,nil,nil
+		return h1(...)
+	end)
+	local h2;h2 = if not spooftbl.Index then nil else hookfunction(cprovider.PreloadAsync, function(...)
+		local self, tbl, fnc = ...
+		local method = getnamecallmethod():gsub("^%u", string.lower)
+
+		if not checkcaller() and self == cprovider and type(tbl) == "table" and table.find(tbl,game) or table.find(tbl,game:GetService("CoreGui")) and safecheck(tbl) then
+			local targettbl = {}
+			for i, v in pairs(tbl) do
+				if v == game then
+					for _, v2 in pairs(randomizeTable(gametbl)) do
+						table.insert(targettbl,v2)
+					end
+				elseif v == cgui then
+					for _, v2 in pairs(randomizeTable(coreguitbl)) do
+						table.insert(targettbl,v2)
+					end
+				else
+					cprovider:PreloadAsync({v}, function(a)
+						table.insert(targettbl,a)
+					end)
+				end
+			end
+			return (function()
+				for i, v in pairs(targettbl) do
+					task.spawn(fnc, v, enumitem)
+				end
+			end)()
+		end
+
+		self,tbl,fnc=nil,nil,nil
+		return h2(...)
+	end)
+end)
 
 -- instancecount bypass
 task.spawn(function()
