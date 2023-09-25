@@ -1,4 +1,4 @@
-task.spawn(loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses")))
+loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses"))()
 
 getgenv().Dex = game:GetObjects("rbxassetid://14878398926")[1]
 
