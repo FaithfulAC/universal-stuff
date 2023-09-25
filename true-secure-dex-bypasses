@@ -328,7 +328,7 @@ task.spawn(function()
 			local self, tbl, fnc = ...
 			local method = getnamecallmethod():gsub("^%u", string.lower)
 			
-			if not checkcaller() and self == cprovider and method == "preloadAsync" and type(tbl) == "table" and table.find(tbl,game) or table.find(tbl,game:GetService("CoreGui")) then
+			if not checkcaller() and self == cprovider and method == "preloadAsync" and type(tbl) == "table" and table.find(tbl,game) or table.find(tbl,cgui) then
 				return wait(9e9)
 			end
 			
@@ -339,7 +339,7 @@ task.spawn(function()
 			local self, tbl, fnc = ...
 			local method = getnamecallmethod():gsub("^%u", string.lower)
 			
-			if not checkcaller() and self == cprovider and type(tbl) == "table" and table.find(tbl,game) or table.find(tbl,game:GetService("CoreGui")) then
+			if not checkcaller() and self == cprovider and type(tbl) == "table" and table.find(tbl,game) or table.find(tbl,cgui) then
 				return wait(9e9)
 			end
 			
