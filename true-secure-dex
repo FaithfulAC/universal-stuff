@@ -9,6 +9,7 @@ Dex.Parent = (gethui and gethui() ~= game:GetService("CoreGui")) or (function()
 	return game:GetService("CoreGui").RobloxGui
 end)()
 
+-- lol silly forking
 local charset = {}
 for i = 48,  57 do table.insert(charset, string.char(i)) end
 for i = 65,  90 do table.insert(charset, string.char(i)) end
