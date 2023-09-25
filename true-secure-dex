@@ -4,7 +4,7 @@ task.wait(.2)
 
 getgenv().Dex = game:GetObjects("rbxassetid://14878398926")[1]
 
-Dex.Parent = (gethui and gethui() ~= game:GetService("CoreGui")) or (function()
+Dex.Parent = (gethui and gethui() ~= game:GetService("CoreGui") and gethui()) or (function()
 	if syn and syn.protect_gui then
 		syn.protect_gui(Dex)
 	end
