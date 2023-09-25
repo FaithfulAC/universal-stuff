@@ -21,9 +21,10 @@ local DexOptions = getgenv().DexOptions or {
 		Index = true
 	},
 	
-	SpoofPreloadAsync = { -- ok ludi
+	SpoofPreloadAsync = {
 		Enabled = true,
 		Waithook = false,
+		Option = 1, -- 1 for realistic spoof 2 for function disabler by super smart mac user ludi
 		Namecall = true,
 		Index = true
 	},
@@ -320,6 +321,7 @@ task.spawn(function()
 	local spooftbl = DexOptions.SpoofPreloadAsync
 	if spooftbl.Enabled == false then return end
 	local waithook = spooftbl.Waithook
+	local choice = spooftbl.Option
 	
 	if waithook then
 		local h1;h1 = if not spooftbl.Namecall then nil else hookmetamethod(game,"__namecall", function(...)
@@ -377,68 +379,103 @@ task.spawn(function()
 		return true
 	end
 	
-	local h1;h1 = if not spooftbl.Namecall then nil else hookmetamethod(game,"__namecall", function(...)
-		local self, tbl, fnc = ...
-		local method = getnamecallmethod():gsub("^%u", string.lower)
+	local option1 = function()
+		local h1;h1 = if not spooftbl.Namecall then nil else hookmetamethod(game,"__namecall", function(...)
+			local self, tbl, fnc = ...
+			local method = getnamecallmethod():gsub("^%u", string.lower)
 
-		if not checkcaller() and self == cprovider and method == "preloadAsync" and type(tbl) == "table" and table.find(tbl,game) or table.find(tbl,game:GetService("CoreGui")) and safecheck(tbl) then
-			local targettbl = {}
-			for i, v in pairs(tbl) do
-				if v == game then
-					for _, v2 in pairs(randomizeTable(gametbl)) do
-						table.insert(targettbl,v2)
+			if not checkcaller() and self == cprovider and method == "preloadAsync" and type(tbl) == "table" and table.find(tbl,game) or table.find(tbl,cgui) and safecheck(tbl) then
+				local targettbl = {}
+				for i, v in pairs(tbl) do
+					if v == game then
+						for _, v2 in pairs(randomizeTable(gametbl)) do
+							table.insert(targettbl,v2)
+						end
+					elseif v == cgui then
+						for _, v2 in pairs(randomizeTable(coreguitbl)) do
+							table.insert(targettbl,v2)
+						end
+					else
+						cprovider.PreloadAsync(cprovider, {v}, function(a)
+							table.insert(targettbl,a)
+						end)
 					end
-				elseif v == cgui then
-					for _, v2 in pairs(randomizeTable(coreguitbl)) do
-						table.insert(targettbl,v2)
+				end
+				return (function()
+					for i, v in pairs(targettbl) do
+						task.spawn(fnc, v, enumitem)
 					end
-				else
-					cprovider.PreloadAsync(cprovider, {v}, function(a)
-						table.insert(targettbl,a)
-					end)
+				end)()
+			end
+
+			self,tbl,fnc=nil,nil,nil
+			return h1(...)
+		end)
+		local h2;h2 = if not spooftbl.Index then nil else hookfunction(cprovider.PreloadAsync, function(...)
+			local self, tbl, fnc = ...
+			local method = getnamecallmethod():gsub("^%u", string.lower)
+
+			if not checkcaller() and self == cprovider and type(tbl) == "table" and table.find(tbl,game) or table.find(tbl,cgui) and safecheck(tbl) then
+				local targettbl = {}
+				for i, v in pairs(tbl) do
+					if v == game then
+						for _, v2 in pairs(randomizeTable(gametbl)) do
+							table.insert(targettbl,v2)
+						end
+					elseif v == cgui then
+						for _, v2 in pairs(randomizeTable(coreguitbl)) do
+							table.insert(targettbl,v2)
+						end
+					else
+						cprovider:PreloadAsync({v}, function(a)
+							table.insert(targettbl,a)
+						end)
+					end
+				end
+				return (function()
+					for i, v in pairs(targettbl) do
+						task.spawn(fnc, v, enumitem)
+					end
+				end)()
+			end
+
+			self,tbl,fnc=nil,nil,nil
+			return h2(...)
+		end)
+	end
+	
+	local option2 = function()
+		local namecall; namecall = if not spooftbl.Namecall then nil else hookmetamethod(game, "__namecall", function(...)
+			local self = ...
+			
+			if not checkcaller() then
+				local args = {...}
+				if getnamecallmethod() == "PreloadAsync" or getnamecallmethod() == "preloadAsync" then
+					if typeof(args[2]) == "function" then
+						hookfunction(args[2], function(asset) end)
+					end
 				end
 			end
-			return (function()
-				for i, v in pairs(targettbl) do
-					task.spawn(fnc, v, enumitem)
-				end
-			end)()
-		end
+			return namecall(...)
+		end)
 
-		self,tbl,fnc=nil,nil,nil
-		return h1(...)
-	end)
-	local h2;h2 = if not spooftbl.Index then nil else hookfunction(cprovider.PreloadAsync, function(...)
-		local self, tbl, fnc = ...
-		local method = getnamecallmethod():gsub("^%u", string.lower)
-
-		if not checkcaller() and self == cprovider and type(tbl) == "table" and table.find(tbl,game) or table.find(tbl,game:GetService("CoreGui")) and safecheck(tbl) then
-			local targettbl = {}
-			for i, v in pairs(tbl) do
-				if v == game then
-					for _, v2 in pairs(randomizeTable(gametbl)) do
-						table.insert(targettbl,v2)
+		local index; index = if not spooftbl.Index then nil else hookfunction(cprovider.PreloadAsync, function(...)
+			local self, key = ...
+			if not checkcaller() then
+				if self == cprovider then
+					local args = {...}
+					local sanitizedKey = tostring(key):split("\0")[1]
+					if sanitizedKey == "PreloadAsync" or sanitizedKey == "preloadAsync" then
+						if typeof(args[2]) == "function" then
+							hookfunction(args[2], function(asset) end)
+						end
 					end
-				elseif v == cgui then
-					for _, v2 in pairs(randomizeTable(coreguitbl)) do
-						table.insert(targettbl,v2)
-					end
-				else
-					cprovider:PreloadAsync({v}, function(a)
-						table.insert(targettbl,a)
-					end)
 				end
 			end
-			return (function()
-				for i, v in pairs(targettbl) do
-					task.spawn(fnc, v, enumitem)
-				end
-			end)()
-		end
-
-		self,tbl,fnc=nil,nil,nil
-		return h2(...)
-	end)
+			return index(...)
+		end)
+	end
+	if choice == 1 then option1() elseif choice == 2 then option2() end
 end)
 
 -- instancecount bypass
