@@ -1,0 +1,572 @@
+-- forks from universal bypasses by babyhamsta and obviously originally inspired by secure dex by babyhamsta
+local DexOptions = getgenv().DexOptions or {
+	
+	SpoofGcinfo = {
+		Enabled = true,
+		Waithook = false,
+		Option = 1 -- can be 1 or 2
+	},
+	
+	SpoofMemory = {
+		Enabled = true,
+		Waithook = false,
+		Namecall = true,
+		Index = true
+	},
+	
+	SpoofGuiMemory = {
+		Enabled = true,
+		Waithook = false,
+		Namecall = true,
+		Index = true
+	},
+	
+	SpoofInstanceCount = {
+		Enabled = true,
+		Waithook = false
+	},
+	
+	SpoofTextbox = {
+		Enabled = true,
+		Waithook = false,
+		Namecall = true,
+		Index = true
+	},
+	
+	SpoofGuiObjects = {
+		Enabled = true,
+		Waithook = false,
+		Option = 1, -- 1 or 2 or 3 for both
+		Namecall = true,
+		Index = true
+	},
+	
+	SpoofWeaktable = {
+		Enabled = true,
+		Waithook = false,
+		Option = 1 -- 1 is engo newproxy spoof and 2 is setmetatable spoof (if it even works lol), 3 for both ofc
+	}
+}
+
+-- smart! thank you sir babyhamsta
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Babyhamsta/RBLX_Scripts/main/Universal/CloneRef.lua", true))()
+local cloneref = cloneref
+local hookmetamethod,hookfunction = hookmetamethod,hookfunction
+local getrenv = getrenv or getfenv
+local getgenv = getgenv or getfenv
+local getnamecallmethod = getnamecallmethod
+local getgc = getgc
+local checkcaller = checkcaller or function()
+	return false
+end
+
+local runs = cloneref(game:GetService("RunService"))
+local stats = cloneref(game:GetService("Stats"))
+local cgui = cloneref(game:GetService("CoreGui"))
+local uis = cloneref(game:GetService("UserInputService"))
+local guis = cloneref(game:GetService("GuiService"))
+local pgui = game:GetService("Players").LocalPlayer:FindFirstChildWhichIsA("PlayerGui")
+local gui = Dex or Bypassed_Dex or cgui:FindFirstChild("RobloxGui") -- for textbox
+
+repeat task.wait() until game:IsLoaded()
+local IsMac = guis.IsWindows == false and uis.KeyboardEnabled and not tostring({}):match("0x00000000")
+
+-- gcinfo / collectgarbage spoof
+-- issues with the engo spoofer involve the detections of byting or voiding or itemchanged differencing
+task.spawn(function()
+	local spooftbl = DexOptions.SpoofGcinfo
+	if spooftbl.Enabled == false then return end
+	local waithook = spooftbl.Waithook
+	local chosen = spooftbl.Option
+	
+	-- option 1
+	local option1 = function()
+		local ret, max, mini
+		if not waithook then
+			max = gcinfo()+math.random(
+				math.floor(gcinfo()/6),
+				math.floor(gcinfo()/4)
+			)
+			mini = gcinfo()-math.random(
+				math.floor(gcinfo()/6),
+				math.floor(gcinfo()/4)
+			)
+			ret = gcinfo()
+
+			local function decrease()
+				for i = 1, 4 do
+					ret = max - math.floor(((max - mini*1.25)*(i/4))+math.random(-20,20))
+					task.wait(math.random(25,45)/1000)
+				end
+			end
+
+			local range1 = stats.InstanceCount
+			local range2 = range1 + math.random(1000, 3000)
+
+			task.spawn(function()
+				local heartbeat = runs.Heartbeat
+				while heartbeat:Wait() do
+					if ret > max + math.random(-50,50) then decrease() end
+					ret += math.floor(math.random(range1,range2)/10000)
+					game.ItemChanged:Wait()
+					ret += math.random(2)
+					game.ItemChanged:Wait()
+					ret += 1
+				end
+			end)
+		end
+
+		local h1;h1=hookfunction(getrenv().gcinfo, function(...)
+			if not checkcaller() then
+				return if not waithook then ret else wait(9e9)
+			end
+			return h1(...)
+		end)
+		local h2;h2=hookfunction(getrenv().collectgarbage, function(...)
+			local cnt = ...
+			if not checkcaller() and type(cnt) == "string" and (cnt == "count" or cnt:sub(1,6) == "count\0") then
+				return if not waithook then ret else wait(9e9)
+			end
+			cnt=nil
+			return h2(...)
+		end)
+	end
+	
+	-- option 2
+	local option2 = function()
+		local mini = 800
+		local max = 1200
+
+		local num = if gcinfo() < max and gcinfo() > mini then math.random(mini - 18, mini + 24) else gcinfo()
+
+		if gcinfo() > max then max = gcinfo(); mini = max - math.floor(math.random(3, 6)*100) end
+		if gcinfo() < mini then mini = gcinfo(); max = mini + math.floor(math.random(3, 6)*100) end
+
+		if not waithook then
+			task.spawn(function()
+				local rendered = runs.RenderStepped
+				while rendered:Wait() do
+					local int = math.random(4, 8)
+					if num < max - math.random(10,30) then num = math.floor(num+int) game.ItemChanged:Wait() num += math.random(1,2) else
+						num = math.floor(math.random(mini - 18, mini + 24))
+						game.ItemChanged:Wait()
+						num += 1
+					end
+				end
+			end)
+		end
+		
+		local h;h=hookfunction(getrenv().gcinfo, function(...)
+			if not checkcaller() then
+				return if not waithook then num else wait(9e9)
+			end
+			return h(...)
+		end)
+		local h2;h2=hookfunction(getrenv().collectgarbage, function(...)
+			local cnt = ...
+			if not checkcaller() and type(cnt) == "string" and (cnt == "count" or cnt:sub(1,6) == "count\0") then
+				return if not waithook then num else wait(9e9)
+			end
+			cnt=nil
+			return h2(...)
+		end)
+	end
+	
+	if chosen == 2 then
+		option2()
+	else
+		option1() -- recommended
+	end
+end)
+
+-- memory spoof (spoofs in accordance to each device)
+-- issues with the previous memory spoofer are the default returning and logic detections in accordance to the device
+task.spawn(function()
+	local spooftbl = DexOptions.SpoofMemory
+	if spooftbl.Enabled == false then return end
+	local waithook = spooftbl.Waithook
+	
+	if waithook then
+		local h1;h1 = if not spooftbl.Namecall then nil else hookmetamethod(game,"__namecall", function(...)
+			local self = ...
+			local method = getnamecallmethod():gsub("^%u", string.lower)
+			if not checkcaller() and self == stats and method == "getTotalMemoryUsageMb" then
+				return wait(9e9)
+			end
+			self=nil
+			return h1(...)
+		end)
+		local h2;h2 = if not spooftbl.Index then nil else hookfunction(stats.GetTotalMemoryUsageMb, function(...)
+			local self = ...
+			if not checkcaller() and self == stats then
+				return wait(9e9)
+			end
+			self=nil
+			return h2(...)
+		end)
+		return
+	end
+	
+	local ret = stats:GetTotalMemoryUsageMb()
+	task.spawn(if not IsMac then function()
+		local switchoff = false
+		while game:GetService("RunService").RenderStepped:Wait() do
+			switchoff = not switchoff
+			ret += math.random(-2,2)/(if switchoff then 32 else 64) - (math.random(-1,1)/2)
+			task.wait(math.random(1,3)/90)
+		end
+	end
+	else function()
+		while game:GetService("RunService").RenderStepped:Wait() do
+			ret += tonumber(string.sub(tostring(math.random()-math.random()), 1, 15))
+			task.wait(math.random(1,3)/90)
+		end
+	end)
+	local h1;h1 = if not spooftbl.Namecall then nil else hookmetamethod(game,"__namecall", function(...)
+		local self = ...
+		local method = getnamecallmethod():gsub("^%u", string.lower)
+		if not checkcaller() and self == stats and method == "getTotalMemoryUsageMb" then
+			return ret
+		end
+		self=nil
+		return h1(...)
+	end)
+	local h2;h2 = if not spooftbl.Index then nil else hookfunction(stats.GetTotalMemoryUsageMb, function(...)
+		local self = ...
+		if not checkcaller() and self == stats then
+			return ret
+		end
+		self=nil
+		return h2(...)
+	end)
+end)
+
+-- memorytag spoof (spoofs gui in accordance to each device)
+-- issues with the previous memorytag spoofer are the default returning
+task.spawn(function()
+	local spooftbl = DexOptions.SpoofGuiMemory
+	if spooftbl.Enabled == false then return end
+	local waithook = spooftbl.Waithook
+	
+	local enumtag = Enum.DeveloperMemoryTag.Gui
+	
+	if waithook then
+		local h1;h1 = if not spooftbl.Namecall then nil else hookmetamethod(game,"__namecall", function(...)
+			local self, enum = ...
+			local method = getnamecallmethod():gsub("^%u", string.lower)
+			if not checkcaller() and self == stats and method == "getMemoryUsageMbForTag" and enum == enumtag then
+				return wait(9e9)
+			end
+			self=nil
+			return h1(...)
+		end)
+		local h2;h2 = if not spooftbl.Index then nil else hookfunction(stats.GetMemoryUsageMbForTag, function(...)
+			local self, arg = ...
+			if not checkcaller() and self == stats and arg == enumtag then
+				return wait(9e9)
+			end
+			self=nil
+			return h2(...)
+		end)
+		return
+	end
+
+	local ret = stats:GetTotalMemoryUsageMb()
+	task.spawn(if not IsMac then function()
+		local switchoff = false
+		while game:GetService("RunService").RenderStepped:Wait() do
+			switchoff = not switchoff
+			ret += math.random(-2,2)/(if switchoff then 64 else 128) + (math.random(-1,1)/20)
+			task.wait(math.random(1,3)/90)
+		end
+	end
+	else function()
+		while game:GetService("RunService").RenderStepped:Wait() do
+			ret += tonumber(string.sub(tostring(math.random()-math.random()), 1, 15))
+			task.wait(math.random(1,3)/90)
+		end
+	end)
+	local h1;h1 = if not spooftbl.Namecall then nil else hookmetamethod(game,"__namecall", function(...)
+		local self, enum = ...
+		local method = getnamecallmethod():gsub("^%u", string.lower)
+		if not checkcaller() and self == stats and method == "getMemoryUsageMbForTag" and enum == enumtag then
+			return ret
+		end
+		self=nil
+		return h1(...)
+	end)
+	local h2;h2 = if not spooftbl.Index then nil else hookfunction(stats.GetTotalMemoryUsageMb, function(...)
+		local self, arg = ...
+		if not checkcaller() and self == stats and arg == enumtag then
+			return ret
+		end
+		self=nil
+		return h2(...)
+	end)
+end)
+
+-- no preloadasync bypass
+
+-- instancecount bypass
+task.spawn(function()
+	local spooftbl = DexOptions.SpoofInstanceCount
+	if spooftbl.Enabled == false then return end
+	local waithook = spooftbl.Waithook
+	
+	if waithook then
+		local h1;h1=hookmetamethod(game,"__index", function(...)
+			local self, arg = ...
+			if not checkcaller() and self == stats and type(arg) == "string" and (arg == "InstanceCount" or arg:sub(1,14) == "InstanceCount\0" or (not stats:FindFirstChild("instanceCount") and (arg == "instanceCount" or arg:sub(1,14) == "instanceCount\0"))) then
+				return wait(9e9)
+			end
+			self,arg=nil,nil
+			return h1(...)
+		end)
+	end
+	
+	local org = stats.InstanceCount
+	task.spawn(function()
+		while task.wait(.01) do
+			org += math.random(-100, 101)
+		end
+	end)
+	local h1;h1 = hookmetamethod(game,"__index", function(...)
+		local self, arg = ...
+		if not checkcaller() and self == stats and type(arg) == "string" and (arg == "InstanceCount" or arg:sub(1,14) == "InstanceCount\0" or (not stats:FindFirstChild("instanceCount") and (arg == "instanceCount" or arg:sub(1,14) == "instanceCount\0"))) then
+			return org
+		end
+		self,arg=nil,nil
+		return h1(...)
+	end)
+end)
+
+-- forked textbox bypass
+-- issues with the previous textbox spoofer include namecall == index and new thread identity update and getFocused == GetFocused
+task.spawn(function()
+	local spooftbl = DexOptions.SpoofTextbox
+	if spooftbl.Enabled == false then return end
+	local waithook = spooftbl.Waithook
+	
+	if waithook then
+		local h1;h1 = if not spooftbl.Namecall then nil else hookmetamethod(game,"__namecall",function(...)
+			local method = getnamecallmethod():gsub("^%u",string.lower);
+			local self = ...
+			if not checkcaller() then
+				if self == uis and method == "getFocusedTextBox" then
+					return wait(9e9)
+				end
+			end
+			self=nil
+
+			return h1(...)
+		end)
+		local h2;h2 = if not spooftbl.Index then nil else hookfunction(uis.GetFocusedTextBox, function(...)
+			local self = ...
+			if not checkcaller() and self == uis then
+				return wait(9e9)
+			end
+			self=nil
+
+			return h2(...)
+		end)
+		return
+	end
+	local _IsDescendantOf = game.IsDescendantOf
+
+	local TextboxBypass
+	TextboxBypass = if not spooftbl.Namecall then nil else hookmetamethod(game, "__namecall", function(...)
+		local method = getnamecallmethod():gsub("^%u",string.lower);
+		local self = ...
+		local Textbox = TextboxBypass(...)
+
+		if not checkcaller() then
+			if self == uis and method == "getFocusedTextBox" then
+				if Textbox and typeof(Textbox) == "Instance" then
+					local _,err = pcall(_IsDescendantOf, Textbox, gui)
+
+					if err and err:lower():match("the current") then
+						return nil
+					end
+				end
+			end
+		end
+		self=nil
+
+		return Textbox
+	end)
+	
+	local TextboxBypassIndex;TextboxBypassIndex = if not spooftbl.Index then nil else hookfunction(uis.GetFocusedTextBox, function(...)
+		local self = ...
+		local Textbox = TextboxBypass(...)
+		
+		if not checkcaller() and self == uis then
+			if Textbox and typeof(Textbox) == "Instance" then
+				local _,err = pcall(_IsDescendantOf, Textbox, gui)
+
+				if err and err:lower():match("the current") then
+					return nil
+				end
+			end
+		end
+		
+		self=nil
+		return Textbox
+	end)
+end)
+
+-- guiobjects spoof
+task.spawn(function()
+	local spooftbl = DexOptions.SpoofGuiObjects
+	if spooftbl.Enabled == false then return end
+	local waithook = spooftbl.Waithook
+	local choice = spooftbl.Option -- no if waithook then section because would be too messy
+	
+	local choice1 = function()
+		local stuff, stuff2
+		if not pgui:FindFirstChild("TouchGui") then
+			stuff = Instance.new("ScreenGui",pgui)
+			stuff.Enabled = true
+			stuff.Name = "TouchGui"
+			stuff2 = Instance.new("Frame",stuff)
+			stuff2.Name = "TouchControlFrame"
+			stuff2.Size = UDim2.fromScale(1,1)
+			stuff2.Visible = false
+		else
+			stuff = pgui:FindFirstChild("TouchGui")
+			stuff.Enabled = true
+			stuff2 = stuff:FindFirstChild("TouchControlFrame")
+		end
+
+		local gh1;gh1 = if not spooftbl.Namecall then nil else hookmetamethod(game,"__namecall", function(...)
+			local self = ...
+			local method = getnamecallmethod():gsub("^%u", string.lower)
+			if not checkcaller() and self == pgui and method == "getGuiObjectsAtPosition" then
+				return if not waithook then {stuff2} else wait(9e9)
+			end
+			self=nil
+			return gh1(...)
+		end)
+		local gh2;gh2 = if not spooftbl.Index then nil else hookfunction(pgui.GetGuiObjectsAtPosition, function(...)
+			local arg = ...
+			if not checkcaller() and arg == pgui then
+				return if not waithook then {stuff2} else wait(9e9)
+			end
+			arg=nil
+			return gh1(...)
+		end)
+	end
+	local choice2 = function()
+		local guis = game:GetService("GuiService")
+		for i, v in next, getconnections(guis.MenuClosed) do -- spoofconns maybe? ;)
+			v:Disable()
+		end
+		local h;h=hookmetamethod(game,"__index", function(...)
+			local self, arg = ...
+			local _arg = (type(arg) == "string" and arg:gsub("^%u", string.lower)) or setmetatable({},{__namecall=function()return false end})
+			if not checkcaller() and self == guis and _arg == "menuIsOpen" or _arg:sub(1, 11) == "menuIsOpen\0" then
+				return if not waithook then true else wait(9e9)
+			end
+			self,arg=nil,nil
+			return h(...)
+		end)
+	end
+
+	if choice == 1 then
+		choice1()
+	elseif choice == 2 then
+		choice2()
+	elseif choice == 3 then
+		task.spawn(choice1)
+		task.spawn(choice2)
+	end
+end)
+
+-- forked weaktable detection bypass (semi improved upon)
+task.spawn(function()
+	local spooftbl = DexOptions.SpoofWeaktable
+	if spooftbl.Enabled == false then return end
+	local waithook = spooftbl.Waithook
+	local choice = spooftbl.Option
+	
+	if waithook then
+		local h;h=hookfunction(getrenv().newproxy, function(...)
+			return if not checkcaller() then wait(9e9) else h(...)
+		end)
+		return
+	end
+	
+	local option1 = function()
+		local wktbl = {}
+		local def = function()
+			for i, v in pairs(wktbl) do
+				if v == nil then end
+			end
+		end
+
+		local SomethingOld;
+		SomethingOld = hookfunction(getrenv().newproxy, function(...)
+			local proxy = SomethingOld(...)
+			table.insert(wktbl, proxy)
+			return proxy
+		end)
+
+		local conn;conn = game.ItemChanged:Connect(def)
+		runs.Stepped:Connect(def)
+
+		task.spawn(function()
+			task.wait(.75)
+			conn:Disconnect() -- optimization
+		end)
+	end
+	
+	local option2 = function()
+		local conn = cgui.ChildAdded
+		conn:Connect(function(ins)
+			if tonumber(ins.Name) then
+				local nm = ins.Name
+				ins = nil
+				task.wait(10)
+				cgui[nm]:Destroy()
+			end
+		end)
+		
+		local h;h=hookfunction(getrenv().setmetatable, function(...)
+			local tbl1, tbl2 = ...
+			if not checkcaller() and type(tbl1) == "table" and type(tbl2) == "table" and #tbl1 > 0 then
+				local isMode = false
+				local var = nil
+				for i, v in pairs(tbl2) do -- Member table.foreachi is deprecated :(
+					if i == "__mode" and (v:find("v")) then var = v; isMode = true end
+				end
+				if isMode then
+					local tbl = {__mode = var}
+					local target = {}
+					for i = 1, #tbl1 do
+						local part = Instance.new("Part",game:GetService("CoreGui"))
+						part.Name = tostring(math.random())
+						table.insert(target, part)
+					end
+					return setmetatable(target, tbl)
+				end
+			end
+			tbl1,tbl2=nil,nil
+			return h(...)
+		end)
+		for i, v in getgc(true) do
+			if type(v) == "table" and getmetatable(v) and type(getmetatable(v)) == "table" and (rawget(getmetatable(v), "__mode") == "v" or rawget(getmetatable(v), "__mode") == "kv") then
+				if table.isfrozen(v) then continue end
+				task.wait()
+				table.clear(v)
+			end
+		end
+	end
+	
+	if choice == 1 then
+		option1()
+	elseif choice == 2 then
+		option2()
+	elseif choice == 3 then
+		task.spawn(option1)
+		task.spawn(option2)
+	end
+end)
