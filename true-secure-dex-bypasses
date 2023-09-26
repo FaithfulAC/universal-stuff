@@ -24,7 +24,7 @@ local DexOptions = getgenv().DexOptions or {
 	SpoofPreloadAsync = {
 		Enabled = true,
 		Waithook = false,
-		Option = 1, -- 1 for realistic spoof 2 for function disabler by super smart mac user ludi
+		Option = 1, -- 1 for realistic spoof 2 for function disabler by super smart mac user ludi even tho it's detectable
 		Namecall = true,
 		Index = true
 	},
