@@ -448,7 +448,7 @@ task.spawn(function()
 		local namecall; namecall = if not spooftbl.Namecall then nil else hookmetamethod(game, "__namecall", function(...)
 			local self = ...
 
-			if not checkcaller() and self == cprovider then
+			if not checkcaller() and self == cprovider then -- MAKE SELF CHECKS LUDI!!!
 				local args = {...}
 				if getnamecallmethod() == "PreloadAsync" or getnamecallmethod() == "preloadAsync" then
 					if typeof(args[2]) == "function" then
@@ -691,44 +691,26 @@ task.spawn(function()
 			table.insert(wktbl, proxy)
 			return proxy
 		end)
-
-		local conn;conn = game.ItemChanged:Connect(def)
 		runs.Stepped:Connect(def)
-
-		task.spawn(function()
-			task.wait(.75)
-			conn:Disconnect() -- optimization
-		end)
 	end
 
 	local option2 = function()
-		local conn = cgui.ChildAdded
-		conn:Connect(function(ins)
-			if tonumber(ins.Name) then
-				local nm = ins.Name
-				ins = nil
-				task.wait(10)
-				cgui[nm]:Destroy()
-			end
-		end)
-
 		local h;h=hookfunction(getrenv().setmetatable, function(...)
 			local tbl1, tbl2 = ...
 			if not checkcaller() and type(tbl1) == "table" and type(tbl2) == "table" and #tbl1 > 0 then
 				local isMode = false
-				local var = nil
 				for i, v in pairs(tbl2) do -- Member table.foreachi is deprecated :(
-					if i == "__mode" and (v:find("v")) then var = v; isMode = true end
+					if i == "__mode" and (v:find("v")) then isMode = true end
 				end
 				if isMode then
-					local tbl = {__mode = var}
 					local target = {}
-					for i = 1, #tbl1 do
-						local part = Instance.new("Part",game:GetService("CoreGui"))
-						part.Name = tostring(math.random())
-						table.insert(target, part)
+					for i, v in pairs(tbl1) do
+						if typeof(v) == "Instance" then
+							v = cloneref(v)
+							rawset(tbl1, i, v)
+						end
 					end
-					return setmetatable(target, tbl)
+					return h(tbl1, tbl2, select(3,...))
 				end
 			end
 			tbl1,tbl2=nil,nil
