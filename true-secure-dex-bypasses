@@ -4,7 +4,7 @@ local DexOptions = getgenv().DexOptions or {
 	SpoofGcinfo = {
 		Enabled = true,
 		Waithook = false,
-		Option = 1 -- can be 1 or 2
+		Option = 1 -- can be 1 or 2 not both
 	},
 
 	SpoofMemory = {
@@ -24,7 +24,7 @@ local DexOptions = getgenv().DexOptions or {
 	SpoofPreloadAsync = {
 		Enabled = true,
 		Waithook = false,
-		Option = 1, -- 1 for realistic spoof 2 for function disabler by super smart mac user ludi even tho it's detectable
+		Option = 1, -- 1 for realistic spoof 2 for function disabler by super smart mac user ludi
 		Namecall = true,
 		Index = true
 	},
@@ -94,12 +94,12 @@ task.spawn(function()
 		local ret, max, mini
 		if not waithook then
 			max = gcinfo()+math.random(
-			math.floor(gcinfo()/6),
-			math.floor(gcinfo()/4)
+				math.floor(gcinfo()/6),
+				math.floor(gcinfo()/4)
 			)
 			mini = gcinfo()-math.random(
-			math.floor(gcinfo()/6),
-			math.floor(gcinfo()/4)
+				math.floor(gcinfo()/6),
+				math.floor(gcinfo()/4)
 			)
 			ret = gcinfo()
 
@@ -316,12 +316,23 @@ task.spawn(function()
 end)
 
 -- preloadasync spoof
--- issues with previous preloadasync spoofer involve env and tostringing an instance and returning a string-filled table
+-- issues with previous preloadasync spoofer involve env and tostringing an instance
 task.spawn(function()
 	local spooftbl = DexOptions.SpoofPreloadAsync
 	if spooftbl.Enabled == false then return end
 	local waithook = spooftbl.Waithook
 	local choice = spooftbl.Option
+	
+	local gametbl = {}
+	local coreguitbl = {}
+	local enumitem = Enum.AssetFetchStatus.Success
+
+	cprovider:PreloadAsync({game}, function(a)
+		table.insert(gametbl,a)
+	end)
+	cprovider:PreloadAsync({cgui}, function(a)
+		table.insert(coreguitbl,a)
+	end)
 
 	if waithook then
 		local h1;h1 = if not spooftbl.Namecall then nil else hookmetamethod(game,"__namecall", function(...)
@@ -348,17 +359,6 @@ task.spawn(function()
 		end)
 		return
 	end
-
-	local gametbl = {}
-	local coreguitbl = {}
-	local enumitem = Enum.AssetFetchStatus.Success
-
-	cprovider:PreloadAsync({game}, function(a)
-		table.insert(gametbl,a)
-	end)
-	cprovider:PreloadAsync({cgui}, function(a)
-		table.insert(coreguitbl,a)
-	end)
 
 	local randomizeTable = function(t) -- adultmouse
 		local n = #t
@@ -395,10 +395,10 @@ task.spawn(function()
 						for _, v2 in pairs(randomizeTable(coreguitbl)) do
 							table.insert(targettbl,v2)
 						end
-					else
+					--[[else
 						cprovider.PreloadAsync(cprovider, {v}, function(a)
 							table.insert(targettbl,a)
-						end)
+						end)]]
 					end
 				end
 				return (function()
@@ -426,10 +426,10 @@ task.spawn(function()
 						for _, v2 in pairs(randomizeTable(coreguitbl)) do
 							table.insert(targettbl,v2)
 						end
-					else
+					--[[else
 						cprovider:PreloadAsync({v}, function(a)
 							table.insert(targettbl,a)
-						end)
+						end)]]
 					end
 				end
 				return (function()
@@ -448,7 +448,7 @@ task.spawn(function()
 		local namecall; namecall = if not spooftbl.Namecall then nil else hookmetamethod(game, "__namecall", function(...)
 			local self = ...
 
-			if not checkcaller() then
+			if not checkcaller() and self == cprovider then
 				local args = {...}
 				if getnamecallmethod() == "PreloadAsync" or getnamecallmethod() == "preloadAsync" then
 					if typeof(args[2]) == "function" then
@@ -568,7 +568,7 @@ task.spawn(function()
 
 	local TextboxBypassIndex;TextboxBypassIndex = if not spooftbl.Index then nil else hookfunction(uis.GetFocusedTextBox, function(...)
 		local self = ...
-		local Textbox = TextboxBypass(...)
+		local Textbox = TextboxBypassIndex(...)
 
 		if not checkcaller() and self == uis then
 			if Textbox and typeof(Textbox) == "Instance" then
@@ -607,23 +607,34 @@ task.spawn(function()
 			stuff.Enabled = true
 			stuff2 = stuff:FindFirstChild("TouchControlFrame")
 		end
+		local mouse = game:GetService("Players").LocalPlayer:GetMouse()
+		local max_X = mouse.ViewSizeX
+		local max_Y = mouse.ViewSizeY; mouse = nil;
 
 		local gh1;gh1 = if not spooftbl.Namecall then nil else hookmetamethod(game,"__namecall", function(...)
-			local self = ...
+			local self,int,int2 = ...
 			local method = getnamecallmethod():gsub("^%u", string.lower)
 			if not checkcaller() and self == pgui and method == "getGuiObjectsAtPosition" then
-				return if not waithook then {stuff2} else wait(9e9)
+				if type(int) == "number" and type(int2) == "number" then -- realism checks
+					if int > 0 and int <= max_X and int2 <= max_Y and int2 > 0 then
+						return if not waithook then {stuff2, unpack(gh1(...))} else wait(9e9)
+					end 
+				end
 			end
-			self=nil
+			self,int,int2=nil,nil,nil
 			return gh1(...)
 		end)
 		local gh2;gh2 = if not spooftbl.Index then nil else hookfunction(pgui.GetGuiObjectsAtPosition, function(...)
-			local arg = ...
+			local arg,int,int2 = ...
 			if not checkcaller() and arg == pgui then
-				return if not waithook then {stuff2} else wait(9e9)
+				if type(int) == "number" and type(int2) == "number" then -- realism checks
+					if int > 0 and int <= max_X and int2 <= max_Y and int2 > 0 then
+						return if not waithook then {stuff2, unpack(gh2(...))} else wait(9e9)
+					end 
+				end
 			end
-			arg=nil
-			return gh1(...)
+			arg,int,int2=nil,nil,nil
+			return gh2(...)
 		end)
 	end
 	local choice2 = function()
@@ -633,7 +644,7 @@ task.spawn(function()
 		end
 		local h;h=hookmetamethod(game,"__index", function(...)
 			local self, arg = ...
-			local _arg = (type(arg) == "string" and arg:gsub("^%u", string.lower)) or setmetatable({},{__namecall=function()return false end})
+			local _arg = (type(arg) == "string" and arg:gsub("^%u", string.lower)) or {sub = function() return false end}
 			if not checkcaller() and self == guis and _arg == "menuIsOpen" or _arg:sub(1, 11) == "menuIsOpen\0" then
 				return if not waithook then true else wait(9e9)
 			end
