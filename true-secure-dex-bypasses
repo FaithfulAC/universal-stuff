@@ -697,10 +697,10 @@ task.spawn(function()
 	local option2 = function()
 		local h;h=hookfunction(getrenv().setmetatable, function(...)
 			local tbl1, tbl2 = ...
-			if not checkcaller() and type(tbl1) == "table" and type(tbl2) == "table" and #tbl1 > 0 then
+			if not checkcaller() and type(tbl1) == "table" and type(tbl2) == "table" and rawlen(tbl1) > 0 > 0 then
 				local isMode = false
 				for i, v in pairs(tbl2) do -- Member table.foreachi is deprecated :(
-					if i == "__mode" and (v:find("v")) then isMode = true end
+					if i == "__mode" and (type(v) == "string" and v:find("v")) then isMode = true end
 				end
 				if isMode then
 					local target = {}
