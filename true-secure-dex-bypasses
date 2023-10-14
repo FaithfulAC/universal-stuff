@@ -67,10 +67,11 @@ local getgenv = getgenv or getfenv
 local getnamecallmethod = getnamecallmethod
 local getconnections = getconnections
 local getgc = getgc
-local checkcaller = checkcaller or function()
+local checkcaller = checkcaller or function() -- if u have hookmetamethod and no checkcaller you might as well disband your exploit
 	return false
 end
 
+-- and please have support for checking if a cloneref'd instance is being compared to that of another in a hook check
 local runs = cloneref(game:GetService("RunService"))
 local stats = cloneref(game:GetService("Stats"))
 local cgui = cloneref(game:GetService("CoreGui"))
@@ -269,7 +270,7 @@ task.spawn(function()
 			if not checkcaller() and self == stats and method == "getMemoryUsageMbForTag" and enum == enumtag then
 				return wait(9e9)
 			end
-			self=nil
+			self,enum=nil,nil
 			return h1(...)
 		end)
 		local h2;h2 = if not spooftbl.Index then nil else hookfunction(stats.GetMemoryUsageMbForTag, function(...)
@@ -277,7 +278,7 @@ task.spawn(function()
 			if not checkcaller() and self == stats and arg == enumtag then
 				return wait(9e9)
 			end
-			self=nil
+			self,arg=nil,nil
 			return h2(...)
 		end)
 		return
@@ -304,7 +305,7 @@ task.spawn(function()
 		if not checkcaller() and self == stats and method == "getMemoryUsageMbForTag" and enum == enumtag then
 			return ret
 		end
-		self=nil
+		self,enum=nil,nil
 		return h1(...)
 	end)
 	local h2;h2 = if not spooftbl.Index then nil else hookfunction(stats.GetTotalMemoryUsageMb, function(...)
@@ -312,7 +313,7 @@ task.spawn(function()
 		if not checkcaller() and self == stats and arg == enumtag then
 			return ret
 		end
-		self=nil
+		self,arg=nil,nil
 		return h2(...)
 	end)
 end)
@@ -458,6 +459,7 @@ task.spawn(function()
 					end
 				end
 			end
+			self=nil -- still have to make my own modifications even though this spoof can be quite easily detected
 			return namecall(...)
 		end)
 
@@ -474,6 +476,7 @@ task.spawn(function()
 					end
 				end
 			end
+			self,key=nil,nil
 			return index(...)
 		end)
 	end
