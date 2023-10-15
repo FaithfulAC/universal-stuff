@@ -71,14 +71,13 @@ local checkcaller = checkcaller or function() -- if u have hookmetamethod and no
 	return false
 end
 
--- and please have support for checking if a cloneref'd instance is being compared to that of another in a hook check
 local runs = cloneref(game:GetService("RunService"))
 local stats = cloneref(game:GetService("Stats"))
 local cgui = cloneref(game:GetService("CoreGui"))
 local uis = cloneref(game:GetService("UserInputService"))
 local guis = cloneref(game:GetService("GuiService"))
 local cprovider = cloneref(game:GetService("ContentProvider"))
-local pgui = game:GetService("Players").LocalPlayer:FindFirstChildWhichIsA("PlayerGui")
+local pgui = cloneref(game:GetService("Players").LocalPlayer:FindFirstChildWhichIsA("PlayerGui"))
 local gui = Dex or Bypassed_Dex or cgui:FindFirstChild("RobloxGui") -- for textbox
 
 repeat task.wait() until game:IsLoaded()
@@ -203,7 +202,7 @@ task.spawn(function()
 		local h1;h1 = if not spooftbl.Namecall then nil else hookmetamethod(game,"__namecall", function(...)
 			local self = ...
 			local method = getnamecallmethod():gsub("^%u", string.lower)
-			if not checkcaller() and self == stats and method == "getTotalMemoryUsageMb" then
+			if not checkcaller() and typeof(self) == "Instance" and self.ClassName == "Stats" and method == "getTotalMemoryUsageMb" then
 				return wait(9e9)
 			end
 			self=nil
@@ -211,7 +210,7 @@ task.spawn(function()
 		end)
 		local h2;h2 = if not spooftbl.Index then nil else hookfunction(stats.GetTotalMemoryUsageMb, function(...)
 			local self = ...
-			if not checkcaller() and self == stats then
+			if not checkcaller() and typeof(self) == "Instance" and self:IsA("Stats") then
 				return wait(9e9)
 			end
 			self=nil
@@ -238,7 +237,7 @@ task.spawn(function()
 	local h1;h1 = if not spooftbl.Namecall then nil else hookmetamethod(game,"__namecall", function(...)
 		local self = ...
 		local method = getnamecallmethod():gsub("^%u", string.lower)
-		if not checkcaller() and self == stats and method == "getTotalMemoryUsageMb" then
+		if not checkcaller() and typeof(self) == "Instance" and self.ClassName == "Stats" and method == "getTotalMemoryUsageMb" then
 			return ret
 		end
 		self=nil
@@ -246,7 +245,7 @@ task.spawn(function()
 	end)
 	local h2;h2 = if not spooftbl.Index then nil else hookfunction(stats.GetTotalMemoryUsageMb, function(...)
 		local self = ...
-		if not checkcaller() and self == stats then
+		if not checkcaller() and typeof(self) == "Instance" and self:IsA("Stats") then
 			return ret
 		end
 		self=nil
@@ -267,7 +266,7 @@ task.spawn(function()
 		local h1;h1 = if not spooftbl.Namecall then nil else hookmetamethod(game,"__namecall", function(...)
 			local self, enum = ...
 			local method = getnamecallmethod():gsub("^%u", string.lower)
-			if not checkcaller() and self == stats and method == "getMemoryUsageMbForTag" and enum == enumtag then
+			if not checkcaller() and typeof(self) == "Instance" and self.ClassName == "Stats" and method == "getMemoryUsageMbForTag" and enum == enumtag then
 				return wait(9e9)
 			end
 			self,enum=nil,nil
@@ -275,7 +274,7 @@ task.spawn(function()
 		end)
 		local h2;h2 = if not spooftbl.Index then nil else hookfunction(stats.GetMemoryUsageMbForTag, function(...)
 			local self, arg = ...
-			if not checkcaller() and self == stats and arg == enumtag then
+			if not checkcaller() and typeof(self) == "Instance" and self:IsA("Stats") and arg == enumtag then
 				return wait(9e9)
 			end
 			self,arg=nil,nil
@@ -302,7 +301,7 @@ task.spawn(function()
 	local h1;h1 = if not spooftbl.Namecall then nil else hookmetamethod(game,"__namecall", function(...)
 		local self, enum = ...
 		local method = getnamecallmethod():gsub("^%u", string.lower)
-		if not checkcaller() and self == stats and method == "getMemoryUsageMbForTag" and enum == enumtag then
+		if not checkcaller() and typeof(self) == "Instance" and self.ClassName == "Stats" and method == "getMemoryUsageMbForTag" and enum == enumtag then
 			return ret
 		end
 		self,enum=nil,nil
@@ -310,7 +309,7 @@ task.spawn(function()
 	end)
 	local h2;h2 = if not spooftbl.Index then nil else hookfunction(stats.GetTotalMemoryUsageMb, function(...)
 		local self, arg = ...
-		if not checkcaller() and self == stats and arg == enumtag then
+		if not checkcaller() and typeof(self) == "Instance" and self:IsA("Stats") and arg == enumtag then
 			return ret
 		end
 		self,arg=nil,nil
@@ -342,7 +341,7 @@ task.spawn(function()
 			local self, tbl, fnc = ...
 			local method = getnamecallmethod():gsub("^%u", string.lower)
 
-			if not checkcaller() and self == cprovider and method == "preloadAsync" and type(tbl) == "table" and (table.find(tbl,game) or table.find(tbl,cgui)) then
+			if not checkcaller() and typeof(self) == "Instance" and self.ClassName == "ContentProvider" and method == "preloadAsync" and type(tbl) == "table" and (table.find(tbl,game) or table.find(tbl,cgui)) then
 				return wait(9e9)
 			end
 
@@ -353,7 +352,7 @@ task.spawn(function()
 			local self, tbl, fnc = ...
 			local method = getnamecallmethod():gsub("^%u", string.lower)
 
-			if not checkcaller() and self == cprovider and type(tbl) == "table" and (table.find(tbl,game) or table.find(tbl,cgui)) then
+			if not checkcaller() and typeof(self) == "Instance" and self:IsA("ContentProvider") and type(tbl) == "table" and (table.find(tbl,game) or table.find(tbl,cgui)) then
 				return wait(9e9)
 			end
 
@@ -387,7 +386,7 @@ task.spawn(function()
 			local self, tbl, fnc = ...
 			local method = getnamecallmethod():gsub("^%u", string.lower)
 
-			if not checkcaller() and self == cprovider and method == "preloadAsync" and type(tbl) == "table" and (table.find(tbl,game) or table.find(tbl,cgui)) and safecheck(tbl) then
+			if not checkcaller() and typeof(self) == "Instance" and self.ClassName == "ContentProvider" and method == "preloadAsync" and type(tbl) == "table" and (table.find(tbl,game) or table.find(tbl,cgui)) and safecheck(tbl) then
 				local targettbl = {}
 				for i, v in pairs(tbl) do
 					if v == game then
@@ -418,7 +417,7 @@ task.spawn(function()
 			local self, tbl, fnc = ...
 			local method = getnamecallmethod():gsub("^%u", string.lower)
 
-			if not checkcaller() and self == cprovider and type(tbl) == "table" and (table.find(tbl,game) or table.find(tbl,cgui)) and safecheck(tbl) then
+			if not checkcaller() and typeof(self) == "Instance" and self:IsA("ContentProvider") and type(tbl) == "table" and (table.find(tbl,game) or table.find(tbl,cgui)) and safecheck(tbl) then
 				local targettbl = {}
 				for i, v in pairs(tbl) do
 					if v == game then
@@ -451,7 +450,7 @@ task.spawn(function()
 		local namecall; namecall = if not spooftbl.Namecall then nil else hookmetamethod(game, "__namecall", function(...)
 			local self = ...
 
-			if not checkcaller() and self == cprovider then -- MAKE SELF CHECKS LUDI!!!
+			if not checkcaller() and typeof(self) == "Instance" and self.ClassName == "ContentProvider" then -- MAKE SELF CHECKS LUDI!!!
 				local args = {...}
 				if getnamecallmethod() == "PreloadAsync" or getnamecallmethod() == "preloadAsync" then
 					if typeof(args[2]) == "function" then
@@ -466,7 +465,7 @@ task.spawn(function()
 		local index; index = if not spooftbl.Index then nil else hookfunction(cprovider.PreloadAsync, function(...)
 			local self, key = ...
 			if not checkcaller() then
-				if self == cprovider then
+				if and typeof(self) == "Instance" and self:IsA("ContentProvider") then
 					local args = {...}
 					local sanitizedKey = tostring(key):split("\0")[1]
 					if sanitizedKey == "PreloadAsync" or sanitizedKey == "preloadAsync" then
@@ -492,7 +491,7 @@ task.spawn(function()
 	if waithook then
 		local h1;h1=hookmetamethod(game,"__index", function(...)
 			local self, arg = ...
-			if not checkcaller() and self == stats and type(arg) == "string" and (arg == "InstanceCount" or arg:sub(1,14) == "InstanceCount\0" or (not stats:FindFirstChild("instanceCount") and (arg == "instanceCount" or arg:sub(1,14) == "instanceCount\0"))) then
+			if not checkcaller() and typeof(self) == "Instance" and self:IsA("Stats") and type(arg) == "string" and (arg == "InstanceCount" or arg:sub(1,14) == "InstanceCount\0" or (not stats:FindFirstChild("instanceCount") and (arg == "instanceCount" or arg:sub(1,14) == "instanceCount\0"))) then
 				return wait(9e9)
 			end
 			self,arg=nil,nil
@@ -508,7 +507,7 @@ task.spawn(function()
 	end)
 	local h1;h1 = hookmetamethod(game,"__index", function(...)
 		local self, arg = ...
-		if not checkcaller() and self == stats and type(arg) == "string" and (arg == "InstanceCount" or arg:sub(1,14) == "InstanceCount\0" or (not stats:FindFirstChild("instanceCount") and (arg == "instanceCount" or arg:sub(1,14) == "instanceCount\0"))) then
+		if not checkcaller() and typeof(self) == "Instance" and self:IsA("Stats") and type(arg) == "string" and (arg == "InstanceCount" or arg:sub(1,14) == "InstanceCount\0" or (not stats:FindFirstChild("instanceCount") and (arg == "instanceCount" or arg:sub(1,14) == "instanceCount\0"))) then
 			return org
 		end
 		self,arg=nil,nil
@@ -528,7 +527,7 @@ task.spawn(function()
 			local method = getnamecallmethod():gsub("^%u",string.lower);
 			local self = ...
 			if not checkcaller() then
-				if self == uis and method == "getFocusedTextBox" then
+				if typeof(self) == "Instance" and self.ClassName == "UserInputService" and method == "getFocusedTextBox" then
 					return wait(9e9)
 				end
 			end
@@ -538,7 +537,7 @@ task.spawn(function()
 		end)
 		local h2;h2 = if not spooftbl.Index then nil else hookfunction(uis.GetFocusedTextBox, function(...)
 			local self = ...
-			if not checkcaller() and self == uis then
+			if not checkcaller() and typeof(self) == "Instance" and self:IsA("UserInputService") then
 				return wait(9e9)
 			end
 			self=nil
@@ -556,7 +555,7 @@ task.spawn(function()
 		local Textbox = TextboxBypass(...)
 
 		if not checkcaller() then
-			if self == uis and method == "getFocusedTextBox" then
+			if typeof(self) == "Instance" and self.ClassName == "UserInputService" and method == "getFocusedTextBox" then
 				if Textbox and typeof(Textbox) == "Instance" then
 					local _,err = pcall(_IsDescendantOf, Textbox, gui)
 
@@ -575,7 +574,7 @@ task.spawn(function()
 		local self = ...
 		local Textbox = TextboxBypassIndex(...)
 
-		if not checkcaller() and self == uis then
+		if not checkcaller() and typeof(self) == "Instance" and self:IsA("UserInputService") then
 			if Textbox and typeof(Textbox) == "Instance" then
 				local _,err = pcall(_IsDescendantOf, Textbox, gui)
 
@@ -599,7 +598,7 @@ task.spawn(function()
 
 	local choice1 = function()
 		local stuff, stuff2
-		if not pgui:FindFirstChild("TouchGui") then
+		if not pgui:FindFirstChild("TouchGui") then -- recommended u put this in auto exec :man_shrugging:
 			stuff = Instance.new("ScreenGui",pgui)
 			stuff.Enabled = true
 			stuff.Name = "TouchGui"
@@ -619,7 +618,7 @@ task.spawn(function()
 		local gh1;gh1 = if not spooftbl.Namecall then nil else hookmetamethod(game,"__namecall", function(...)
 			local self,int,int2 = ...
 			local method = getnamecallmethod():gsub("^%u", string.lower)
-			if not checkcaller() and self == pgui and method == "getGuiObjectsAtPosition" then
+			if not checkcaller() and typeof(self) == "Instance" and self.ClassName == "PlayerGui" and method == "getGuiObjectsAtPosition" then
 				if type(int) == "number" and type(int2) == "number" then -- realism checks
 					if int > 0 and int <= max_X and int2 <= max_Y and int2 > 0 then
 						return if not waithook then {stuff2, unpack(gh1(...))} else wait(9e9)
@@ -631,7 +630,7 @@ task.spawn(function()
 		end)
 		local gh2;gh2 = if not spooftbl.Index then nil else hookfunction(pgui.GetGuiObjectsAtPosition, function(...)
 			local arg,int,int2 = ...
-			if not checkcaller() and arg == pgui then
+			if not checkcaller() and typeof(arg) == "Instance" and arg:IsA("PlayerGui") then
 				if type(int) == "number" and type(int2) == "number" then -- realism checks
 					if int > 0 and int <= max_X and int2 <= max_Y and int2 > 0 then
 						return if not waithook then {stuff2, unpack(gh2(...))} else wait(9e9)
@@ -643,14 +642,13 @@ task.spawn(function()
 		end)
 	end
 	local choice2 = function()
-		local guis = game:GetService("GuiService")
-		for i, v in next, getconnections(guis.MenuClosed) do -- spoofconns maybe? ;)
+		for i, v in next, getconnections(game:GetService("GuiService").MenuClosed) do -- spoofconns maybe? ;)
 			v:Disable()
 		end
 		local h;h=hookmetamethod(game,"__index", function(...)
 			local self, arg = ...
 			local _arg = (type(arg) == "string" and arg:gsub("^%u", string.lower)) or {sub = function() return false end}
-			if not checkcaller() and self == guis and _arg == "menuIsOpen" or _arg:sub(1, 11) == "menuIsOpen\0" then
+			if not checkcaller() and typeof(self) == "Instance" and self:IsA("GuiService") and _arg == "menuIsOpen" or _arg:sub(1, 11) == "menuIsOpen\0" then
 				return if not waithook then true else wait(9e9)
 			end
 			self,arg=nil,nil
