@@ -8,7 +8,7 @@
 ]]
 
 -- forks from universal bypasses by babyhamsta and obviously originally inspired by secure dex by babyhamsta
--- if u find any errors in the logic of any of these hooks please submit an issue
+-- if u find any errors or detections in the logic of any of these hooks please submit an issue
 
 local DexOptions = getgenv().DexOptions or {
 
