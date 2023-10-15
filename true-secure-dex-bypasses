@@ -1,3 +1,12 @@
+--[[
+
+	oh my god i had a terrible time trying to make the
+	instance checks convert frmo checking the CLONEREF version of it
+	so that was nice woohoo thanks for using true secure dex if u were
+	(this works on anonymous btw)
+
+]]
+
 -- forks from universal bypasses by babyhamsta and obviously originally inspired by secure dex by babyhamsta
 -- if u find any errors in the logic of any of these hooks please submit an issue
 
@@ -71,6 +80,7 @@ local checkcaller = checkcaller or function() -- if u have hookmetamethod and no
 	return false
 end
 
+local plr = cloneref(game:GetService("Players").LocalPlayer or game:GetService("Players"):GetPropertyChangedSignal("LocalPlayer"):Wait())
 local runs = cloneref(game:GetService("RunService"))
 local stats = cloneref(game:GetService("Stats"))
 local cgui = cloneref(game:GetService("CoreGui"))
@@ -87,7 +97,7 @@ local IsMac = guis.IsWindows == false and uis.KeyboardEnabled and not tostring({
 -- issues with the engo spoofer involve the detections of byting or voiding or itemchanged differencing
 task.spawn(function()
 	local spooftbl = DexOptions.SpoofGcinfo
-	if spooftbl.Enabled == false then return end
+	if not spooftbl.Enabled then return end
 	local waithook = spooftbl.Waithook
 	local chosen = spooftbl.Option
 
@@ -195,7 +205,7 @@ end)
 -- issues with the previous memory spoofer are the default returning and logic detections in accordance to the device
 task.spawn(function()
 	local spooftbl = DexOptions.SpoofMemory
-	if spooftbl.Enabled == false then return end
+	if not spooftbl.Enabled then return end
 	local waithook = spooftbl.Waithook
 
 	if waithook then
@@ -257,7 +267,7 @@ end)
 -- issues with the previous memorytag spoofer are the default returning
 task.spawn(function()
 	local spooftbl = DexOptions.SpoofGuiMemory
-	if spooftbl.Enabled == false then return end
+	if not spooftbl.Enabled then return end
 	local waithook = spooftbl.Waithook
 
 	local enumtag = Enum.DeveloperMemoryTag.Gui
@@ -321,10 +331,10 @@ end)
 -- issues with previous preloadasync spoofer involve env and tostringing an instance
 task.spawn(function()
 	local spooftbl = DexOptions.SpoofPreloadAsync
-	if spooftbl.Enabled == false then return end
+	if not spooftbl.Enabled then return end
 	local waithook = spooftbl.Waithook
 	local choice = spooftbl.Option
-	
+
 	local gametbl = {}
 	local coreguitbl = {}
 	local enumitem = Enum.AssetFetchStatus.Success
@@ -485,13 +495,13 @@ end)
 -- instancecount bypass
 task.spawn(function()
 	local spooftbl = DexOptions.SpoofInstanceCount
-	if spooftbl.Enabled == false then return end
+	if not spooftbl.Enabled then return end
 	local waithook = spooftbl.Waithook
 
 	if waithook then
 		local h1;h1=hookmetamethod(game,"__index", function(...)
 			local self, arg = ...
-			if not checkcaller() and typeof(self) == "Instance" and self:IsA("Stats") and type(arg) == "string" and (arg == "InstanceCount" or arg:sub(1,14) == "InstanceCount\0" or (not stats:FindFirstChild("instanceCount") and (arg == "instanceCount" or arg:sub(1,14) == "instanceCount\0"))) then
+			if not checkcaller() and self == Stats() and type(arg) == "string" and (arg == "InstanceCount" or arg:sub(1,14) == "InstanceCount\0" or (not stats:FindFirstChild("instanceCount") and (arg == "instanceCount" or arg:sub(1,14) == "instanceCount\0"))) then
 				return wait(9e9)
 			end
 			self,arg=nil,nil
@@ -507,7 +517,7 @@ task.spawn(function()
 	end)
 	local h1;h1 = hookmetamethod(game,"__index", function(...)
 		local self, arg = ...
-		if not checkcaller() and typeof(self) == "Instance" and self:IsA("Stats") and type(arg) == "string" and (arg == "InstanceCount" or arg:sub(1,14) == "InstanceCount\0" or (not stats:FindFirstChild("instanceCount") and (arg == "instanceCount" or arg:sub(1,14) == "instanceCount\0"))) then
+		if not checkcaller() and self == Stats() and type(arg) == "string" and (arg == "InstanceCount" or arg:sub(1,14) == "InstanceCount\0" or (not stats:FindFirstChild("instanceCount") and (arg == "instanceCount" or arg:sub(1,14) == "instanceCount\0"))) then
 			return org
 		end
 		self,arg=nil,nil
@@ -519,8 +529,10 @@ end)
 -- issues with the previous textbox spoofer include namecall == index and new thread identity update and getFocused == GetFocused
 task.spawn(function()
 	local spooftbl = DexOptions.SpoofTextbox
-	if spooftbl.Enabled == false then return end
+	if not spooftbl.Enabled then return end
 	local waithook = spooftbl.Waithook
+
+	local gui = gui or game:GetService("CoreGui").RobloxGui
 
 	if waithook then
 		local h1;h1 = if not spooftbl.Namecall then nil else hookmetamethod(game,"__namecall",function(...)
@@ -552,47 +564,49 @@ task.spawn(function()
 	TextboxBypass = if not spooftbl.Namecall then nil else hookmetamethod(game, "__namecall", function(...)
 		local method = getnamecallmethod():gsub("^%u",string.lower);
 		local self = ...
-		local Textbox = TextboxBypass(...)
 
-		if not checkcaller() then
-			if typeof(self) == "Instance" and self.ClassName == "UserInputService" and method == "getFocusedTextBox" then
+		if not checkcaller() and typeof(self) == "Instance" then
+			if self.ClassName == "UserInputService" and method == "getFocusedTextBox" then
+				local Textbox = TextboxBypass(...)
 				if Textbox and typeof(Textbox) == "Instance" then
-					local _,err = pcall(_IsDescendantOf, Textbox, gui)
+					local res = select(2, pcall(function() _IsDescendantOf(Textbox, gui) end))
 
-					if err and err:lower():match("the current") then
+					if type(res) == "string" and string.match(res, "The current") then
 						return nil
 					end
 				end
+				return Textbox
 			end
 		end
 		self=nil
 
-		return Textbox
+		return TextboxBypass(...)
 	end)
 
-	local TextboxBypassIndex;TextboxBypassIndex = if not spooftbl.Index then nil else hookfunction(uis.GetFocusedTextBox, function(...)
+	local TextboxBypassIndex;TextboxBypassIndex = if not spooftbl.Index then nil else hookfunction(game:GetService("UserInputService").GetFocusedTextBox, function(...)
 		local self = ...
-		local Textbox = TextboxBypassIndex(...)
+		--local Textbox = TextboxBypassIndex(...)
 
 		if not checkcaller() and typeof(self) == "Instance" and self:IsA("UserInputService") then
+			local Textbox = TextboxBypassIndex(...)
 			if Textbox and typeof(Textbox) == "Instance" then
-				local _,err = pcall(_IsDescendantOf, Textbox, gui)
-
-				if err and err:lower():match("the current") then
+				if Textbox:IsDescendantOf(gui) then
 					return nil
 				end
 			end
+			return Textbox
 		end
 
 		self=nil
-		return Textbox
+		--return Textbox
+		return TextboxBypassIndex(...)
 	end)
 end)
 
 -- guiobjects spoof
 task.spawn(function()
 	local spooftbl = DexOptions.SpoofGuiObjects
-	if spooftbl.Enabled == false then return end
+	if not spooftbl.Enabled then return end
 	local waithook = spooftbl.Waithook
 	local choice = spooftbl.Option -- no if waithook then section because would be too messy
 
@@ -669,7 +683,7 @@ end)
 -- forked weaktable detection bypass (semi improved upon)
 task.spawn(function()
 	local spooftbl = DexOptions.SpoofWeaktable
-	if spooftbl.Enabled == false then return end
+	if not spooftbl.Enabled then return end
 	local waithook = spooftbl.Waithook
 	local choice = spooftbl.Option
 
