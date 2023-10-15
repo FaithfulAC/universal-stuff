@@ -465,7 +465,7 @@ task.spawn(function()
 		local index; index = if not spooftbl.Index then nil else hookfunction(cprovider.PreloadAsync, function(...)
 			local self, key = ...
 			if not checkcaller() then
-				if and typeof(self) == "Instance" and self:IsA("ContentProvider") then
+				if typeof(self) == "Instance" and self:IsA("ContentProvider") then
 					local args = {...}
 					local sanitizedKey = tostring(key):split("\0")[1]
 					if sanitizedKey == "PreloadAsync" or sanitizedKey == "preloadAsync" then
