@@ -1,9 +1,9 @@
 --[[
 
 	oh my god i had a terrible time trying to make the
-	instance checks convert frmo checking the CLONEREF version of it
-	so that was nice woohoo thanks for using true secure dex if u were
-	(this works on anonymous btw)
+	instance checks convert from checking the CLONEREF version of it
+	so that was nice woohoo thanks for using true secure dex if u ever have
+	(this works on anonymous btw because uwp hookmetamethod is undetected for fluxus / krnl / any other fluxus API user)
 
 ]]
 
