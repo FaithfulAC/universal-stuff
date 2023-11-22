@@ -72,6 +72,10 @@ local DexOptions = getgenv().DexOptions or {
 
 -- smart! thank you sir babyhamsta
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Babyhamsta/RBLX_Scripts/main/Universal/CloneRef.lua", true))()
+if not getgenv().InstanceList then
+	getgenv().InstanceList = setmetatable(getinstances(), {__mode = "v"})
+end
+
 local cloneref = cloneref
 local hookmetamethod,hookfunction = hookmetamethod,hookfunction
 local getrenv = getrenv or getfenv
