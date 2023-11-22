@@ -1,12 +1,17 @@
 --[[
-
 	https://youtu.be/PTVHOEFqlkw
 	demo of true secure dex being (properly) used on some popular anticheat-specific games
-
 ]]
 
 -- forks from universal bypasses by babyhamsta and obviously originally inspired by secure dex by babyhamsta
--- if u find any errors or detections in the logic of any of these hooks please submit an issue
+-- if you find any errors or detections in the logic of any of these hooks please submit an issue (or pull request if you're that dedicated)
+
+--[[
+	big thanks to:
+	kaxr for indirectly helping make true secure dex as secure as it is
+	ludi for his pretty detectable but still applicable preloadasync hook
+	babyhamsta for the original secure dex
+]]
 
 local DexOptions = getgenv().DexOptions or {
 
