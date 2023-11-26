@@ -1,6 +1,9 @@
 -- multi purpose internal coregui executor for the purpose of bypassing a few stuff and bringing more conveniency in exploiting and whatever
 -- if you know about that stupid 0.00045 check designed to detect uwp executors on execution then this in auto execute bypasses that
 
+-- this was ACTUALLY last updated 2 months ago but just the pure fact that every major cheat engine executor on roblox right now...
+-- is using a coregui / playergui executor just goes to show how far ahead this was! (probably)
+
 -- Instances:
 
 local Exec = Instance.new("ScreenGui")
