@@ -551,6 +551,15 @@ task.spawn(function()
 		self,arg=nil,nil
 		return h1(...)
 	end)
+
+	local h2;h2 = hookfunction(getrenv().Instance.new, function(...)
+		local result = h2(...)
+		if not checkcaller() and typeof(result) == "Instance" and not result:IsDescendantOf(cgui) then
+			org += 1
+		end
+		
+		return result
+	end)
 end)
 
 -- forked textbox bypass
