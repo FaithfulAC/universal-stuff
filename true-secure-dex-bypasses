@@ -382,9 +382,8 @@ task.spawn(function()
 		end
 	end
 	
-	local table = table
-	table.find = function(tbl, arg)
-		if type(tbl) ~= "table" then return error("Bad argument #1 to 'find' (table expected)") end
+	local find = function(tbl, arg)
+		if type(tbl) ~= "table" then return false end
 		
 		for i, v in pairs(tbl) do
 			if v == arg then return true end
@@ -403,7 +402,7 @@ task.spawn(function()
 			local self, tbl, fnc = ...
 			local method = getnamecallmethod():gsub("^%u", string.lower)
 
-			if not checkcaller() and rawinsequal(self, cprovider) and method == "preloadAsync" and type(tbl) == "table" and (table.find(tbl,game) or table.find(tbl,cgui)) then
+			if not checkcaller() and rawinsequal(self, cprovider) and method == "preloadAsync" and type(tbl) == "table" and (find(tbl,game) or find(tbl,cgui)) then
 				return wait(9e9)
 			end
 
@@ -415,7 +414,7 @@ task.spawn(function()
 			local self, tbl, fnc = ...
 			local method = getnamecallmethod():gsub("^%u", string.lower)
 
-			if not checkcaller() and rawinsequal(self, cprovider) and type(tbl) == "table" and (table.find(tbl,game) or table.find(tbl,cgui)) then
+			if not checkcaller() and rawinsequal(self, cprovider) and type(tbl) == "table" and (find(tbl,game) or find(tbl,cgui)) then
 				return wait(9e9)
 			end
 
@@ -449,7 +448,7 @@ task.spawn(function()
 			local self, tbl, fnc = ...
 			local method = getnamecallmethod():gsub("^%u", string.lower)
 
-			if not checkcaller() and rawinsequal(self, cprovider) and method == "preloadAsync" and type(tbl) == "table" and (table.find(tbl, game) or table.find(tbl,cgui)) and safecheck(tbl) then
+			if not checkcaller() and rawinsequal(self, cprovider) and method == "preloadAsync" and type(tbl) == "table" and (find(tbl, game) or find(tbl,cgui)) and safecheck(tbl) then
 				local targettbl = {}
 				for i, v in pairs(tbl) do
 					if v == game then
@@ -481,7 +480,7 @@ task.spawn(function()
 		local h2;h2 = if not spooftbl.Index then nil else hookfunction(cprovider.PreloadAsync, function(...)
 			local self, tbl, fnc = ...
 
-			if not checkcaller() and rawinsequal(self, cprovider) and type(tbl) == "table" and (table.find(tbl,game) or table.find(tbl,cgui)) and safecheck(tbl) then
+			if not checkcaller() and rawinsequal(self, cprovider) and type(tbl) == "table" and (find(tbl,game) or find(tbl,cgui)) and safecheck(tbl) then
 				local targettbl = {}
 				for i, v in pairs(tbl) do
 					if v == game then
