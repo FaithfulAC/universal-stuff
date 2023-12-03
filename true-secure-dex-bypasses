@@ -13,9 +13,10 @@
 	babyhamsta for the original secure dex
 ]]
 
-local GetDebugId = ((cloneref and pcall(cloneref, game.GetDebugId) and cloneref(game.GetDebugId)) or game.GetDebugId)
+-- doing cloneref on a function so speddy sped smh
+local GetDebugId = ((clonefunction and pcall(clonefunction, game.GetDebugId) and clonefunction(game.GetDebugId)) or game.GetDebugId)
 
-local rawinsequal = rawinsequal or function(ins1, ins2)
+local rawinsequal = compareinstances or rawinsequal or function(ins1, ins2)
 	return GetDebugId(ins1) == GetDebugId(ins2)
 end
 
@@ -78,6 +79,9 @@ local DexOptions = ((getgenv and getgenv()) or getfenv()).DexOptions or {
 
 -- smart! thank you sir babyhamsta
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Babyhamsta/RBLX_Scripts/main/Universal/CloneRef.lua", true))()
+
+if not getgenv().InstanceList then
+end
 
 --[[if not getgenv().InstanceList then
 	getgenv().InstanceList = setmetatable(getinstances(), {__mode = "v"})
@@ -350,9 +354,15 @@ task.spawn(function()
 	local waithook = spooftbl.Waithook
 	local choice = spooftbl.Option
 	
+	local badnews = {
+		"rbxassetid://472635937", "rbxassetid://472636337",
+		"rbxassetid://476354004", "rbxassetid://475456048",
+		"rbxassetid://472635774", "rbxassetid://483437370",
+		"rbxassetid://1513966937"
+	}
+	
 	local gametbl = {}
 	local coreguitbl = {}
-	local enumitem = Enum.AssetFetchStatus.Success
 
 	cprovider:PreloadAsync({game}, function(a)
 		table.insert(gametbl,a)
@@ -360,6 +370,17 @@ task.spawn(function()
 	cprovider:PreloadAsync({cgui}, function(a)
 		table.insert(coreguitbl,a)
 	end)
+	
+	for i, v in pairs(gametbl) do
+		if table.find(badnews, v) then
+			table.remove(gametbl, i)
+		end
+	end
+	for i, v in pairs(coreguitbl) do
+		if table.find(badnews, v) then
+			table.remove(coreguitbl, i)
+		end
+	end
 	
 	local table = table
 	table.find = function(tbl, arg)
@@ -439,22 +460,24 @@ task.spawn(function()
 						for _, v2 in pairs(randomizeTable(coreguitbl)) do
 							table.insert(targettbl,v2)
 						end
-						
-						
-					--[[else
+					elseif typeof(v) == "Instance" then -- whatever!
 						h1({v}, function(a)
 							table.insert(targettbl,a)
-						end)]]
-						
-						
+						end)
 					end
 				end
-				return h1(self, targettbl, fnc)
+				
+				for i, v in pairs(targettbl) do
+					fnc(v, Enum.AssetFetchStatus.Success)
+				end
+				
+				return -- void
 			end
 
 			self,tbl,fnc=nil,nil,nil
 			return h1(...)
 		end)
+		
 		local h2;h2 = if not spooftbl.Index then nil else hookfunction(cprovider.PreloadAsync, function(...)
 			local self, tbl, fnc = ...
 
@@ -469,13 +492,18 @@ task.spawn(function()
 						for _, v2 in pairs(randomizeTable(coreguitbl)) do
 							table.insert(targettbl,v2)
 						end
-					--[[else
-						cprovider:PreloadAsync({v}, function(a)
+					elseif typeof(v) == "Instance" then
+						h2({v}, function(a)
 							table.insert(targettbl,a)
-						end)]]
+						end)
 					end
 				end
-				return h2(self, targettbl, fnc)
+
+				for i, v in pairs(targettbl) do
+					fnc(v, Enum.AssetFetchStatus.Success)
+				end
+
+				return -- void
 			end
 
 			self,tbl,fnc=nil,nil,nil
@@ -551,13 +579,13 @@ task.spawn(function()
 		self,arg=nil,nil
 		return h1(...)
 	end)
-
+	
 	local h2;h2 = hookfunction(getrenv().Instance.new, function(...)
 		local result = h2(...)
 		if not checkcaller() and typeof(result) == "Instance" and not result:IsDescendantOf(cgui) then
 			org += 1
 		end
-		
+
 		return result
 	end)
 end)
