@@ -1,8 +1,7 @@
 -- multi purpose internal coregui executor for the purpose of bypassing a few stuff and bringing more conveniency in exploiting and whatever
 -- if you know about that stupid 0.00045 check designed to detect uwp executors on execution then this in auto execute bypasses that
 
--- this was ACTUALLY last updated 2 months ago but just the pure fact that every major cheat engine executor on roblox right now...
--- is using a coregui / playergui executor just goes to show how far ahead this was! (probably)
+-- added probably functional script hub
 
 -- Instances:
 
@@ -23,7 +22,7 @@ local Execute = Instance.new("TextButton")
 local Clear = Instance.new("TextButton")
 local Copy = Instance.new("TextButton")
 local Pcall = Instance.new("TextButton")
-local Globals = Instance.new("TextButton")
+local Print = Instance.new("TextButton")
 local Frame = Instance.new("Frame")
 local Bottom = Instance.new("Frame")
 local ScriptHub = Instance.new("TextButton")
@@ -40,7 +39,7 @@ local _Line_ = Instance.new("TextLabel")
 local Buttons_2 = Instance.new("Folder")
 local Modes = Instance.new("Folder")
 local Warn = Instance.new("TextButton")
-local Print = Instance.new("TextButton")
+local Print_2 = Instance.new("TextButton")
 local Error = Instance.new("TextButton")
 local Info = Instance.new("TextButton")
 local BottomConsole = Instance.new("Folder")
@@ -63,11 +62,25 @@ local Enable = Instance.new("TextButton")
 local Disable = Instance.new("TextButton")
 local Destroy = Instance.new("TextButton")
 local CopyPath = Instance.new("TextButton")
+local ScriptHub_2 = Instance.new("Frame")
+local Name_5 = Instance.new("TextLabel")
+local Holder_2 = Instance.new("ScrollingFrame")
+local InfY = Instance.new("TextButton")
+local TSDex = Instance.new("TextButton")
+local Dex = Instance.new("TextButton")
+local CmdX = Instance.new("TextButton")
+local SSpy = Instance.new("TextButton")
+local VV4 = Instance.new("TextButton")
+local Descriptor = Instance.new("Folder")
+local Holder_3 = Instance.new("Frame")
+local Run = Instance.new("TextButton")
+local Desc = Instance.new("TextLabel")
+local Name_6 = Instance.new("TextLabel")
 
 --Properties:
 
 Exec.Name = "Exec"
-Exec.Parent = game:GetService("CoreGui").RobloxGui
+Exec.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 Exec.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 Main.Name = "Main"
@@ -258,20 +271,20 @@ Pcall.TextScaled = true
 Pcall.TextSize = 14.000
 Pcall.TextWrapped = true
 
-Globals.Name = "Globals"
-Globals.Parent = Side
-Globals.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-Globals.BackgroundTransparency = 1.000
-Globals.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Globals.BorderSizePixel = 0
-Globals.Position = UDim2.new(0, 0, 0.82996273, 0)
-Globals.Size = UDim2.new(1, 0, 0.162, 0)
-Globals.Font = Enum.Font.Unknown
-Globals.Text = "globals: on"
-Globals.TextColor3 = Color3.fromRGB(255, 255, 255)
-Globals.TextScaled = true
-Globals.TextSize = 14.000
-Globals.TextWrapped = true
+Print.Name = "Print"
+Print.Parent = Side
+Print.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Print.BackgroundTransparency = 1.000
+Print.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Print.BorderSizePixel = 0
+Print.Position = UDim2.new(0, 0, 0.82996273, 0)
+Print.Size = UDim2.new(1, 0, 0.162, 0)
+Print.Font = Enum.Font.Unknown
+Print.Text = "normal print: on"
+Print.TextColor3 = Color3.fromRGB(255, 255, 255)
+Print.TextScaled = true
+Print.TextSize = 14.000
+Print.TextWrapped = true
 
 Frame.Parent = Side
 Frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
@@ -440,19 +453,19 @@ Warn.TextScaled = true
 Warn.TextSize = 14.000
 Warn.TextWrapped = true
 
-Print.Name = "Print"
-Print.Parent = Modes
-Print.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
-Print.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Print.BorderSizePixel = 0
-Print.Position = UDim2.new(-0.212313026, 0, 0.299456388, 0)
-Print.Size = UDim2.new(0.211999997, 0, 0.143999994, 0)
-Print.Font = Enum.Font.Unknown
-Print.Text = "print: on"
-Print.TextColor3 = Color3.fromRGB(255, 255, 255)
-Print.TextScaled = true
-Print.TextSize = 14.000
-Print.TextWrapped = true
+Print_2.Name = "Print"
+Print_2.Parent = Modes
+Print_2.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
+Print_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Print_2.BorderSizePixel = 0
+Print_2.Position = UDim2.new(-0.212313026, 0, 0.299456388, 0)
+Print_2.Size = UDim2.new(0.211999997, 0, 0.143999994, 0)
+Print_2.Font = Enum.Font.Unknown
+Print_2.Text = "print: on"
+Print_2.TextColor3 = Color3.fromRGB(255, 255, 255)
+Print_2.TextScaled = true
+Print_2.TextSize = 14.000
+Print_2.TextWrapped = true
 
 Error.Name = "Error"
 Error.Parent = Modes
@@ -720,23 +733,222 @@ CopyPath.TextScaled = true
 CopyPath.TextSize = 14.000
 CopyPath.TextWrapped = true
 
+ScriptHub_2.Name = "ScriptHub"
+ScriptHub_2.Parent = Exec
+ScriptHub_2.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
+ScriptHub_2.BackgroundTransparency = 0.300
+ScriptHub_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ScriptHub_2.BorderSizePixel = 0
+ScriptHub_2.Position = UDim2.new(0.0677455887, 0, 0.0928866118, 0)
+ScriptHub_2.Size = UDim2.new(0.222853288, 0, 0.400000125, 0)
+ScriptHub_2.Visible = false
+
+Name_5.Name = "Name"
+Name_5.Parent = ScriptHub_2
+Name_5.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+Name_5.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Name_5.BorderSizePixel = 0
+Name_5.Position = UDim2.new(0, 0, 9.19554068e-08, 0)
+Name_5.Size = UDim2.new(1, 0, 0.172697663, 0)
+Name_5.Font = Enum.Font.JosefinSans
+Name_5.Text = "eurohub"
+Name_5.TextColor3 = Color3.fromRGB(255, 255, 255)
+Name_5.TextScaled = true
+Name_5.TextSize = 14.000
+Name_5.TextWrapped = true
+
+Holder_2.Name = "Holder"
+Holder_2.Parent = ScriptHub_2
+Holder_2.Active = true
+Holder_2.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+Holder_2.BackgroundTransparency = 0.500
+Holder_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Holder_2.BorderSizePixel = 0
+Holder_2.Position = UDim2.new(0, 0, 0.17535007, 0)
+Holder_2.Size = UDim2.new(0.999000013, 0, 0.824999988, 0)
+Holder_2.CanvasSize = UDim2.new(0, 0, 0, 0)
+
+InfY.Name = "InfY"
+InfY.Parent = Holder_2
+InfY.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+InfY.BackgroundTransparency = 0.500
+InfY.BorderColor3 = Color3.fromRGB(0, 0, 0)
+InfY.BorderSizePixel = 0
+InfY.Position = UDim2.new(-5.5704362e-08, 0, -0.00601119967, 0)
+InfY.Size = UDim2.new(1.00000012, 0, 0.124679103, 0)
+InfY.Font = Enum.Font.Unknown
+InfY.Text = "Infinite Yield"
+InfY.TextColor3 = Color3.fromRGB(255, 255, 255)
+InfY.TextScaled = true
+InfY.TextSize = 14.000
+InfY.TextWrapped = true
+
+TSDex.Name = "TSDex"
+TSDex.Parent = Holder_2
+TSDex.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+TSDex.BackgroundTransparency = 0.500
+TSDex.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TSDex.BorderSizePixel = 0
+TSDex.Position = UDim2.new(-5.5704362e-08, 0, 0.115716428, 0)
+TSDex.Size = UDim2.new(1.00000012, 0, 0.124679103, 0)
+TSDex.Font = Enum.Font.Unknown
+TSDex.Text = "True Secure Dex"
+TSDex.TextColor3 = Color3.fromRGB(255, 255, 255)
+TSDex.TextScaled = true
+TSDex.TextSize = 14.000
+TSDex.TextWrapped = true
+
+Dex.Name = "Dex"
+Dex.Parent = Holder_2
+Dex.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+Dex.BackgroundTransparency = 0.500
+Dex.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Dex.BorderSizePixel = 0
+Dex.Position = UDim2.new(-5.5704362e-08, 0, 0.237444058, 0)
+Dex.Size = UDim2.new(1.00000012, 0, 0.124679103, 0)
+Dex.Font = Enum.Font.Unknown
+Dex.Text = "Dex"
+Dex.TextColor3 = Color3.fromRGB(255, 255, 255)
+Dex.TextScaled = true
+Dex.TextSize = 14.000
+Dex.TextWrapped = true
+
+CmdX.Name = "CmdX"
+CmdX.Parent = Holder_2
+CmdX.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+CmdX.BackgroundTransparency = 0.500
+CmdX.BorderColor3 = Color3.fromRGB(0, 0, 0)
+CmdX.BorderSizePixel = 0
+CmdX.Position = UDim2.new(-5.5704362e-08, 0, 0.359171689, 0)
+CmdX.Size = UDim2.new(1.00000012, 0, 0.124679103, 0)
+CmdX.Font = Enum.Font.Unknown
+CmdX.Text = "CMD-X"
+CmdX.TextColor3 = Color3.fromRGB(255, 255, 255)
+CmdX.TextScaled = true
+CmdX.TextSize = 14.000
+CmdX.TextWrapped = true
+
+SSpy.Name = "SSpy"
+SSpy.Parent = Holder_2
+SSpy.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+SSpy.BackgroundTransparency = 0.500
+SSpy.BorderColor3 = Color3.fromRGB(0, 0, 0)
+SSpy.BorderSizePixel = 0
+SSpy.Position = UDim2.new(-5.5704362e-08, 0, 0.480899304, 0)
+SSpy.Size = UDim2.new(1.00000012, 0, 0.124679103, 0)
+SSpy.Font = Enum.Font.Unknown
+SSpy.Text = "SimpleSpy"
+SSpy.TextColor3 = Color3.fromRGB(255, 255, 255)
+SSpy.TextScaled = true
+SSpy.TextSize = 14.000
+SSpy.TextWrapped = true
+
+VV4.Name = "VV4"
+VV4.Parent = Holder_2
+VV4.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+VV4.BackgroundTransparency = 0.500
+VV4.BorderColor3 = Color3.fromRGB(0, 0, 0)
+VV4.BorderSizePixel = 0
+VV4.Position = UDim2.new(-5.5704362e-08, 0, 0.60262692, 0)
+VV4.Size = UDim2.new(1.00000012, 0, 0.124679103, 0)
+VV4.Font = Enum.Font.Unknown
+VV4.Text = "Vape v4"
+VV4.TextColor3 = Color3.fromRGB(255, 255, 255)
+VV4.TextScaled = true
+VV4.TextSize = 14.000
+VV4.TextWrapped = true
+
+Descriptor.Name = "Descriptor"
+Descriptor.Parent = ScriptHub_2
+
+Holder_3.Name = "Holder"
+Holder_3.Parent = Descriptor
+Holder_3.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+Holder_3.BackgroundTransparency = 0.200
+Holder_3.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Holder_3.BorderSizePixel = 0
+Holder_3.Position = UDim2.new(0.999999881, 0, 0.175350115, 0)
+Holder_3.Size = UDim2.new(0.906976044, 0, 0.822445989, 0)
+Holder_3.Visible = false
+
+Run.Name = "Run"
+Run.Parent = Holder_3
+Run.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+Run.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Run.BorderSizePixel = 0
+Run.Position = UDim2.new(0.717241168, 0, 0.796142995, 0)
+Run.Size = UDim2.new(0.282758474, 0, 0.203490049, 0)
+Run.Font = Enum.Font.Unknown
+Run.Text = "Run"
+Run.TextColor3 = Color3.fromRGB(255, 255, 255)
+Run.TextScaled = true
+Run.TextSize = 14.000
+Run.TextWrapped = true
+
+Desc.Name = "Desc"
+Desc.Parent = Holder_3
+Desc.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+Desc.BackgroundTransparency = 1.000
+Desc.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Desc.BorderSizePixel = 0
+Desc.Position = UDim2.new(0.0283654816, 0, 0.0337938666, 0)
+Desc.Size = UDim2.new(0.971634507, 0, 0.766206145, 0)
+Desc.Font = Enum.Font.JosefinSans
+Desc.Text = ""
+Desc.TextColor3 = Color3.fromRGB(255, 255, 255)
+Desc.TextSize = 18.000
+Desc.TextWrapped = true
+Desc.TextXAlignment = Enum.TextXAlignment.Left
+Desc.TextYAlignment = Enum.TextYAlignment.Top
+
+Name_6.Name = "Name"
+Name_6.Parent = Holder_3
+Name_6.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+Name_6.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Name_6.BorderSizePixel = 0
+Name_6.Position = UDim2.new(-0.000896190759, 0, -0.213205636, 0)
+Name_6.Size = UDim2.new(1.00089586, 0, 0.21320565, 0)
+Name_6.Font = Enum.Font.JosefinSans
+Name_6.Text = "Infinite Yield"
+Name_6.TextColor3 = Color3.fromRGB(255, 255, 255)
+Name_6.TextScaled = true
+Name_6.TextSize = 14.000
+Name_6.TextWrapped = true
+
 -- Scripts:
 
-local function LKQTXIT_fake_script() -- Script.MainScript 
+local function UGIXEJG_fake_script() -- Script.MainScript 
 	local script = Instance.new('LocalScript', Script)
 
-	--[[
-	okay so im only doing these locals because i edit things in roblox studio
-	not visual studio
-	lol
-	]]
+	-- dont mind the fake script im too lazy to remove it
 	
 	local getgenv = getgenv or getfenv
-	local hookfunction = hookfunction or nil
-	local hookmetamethod = hookmetamethod or nil
+	local hookfunction = hookfunction or (getrenv and function(a,b)
+		for i, v in next, getrenv() do
+			if v == a then
+				rawset(getrenv(), i, b)
+				break
+			end
+		end
+	end) or nil
 	local getnilinstances = getnilinstances or nil -- lol
 	local getrawmetatable = getrawmetatable or nil
 	local setrawmetatable = setrawmetatable or nil
+	local setreadonly = setreadonly or nil
+	local cloneref = cloneref or function(a)
+		return a
+	end
+	local hookmetamethod = hookmetamethod or (getrawmetatable and setreadonly and function(...)
+		local object, metamethod, func = ...
+		local meta = getrawmetatable(object)
+		local orgmetamethod = meta[metamethod]
+	
+		setreadonly(meta, false)
+		meta[metamethod] = func
+	
+		setreadonly(meta, true)
+		return orgmetamethod
+	end) or nil
 	local newcclosure = newcclosure or function(f) return f end
 	local saveinstance = saveinstance or nil
 	local setclipboard = setclipboard or nil
@@ -744,8 +956,10 @@ local function LKQTXIT_fake_script() -- Script.MainScript
 	local decompile = decompile or nil
 	local getscripts = getscripts or nil
 	local europa = europa or nil
-	local Players = game:GetService("Players")
-	local LocalPlayer = Players.LocalPlayer
+	local Players = (cloneref and cloneref(game:GetService("Players"))) or game:GetService("Players")
+	local LocalPlayer = (cloneref and cloneref(Players.LocalPlayer)) or Players.LocalPlayer
+	
+	getgenv().print, getgenv().warn, getgenv().error = print, warn, error
 	
 	local gui = script.Parent.Parent
 	local mainbutton = gui.Button
@@ -755,6 +969,7 @@ local function LKQTXIT_fake_script() -- Script.MainScript
 	local f_buttons = semitop.Buttons
 	local side = main.Side
 	local bottom = main.Bottom
+	local scrhub = gui.ScriptHub
 	local options = gui.Options
 	
 	local codeholder = main.CodeHolder
@@ -768,7 +983,7 @@ local function LKQTXIT_fake_script() -- Script.MainScript
 	local code = codeholder.Scroller.Code
 	
 	local pcallOn = false
-	local globalsEnabled = true
+	local printEnabled = true
 	
 	local function setnotif(title, info)
 		local sgui = game:GetService("StarterGui")
@@ -784,10 +999,57 @@ local function LKQTXIT_fake_script() -- Script.MainScript
 		loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/Megaprojects/main/europa%20library%20wip"))()
 		setnotif("Library", "Europa Library Loaded")
 	end
-	local _,tempe=pcall(loadeuropaglobals)
+	
+	local tempe = select(2, pcall(loadeuropaglobals))
 	if tempe and not tempe:find("HttpGet") and not tempe:find("CoreScripts") then
-		error(tempe)
+		error("An error occured while loading europatech:", ((string.split(tempe, ":")[3]) or tempe))
 		return
+	end
+	
+	local warnExcluded, infoExcluded, errorExcluded, printExcluded, scroller = false,false,false,false,nil;
+	
+	local function MessageOutFunction(str, type)
+		local offset = 0
+		local bolden = false
+		local color = BrickColor.White()
+		if str:len() > 26 then
+			offset += (1/25)*(str:len()-26)
+		end
+	
+		if type == Enum.MessageType.MessageWarning then -- funny statement
+	
+			if warnExcluded then return end
+			color = BrickColor.Yellow()
+			bolden = true
+	
+		elseif type == Enum.MessageType.MessageInfo then
+	
+			if infoExcluded then return end
+			color = BrickColor.Blue()
+	
+		elseif type == Enum.MessageType.MessageError then
+	
+			if errorExcluded then return end
+			color = BrickColor.Red()
+			bolden = true
+	
+			if str:find("\n") then
+				str = string.split(str, "\n")[1]
+			end
+	
+		elseif printExcluded then return end
+	
+		local newline = scroller._Line_:Clone()
+		newline.Parent = scroller
+		newline.Name = "Line"
+		newline.BackgroundTransparency = 1
+		newline.TextXAlignment = Enum.TextXAlignment.Left
+		newline.Size = UDim2.new(1+offset, 0, 0.125, 0)
+		newline.TextColor = color
+		newline.Text = str
+		if bolden == true then
+			newline.FontFace.Weight = Enum.FontWeight.Bold
+		end
 	end
 	
 	local function cleareuropaglobals()
@@ -811,13 +1073,13 @@ local function LKQTXIT_fake_script() -- Script.MainScript
 	coroutine.wrap(function() -- handles stuff
 		local exit = f_buttons.Exit
 		local mini = f_buttons.Minimize
-		exit.MouseButton1Up:Connect(function()
+		exit.MouseButton1Click:Connect(function()
 			gui:Destroy()
 		end)
-		mini.MouseButton1Up:Connect(function()
+		mini.MouseButton1Click:Connect(function()
 			main.Visible = not main.Visible
 		end)
-		mainbutton.MouseButton1Up:Connect(function()
+		mainbutton.MouseButton1Click:Connect(function()
 			main.Visible = not main.Visible
 		end)
 	end)()
@@ -828,10 +1090,12 @@ local function LKQTXIT_fake_script() -- Script.MainScript
 		code.MultiLine = true
 		code:GetPropertyChangedSignal("Text"):Connect(function()
 			local txt = code.Text
+			
 			txt:gsub("\n", function(a)
 				numoflines += 1
 			end)
 			local maxofoneline = 0
+			
 			if txt:find("\n") then -- increases horizontial length of code
 				for i, v in pairs(string.split(txt, "\n")) do
 					if v:len() > 22 and (0.05*(v:len()-22)) > maxofoneline then
@@ -843,8 +1107,10 @@ local function LKQTXIT_fake_script() -- Script.MainScript
 					maxofoneline = (0.05*(txt:len()-22))
 				end
 			end
+			
 			code.Size = UDim2.new(0.9+maxofoneline, 0, 0.15*numoflines, 0)
 			local ch = assigns:GetChildren()
+			
 			local function getmaxl()
 				local n = 0
 				for i, v in pairs(ch) do
@@ -854,6 +1120,7 @@ local function LKQTXIT_fake_script() -- Script.MainScript
 				end
 				return n
 			end
+			
 			if #ch < numoflines then
 				for i = getmaxl()+1, numoflines do -- increase amount of children
 					local cl = assigns:FindFirstChild("Assigner"):Clone()
@@ -869,6 +1136,7 @@ local function LKQTXIT_fake_script() -- Script.MainScript
 					end
 				end
 			end
+			
 			numoflines = 1
 		end)
 	end)()
@@ -877,7 +1145,6 @@ local function LKQTXIT_fake_script() -- Script.MainScript
 		local UIS = game:GetService('UserInputService')
 		local frame = main
 		local dragToggle = nil
-		local dragSpeed = 0.01
 		local dragStart = nil
 		local startPos = nil
 	
@@ -885,7 +1152,7 @@ local function LKQTXIT_fake_script() -- Script.MainScript
 			local delta = input.Position - dragStart
 			local position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
 				startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-			game:GetService('TweenService'):Create(frame, TweenInfo.new(dragSpeed), {Position = position}):Play()
+			game:GetService('TweenService'):Create(frame, TweenInfo.new(0.01), {Position = position}):Play()
 		end
 	
 		frame.InputBegan:Connect(function(input)
@@ -914,18 +1181,33 @@ local function LKQTXIT_fake_script() -- Script.MainScript
 		local exec = side.Execute
 		local clear = side.Clear
 		local copy = side.Copy
-		local globals = side.Globals
+		local _print = side.Print
 		local _pcall = side.Pcall
-		exec.MouseButton1Up:Connect(function()
-			if pcallOn then
-				local thing = loadstring(code.Text)
+		
+		local defPrint, defWarn, defError = print, warn, error
+		
+		exec.MouseButton1Click:Connect(function()
+			if not pcall(function() return loadstring("assert(true, '?')") end) then -- this basically will render the gui useless lol
+				setnotif("Error", "Your executor does not support Method 'loadstring'")
+				return
+			end
+			
+			local thing = loadstring(code.Text)
+			
+			if type(thing) ~= "function" then
+				setnotif("Potential Syntax Error", "Check your code for any issues and try again")
+				return
+			end
+			
+			if pcallOn then			
 				local _, e = pcall(thing)
 				if e then setnotif("Error In Execution", e) end
 			else
-				return loadstring(code.Text)()
+				return coroutine.wrap(thing)()
 			end
 		end)
-		_pcall.MouseButton1Up:Connect(function()
+		
+		_pcall.MouseButton1Click:Connect(function()
 			pcallOn = not pcallOn
 			if pcallOn then
 				_pcall.Text = "pcall: on"
@@ -933,20 +1215,29 @@ local function LKQTXIT_fake_script() -- Script.MainScript
 				_pcall.Text = "pcall: off"
 			end
 		end)
-		globals.MouseButton1Up:Connect(function()
-			globalsEnabled = not globalsEnabled
-			if globalsEnabled then
-				loadeuropaglobals()
-				globals.Text = "globals: on"
+		_print.MouseButton1Click:Connect(function()
+			printEnabled = not printEnabled
+			if printEnabled then
+				getgenv().print = function(...)
+					MessageOutFunction(..., Enum.MessageType.MessageOutput)
+				end
+				getgenv().warn = function(...)
+					MessageOutFunction(..., Enum.MessageType.MessageWarning)
+				end
+				getgenv().error = function(...)
+					MessageOutFunction(..., Enum.MessageType.MessageError)
+				end
+				
+				_print.Text = "normal print: on"
 			else
-				cleareuropaglobals()
-				globals.Text = "globals: off"
+				getgenv().print, getgenv().warn, getgenv().error = defPrint, defWarn, defError
+				_print.Text = "normal print: off"
 			end
 		end)
-		clear.MouseButton1Up:Connect(function()
+		clear.MouseButton1Click:Connect(function()
 			code.Text = ""
 		end)
-		copy.MouseButton1Up:Connect(function()
+		copy.MouseButton1Click:Connect(function()
 			if not setclipboard then setnotif("Error", "Your executor does not have method 'setclipboard'") return end
 			setclipboard(code.Text)
 			setnotif("setclipboard", "Operation Successful")
@@ -1054,14 +1345,14 @@ local function LKQTXIT_fake_script() -- Script.MainScript
 			duoholder.CanvasSize = UDim2.new(0, 0, 0.825*#duoholder:GetChildren()*0.125, 0)
 		end
 		
-		optionsStorage.OptionsS.CopyPath.MouseButton1Up:Connect(function()
+		optionsStorage.OptionsS.CopyPath.MouseButton1Click:Connect(function()
 			if objval1.Value then
 				if not setclipboard then setnotif("Error", "Your executor does not have method 'setclipboard'") return end
 				setclipboard(objval1.Value:GetFullName())
 				setnotif("setclipboard", "Operation Successful")
 			end
 		end)
-		optionsStorage.OptionsS:FindFirstChild("Destroy").MouseButton1Up:Connect(function()
+		optionsStorage.OptionsS:FindFirstChild("Destroy").MouseButton1Click:Connect(function()
 			if objval1.Value then
 				objval1.Value:Destroy()
 				objval1.Value = nil
@@ -1069,21 +1360,21 @@ local function LKQTXIT_fake_script() -- Script.MainScript
 				setnotif("Destroy", "Operation Successful")
 			end
 		end)
-		optionsStorage.OptionsS.Disable.MouseButton1Up:Connect(function()
+		optionsStorage.OptionsS.Disable.MouseButton1Click:Connect(function()
 			if objval1.Value then
 				objval1.Value.Disabled = true
 				loadviewer()
 				setnotif("Disable", "Operation Successful")
 			end
 		end)
-		optionsStorage.OptionsS.Enable.MouseButton1Up:Connect(function()
+		optionsStorage.OptionsS.Enable.MouseButton1Click:Connect(function()
 			if objval1.Value then
 				objval1.Value.Enabled = true
 				loadviewer()
 				setnotif("Enable", "Operation Successful")
 			end
 		end)
-		optionsStorage.OptionsS.CopySource.MouseButton1Up:Connect(function()
+		optionsStorage.OptionsS.CopySource.MouseButton1Click:Connect(function()
 			if objval1.Value then
 				if not setclipboard then
 					setnotif("Error", "Your executor does not have method 'setclipboard'")
@@ -1113,14 +1404,20 @@ local function LKQTXIT_fake_script() -- Script.MainScript
 				end
 			end
 			for i, v in getscripts() do
+				if typeof(v) ~= "Instance" then continue end -- for the retarded exploits
+				if getgenv().BlacklistCoreGui and v:FindFirstAncestorOfClass("CoreGui") then continue end
+				
 				local lbl = Instance.new("TextLabel", duoholder)
 				loadprops(lbl, if not v:IsA("ModuleScript") then v.Disabled else false)
 				local name: string = v.Name
-				if name:len() > 20 then
+				
+				if string.len(name) > 20 then
 					name = string.sub(name, 1, 20) .. "..."
 				end
+				
 				lbl.Text = v.Name .. " || " .. v.ClassName
 				Instance.new("ObjectValue", lbl).Value = v
+				
 				local button = Instance.new("TextButton", lbl)
 				button.Size = UDim2.new(1,0,1,0)
 				button.Transparency = 1
@@ -1137,19 +1434,21 @@ local function LKQTXIT_fake_script() -- Script.MainScript
 			LocalPlayer = game:GetService("Players").LocalPlayer
 			return LocalPlayer:GetMouse()
 		end)()
-		mouse.Button1Up:Connect(function()
-			assign()
-		end)
 		
-		optswitch.MouseButton1Up:Connect(function()
+		mouse.Button1Up:Connect(assign)
+		
+		optswitch.MouseButton1Click:Connect(function()
 			options.Visible = not options.Visible
 		end)
+		
 		local _saveins = buttons.SaveIns
-		_saveins.MouseButton1Up:Connect(function()
+		_saveins.MouseButton1Click:Connect(function()
 			if not saveinstance then setnotif("Error", "Your executor does not have method 'saveinstance'") return end
+			
 			local s, e = pcall(function()
 				saveinstance()
 			end)
+			
 			if e then
 				setnotif("Error in saveinstance", e)
 			elseif s then
@@ -1157,7 +1456,7 @@ local function LKQTXIT_fake_script() -- Script.MainScript
 			end
 		end)
 		local viewscripts = buttons.ViewScripts
-		viewscripts.MouseButton1Up:Connect(function()
+		viewscripts.MouseButton1Click:Connect(function()
 			duoviewer.Visible = not duoviewer.Visible
 			if duoviewer.Visible then loadviewer() else assign() end -- assign here makes any objvalue nil
 		end)
@@ -1165,7 +1464,7 @@ local function LKQTXIT_fake_script() -- Script.MainScript
 	
 	coroutine.wrap(function() -- hook gui
 		local _hook = bottom.Hooks
-		_hook.MouseButton1Up:Connect(function()
+		_hook.MouseButton1Click:Connect(function()
 			setnotif("HookInfo", "Note that you must have globals enabled for these to work")
 			task.wait(4)
 			setnotif("hookgcinfo", "Hooks gcinfo and collectgarbage('count')")
@@ -1192,39 +1491,91 @@ local function LKQTXIT_fake_script() -- Script.MainScript
 	
 	coroutine.wrap(function() -- script hub
 		local button = bottom.ScriptHub
-		button.MouseButton1Up:Connect(function()
-			setnotif("lol", "No script hub. Just use the following globals (assuming globals are on lol).")
-			task.wait(3)
-			setnotif("loadiy", "Loads Infinite Yield")
-			task.wait(2)
-			setnotif("loadcmdx", "Loads Cmd X")
-			task.wait(2)
-			setnotif("loaddex", "Loads Dark Dex v3")
-			task.wait(2)
-			setnotif("loadss", "Loads SimpleSpy")
-			task.wait(2)
-			setnotif("loadv4", "Loads Vape V4")
-			task.wait(1)
-			setnotif("Finished","")
+		local theholder = scrhub.Holder
+		local otherholder = scrhub.Descriptor.Holder
+		local run = otherholder.Run
+		local name = otherholder:FindFirstChild("Name")
+		local desc = otherholder.Desc
+		
+		local selected = nil;
+		
+		button.MouseButton1Click:Connect(function()
+			scrhub.Visible = not scrhub.Visible
+			if not scrhub.Visible then
+				otherholder.Visible = false
+				selected = nil
+			end
 		end)
+		
+		local options = {
+			SSpy = theholder.SSpy,
+			CmdX = theholder.CmdX,
+			IY = theholder.InfY,
+			VV4 = theholder.VV4,
+			TSD = theholder.TSDex,
+			Dex = theholder.Dex
+		}
+		
+		local tbl = {
+			["Simple Spy"] = "A seamless and accurate solution for extracting the arguments of fired remotes.",
+			["CMD-X"] = "Command utility with a broad range of commands, more than 600 to be more specific.",
+			["Infinite Yield"] = "The classic command utility option for executing your favorite commands.",
+			["Vape v4"] = "Detections begone! Vape v4 bypasses any sort of physics and gui checks you can think of.",
+			["True Secure Dex"] = "Captivate the full ability to use Dex with a true guaranteed security for your experience.",
+			["Dex"] = "No hooks? No problem! This Dex has 0 utilization of any hooks while still maintaining it's stance as a force against detection vectors."
+		}
+		
+		local function setdesc(str)
+			if str == nil then
+				otherholder.Desc.Text = ""
+				otherholder.Name.Text = ""
+			else
+				for i, v in pairs(tbl) do
+					if v == str then
+						otherholder.Desc.Text = str
+						otherholder.Name.Text = i
+						break
+					end
+				end
+			end
+		end
+		
+		local function connect(ins, desc)
+			ins.MouseButton1Click:Connect(function()
+				if selected == ins then
+					otherholder.Visible = false
+					setdesc(nil)
+					return
+				end
+				
+				otherholder.Visible = true
+				setdesc(desc)
+				
+				selected = ins
+			end)
+		end
+		
+		connect(options.SSpy, tbl["Simple Spy"])
+		connect(options.CmdX, tbl["CMD-X"])
+		connect(options.IY, tbl["Infinite Yield"])
+		connect(options.VV4, tbl["Vape v4"])
+		connect(options.TSD, tbl["True Secure Dex"])
+		connect(options.Dex, tbl["Dex"])
 	end)()
-	
-	local infoExcluded = false
-	local printExcluded = false
-	local warnExcluded = false
-	local errorExcluded = false
 	
 	coroutine.wrap(function() -- console
 		local console = gui.Console
 		local hide = console.Hide
 		local logservice = game:GetService("LogService")
-		local scroller = console.Scroller
+		
+		scroller = console.Scroller
 		scroller.AutomaticCanvasSize = Enum.AutomaticSize.XY
+		
 		local layout = Instance.new("UIListLayout", scroller)
 		layout.SortOrder = Enum.SortOrder.LayoutOrder
 		
 		local switch = bottom.Console
-		switch.MouseButton1Up:Connect(function()
+		switch.MouseButton1Click:Connect(function()
 			console.Visible = not console.Visible
 		end)
 		
@@ -1265,49 +1616,7 @@ local function LKQTXIT_fake_script() -- Script.MainScript
 			end)
 		end))
 		
-		logservice.MessageOut:Connect(function(str, type)
-			local offset = 0
-			local bolden = false
-			local color = BrickColor.White()
-			if str:len() > 26 then
-				offset += (1/25)*(str:len()-26)
-			end
-			
-			if type == Enum.MessageType.MessageWarning then -- funny statement
-				
-				if warnExcluded then return end
-				color = BrickColor.Yellow()
-				bolden = true
-				
-			elseif type == Enum.MessageType.MessageInfo then
-				
-				if infoExcluded then return end
-				color = BrickColor.Blue()
-				
-			elseif type == Enum.MessageType.MessageError then
-				
-				if errorExcluded then return end
-				color = BrickColor.Red()
-				bolden = true
-				
-				if str:find("\n") then
-					str = string.split(str, "\n")[1]
-				end
-				
-			elseif printExcluded then return end
-			
-			local newline = scroller._Line_:Clone()
-			newline.Parent = scroller
-			newline.Name = "Line"
-			newline.BackgroundTransparency = 1
-			newline.TextXAlignment = Enum.TextXAlignment.Left
-			newline.Size = UDim2.new(1+offset, 0, 0.125, 0)
-			newline.TextColor = color
-			newline.Text = str
-			if bolden == true then
-				newline.FontFace.Weight = Enum.FontWeight.Bold
-			end
-		end)
+		logservice.MessageOut:Connect(MessageOutFunction)
 		
 		local buttons = console.Buttons
 		local modes = buttons.Modes
@@ -1321,19 +1630,19 @@ local function LKQTXIT_fake_script() -- Script.MainScript
 			end
 		end
 		
-		modes.Info.MouseButton1Up:Connect(function() infoExcluded = not infoExcluded changething(modes.Info, infoExcluded) end)
-		modes.Print.MouseButton1Up:Connect(function() printExcluded = not printExcluded changething(modes.Print, printExcluded) end)
-		modes.Warn.MouseButton1Up:Connect(function() warnExcluded = not warnExcluded changething(modes.Warn, warnExcluded) end)
-		modes.Error.MouseButton1Up:Connect(function() errorExcluded = not errorExcluded changething(modes.Error, errorExcluded) end)
+		modes.Info.MouseButton1Click:Connect(function() infoExcluded = not infoExcluded changething(modes.Info, infoExcluded) end)
+		modes.Print.MouseButton1Click:Connect(function() printExcluded = not printExcluded changething(modes.Print, printExcluded) end)
+		modes.Warn.MouseButton1Click:Connect(function() warnExcluded = not warnExcluded changething(modes.Warn, warnExcluded) end)
+		modes.Error.MouseButton1Click:Connect(function() errorExcluded = not errorExcluded changething(modes.Error, errorExcluded) end)
 		
-		bottom.Clear.MouseButton1Up:Connect(function()
+		bottom.Clear.MouseButton1Click:Connect(function()
 			for i, v in pairs(scroller:GetChildren()) do
 				if v:IsA("TextLabel") and v.Name ~= "_Line_" then v:Destroy() end
 			end
 			setnotif("Cleared!")
 		end)
 		
-		bottom.Copy.MouseButton1Up:Connect(function()
+		bottom.Copy.MouseButton1Click:Connect(function()
 			if not setclipboard then setnotif("Error", "Your executor does not have method 'setclipboard'") return end
 			local str = ""
 			for i, v in pairs(scroller:GetChildren()) do
@@ -1343,7 +1652,7 @@ local function LKQTXIT_fake_script() -- Script.MainScript
 			setnotif("setclipboard", "Operation success")
 		end)
 		
-		bottom.Save.MouseButton1Up:Connect(function()
+		bottom.Save.MouseButton1Click:Connect(function()
 			if not writefile then setnotif("Error", "Your executor does not have method 'writefile'") return end
 			local str = ""
 			for i, v in pairs(scroller:GetChildren()) do
@@ -1353,7 +1662,7 @@ local function LKQTXIT_fake_script() -- Script.MainScript
 		end)
 		
 		local hidden = false
-		hide.MouseButton1Up:Connect(function()
+		hide.MouseButton1Click:Connect(function()
 			hidden = not hidden
 			if hidden == true then
 				hide.Text = "show"
@@ -1369,4 +1678,4 @@ local function LKQTXIT_fake_script() -- Script.MainScript
 		end)
 	end)()
 end
-coroutine.wrap(LKQTXIT_fake_script)()
+coroutine.wrap(UGIXEJG_fake_script)()
