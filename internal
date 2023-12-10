@@ -1,7 +1,7 @@
 -- multi purpose internal coregui executor for the purpose of bypassing a few stuff and bringing more conveniency in exploiting and whatever
 -- if you know about that stupid 0.00045 check designed to detect uwp executors on execution then this in auto execute bypasses that
 
--- added probably functional script hub
+-- made script hub functional
 
 -- Instances:
 
@@ -917,7 +917,7 @@ Name_6.TextWrapped = true
 
 -- Scripts:
 
-local function UGIXEJG_fake_script() -- Script.MainScript 
+local function WUHZU_fake_script() -- Script.MainScript 
 	local script = Instance.new('LocalScript', Script)
 
 	-- dont mind the fake script im too lazy to remove it
@@ -1497,6 +1497,43 @@ local function UGIXEJG_fake_script() -- Script.MainScript
 		local name = otherholder:FindFirstChild("Name")
 		local desc = otherholder.Desc
 		
+		coroutine.resume(coroutine.create(function() -- drag
+			local UIS = game:GetService('UserInputService')
+			local frame = scrhub
+			local dragToggle = nil
+			local dragSpeed = 0.01
+			local dragStart = nil
+			local startPos = nil
+	
+			local function updateInput(input)
+				local delta = input.Position - dragStart
+				local position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
+					startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+				game:GetService('TweenService'):Create(frame, TweenInfo.new(dragSpeed), {Position = position}):Play()
+			end
+	
+			frame.InputBegan:Connect(function(input)
+				if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then 
+					dragToggle = true
+					dragStart = input.Position
+					startPos = frame.Position
+					input.Changed:Connect(function()
+						if input.UserInputState == Enum.UserInputState.End then
+							dragToggle = false
+						end
+					end)
+				end
+			end)
+	
+			UIS.InputChanged:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+					if dragToggle then
+						updateInput(input)
+					end
+				end
+			end)
+		end))
+		
 		local selected = nil;
 		
 		button.MouseButton1Click:Connect(function()
@@ -1524,6 +1561,18 @@ local function UGIXEJG_fake_script() -- Script.MainScript
 			["True Secure Dex"] = "Captivate the full ability to use Dex with a true guaranteed security for your experience.",
 			["Dex"] = "No hooks? No problem! This Dex has 0 utilization of any hooks while still maintaining it's stance as a force against detection vectors."
 		}
+		
+		local loadtbl = {
+			["SSpy"] = "https://raw.githubusercontent.com/78n/SimpleSpy/main/SimpleSpySource.lua",
+			["CmdX"] = "https://raw.githubusercontent.com/CMD-X/CMD-X/master/Source",
+			["IY"] = "https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source",
+			["VV4"] = "https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/main/NewMainScript.lua",
+			["TSD"] = "https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex",
+			["Dex"] = "https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex" -- to be modified
+		}
+		
+		-- for checks and allat
+		local toDisregard = game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses")
 		
 		local function setdesc(str)
 			if str == nil then
@@ -1561,6 +1610,33 @@ local function UGIXEJG_fake_script() -- Script.MainScript
 		connect(options.VV4, tbl["Vape v4"])
 		connect(options.TSD, tbl["True Secure Dex"])
 		connect(options.Dex, tbl["Dex"])
+		
+		run.MouseButton1Click:Connect(function()
+			if not selected then return end
+			local key = loadtbl[selected.Name]
+			if not key then return end
+			
+			if selected.Name == "Dex" then
+				local ls = loadstring;
+				local called = false
+				
+				getgenv().loadstring = function(...)
+					if select(1,...) == toDisregard then
+						called = true
+						return function()end
+					end
+					
+					return ls(...)
+				end
+				
+				loadstring(game:HttpGet(key))
+				repeat task.wait() until called
+				
+				getgenv().loadstring = ls
+			else
+				loadstring(game:HttpGet(key))
+			end
+		end)
 	end)()
 	
 	coroutine.wrap(function() -- console
@@ -1678,4 +1754,4 @@ local function UGIXEJG_fake_script() -- Script.MainScript
 		end)
 	end)()
 end
-coroutine.wrap(UGIXEJG_fake_script)()
+coroutine.wrap(WUHZU_fake_script)()
