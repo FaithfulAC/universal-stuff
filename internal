@@ -1577,12 +1577,12 @@ local function WUHZU_fake_script() -- Script.MainScript
 		local function setdesc(str)
 			if str == nil then
 				otherholder.Desc.Text = ""
-				otherholder.Name.Text = ""
+				otherholder:FindFirstChild("Name").Text = ""
 			else
 				for i, v in pairs(tbl) do
 					if v == str then
 						otherholder.Desc.Text = str
-						otherholder.Name.Text = i
+						otherholder:FindFirstChild("Name").Text = i
 						break
 					end
 				end
