@@ -80,7 +80,7 @@ local Name_6 = Instance.new("TextLabel")
 --Properties:
 
 Exec.Name = "Exec"
-Exec.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+Exec.Parent = select(2, pcall(function() return game:GetService("CoreGui") end)) or game.Players.LocalPlayer:WaitForChild("PlayerGui")
 Exec.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 Main.Name = "Main"
