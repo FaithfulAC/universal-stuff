@@ -73,7 +73,7 @@ local DexOptions = ((getgenv and getgenv()) or getfenv()).DexOptions or {
 	SpoofWeaktable = {
 		Enabled = true,
 		Waithook = false,
-		Option = 2 -- 1 is engo newproxy spoof, 2 is setmetatable spoof, 3 for another setmetatable spoof
+		Option = 3 -- 1 is engo newproxy spoof, 2 is setmetatable spoof, 3 for another setmetatable spoof
 	}
 }
 
