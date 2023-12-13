@@ -843,7 +843,9 @@ task.spawn(function()
 					if not string.find(var, "k") then
 						task.spawn(function()
 							task.wait(math.random(5,8)/10)
-							table.clear(res)
+							for i, v in pairs(res) do
+								if type(v) == "userdata" or type(v) == "function" then rawset(res, i, nil) end
+							end
 						end)
 					else
 						task.spawn(function()
