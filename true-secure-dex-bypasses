@@ -121,14 +121,8 @@ task.spawn(function()
 	local option1 = function()
 		local ret, max, mini
 		if not waithook then
-			max = gcinfo()+math.random(
-				math.floor(gcinfo()/6),
-				math.floor(gcinfo()/4)
-			)
-			mini = gcinfo()-math.random(
-				math.floor(gcinfo()/6),
-				math.floor(gcinfo()/4)
-			)
+			max = gcinfo() + math.random(math.floor(gcinfo()/6), math.floor(gcinfo()/4))
+			mini = gcinfo() - math.random(math.floor(gcinfo()/6), math.floor(gcinfo()/4))
 			ret = gcinfo()
 
 			local function decrease()
@@ -158,13 +152,16 @@ task.spawn(function()
 			if not checkcaller() then
 				return if not waithook then ret else wait(9e9)
 			end
+			
 			return h1(...)
 		end)
 		local h2;h2=hookfunction(getrenv().collectgarbage, function(...)
 			local cnt = ...
+			
 			if not checkcaller() and type(cnt) == "string" and (cnt == "count" or cnt:sub(1,6) == "count\0") then
 				return if not waithook then ret else wait(9e9)
 			end
+			
 			cnt=nil
 			return h2(...)
 		end)
@@ -202,9 +199,11 @@ task.spawn(function()
 		end)
 		local h2;h2=hookfunction(getrenv().collectgarbage, function(...)
 			local cnt = ...
+			
 			if not checkcaller() and type(cnt) == "string" and (cnt == "count" or cnt:sub(1,6) == "count\0") then
 				return if not waithook then num else wait(9e9)
 			end
+			
 			cnt=nil
 			return h2(...)
 		end)
@@ -245,35 +244,35 @@ task.spawn(function()
 	end
 
 	local ret = stats:GetTotalMemoryUsageMb()
-	
+
 	task.spawn(function()
 		local switchoff = false
 		while game:GetService("RunService").RenderStepped:Wait() do
 			switchoff = not switchoff
 			ret += math.random(-2,2)/(if switchoff then 32 else 64) - (math.random(-1,1)/2)
-			
+
 			task.wait(math.random(1,3)/90)
 		end
 	end)
-	
+
 	local h1;h1 = if not spooftbl.Namecall then nil else hookmetamethod(game,"__namecall", function(...)
 		local self = ...
 		local method = getnamecallmethod():gsub("^%u", string.lower)
-		
+
 		if not checkcaller() and rawinsequal(self, stats) and method == "getTotalMemoryUsageMb" then
 			return ret
 		end
-		
+
 		self=nil
 		return h1(...)
 	end)
 	local h2;h2 = if not spooftbl.Index then nil else hookfunction(stats.GetTotalMemoryUsageMb, function(...)
 		local self = ...
-		
+
 		if not checkcaller() and rawinsequal(self, stats) then
 			return ret
 		end
-		
+
 		self=nil
 		return h2(...)
 	end)
@@ -291,21 +290,21 @@ task.spawn(function()
 		local h1;h1 = if not spooftbl.Namecall then nil else hookmetamethod(game,"__namecall", function(...)
 			local self, enum = ...
 			local method = getnamecallmethod():gsub("^%u", string.lower)
-			
+
 			if not checkcaller() and rawinsequal(self, stats) and method == "getMemoryUsageMbForTag" and enum == enumtag then
 				return wait(9e9)
 			end
-			
+
 			self=nil
 			return h1(...)
 		end)
 		local h2;h2 = if not spooftbl.Index then nil else hookfunction(stats.GetMemoryUsageMbForTag, function(...)
 			local self, arg = ...
-			
+
 			if not checkcaller() and rawinsequal(self, stats) and arg == enumtag then
 				return wait(9e9)
 			end
-			
+
 			self=nil
 			return h2(...)
 		end)
@@ -313,35 +312,35 @@ task.spawn(function()
 	end
 
 	local ret = stats:GetTotalMemoryUsageMb()
-	
+
 	task.spawn(function()
 		local switchoff = false
 		while game:GetService("RunService").RenderStepped:Wait() do
 			switchoff = not switchoff
 			ret += math.random(-2,2)/(if switchoff then 64 else 128) + (math.random(-1,1)/20)
-			
+
 			task.wait(math.random(1,3)/90)
 		end
 	end)
-	
+
 	local h1;h1 = if not spooftbl.Namecall then nil else hookmetamethod(game,"__namecall", function(...)
 		local self, enum = ...
 		local method = getnamecallmethod():gsub("^%u", string.lower)
-		
+
 		if not checkcaller() and rawinsequal(self, stats) and method == "getMemoryUsageMbForTag" and enum == enumtag then
 			return ret
 		end
-		
+
 		self=nil
 		return h1(...)
 	end)
 	local h2;h2 = if not spooftbl.Index then nil else hookfunction(stats.GetTotalMemoryUsageMb, function(...)
 		local self, arg = ...
-		
+
 		if not checkcaller() and rawinsequal(self, stats) and arg == enumtag then
 			return ret
 		end
-		
+
 		self=nil
 		return h2(...)
 	end)
@@ -353,14 +352,14 @@ task.spawn(function()
 	if spooftbl.Enabled == false then return end
 	local waithook = spooftbl.Waithook
 	local choice = spooftbl.Option
-	
+
 	local badnews = {
 		"rbxassetid://472635937", "rbxassetid://472636337",
 		"rbxassetid://476354004", "rbxassetid://475456048",
 		"rbxassetid://472635774", "rbxassetid://483437370",
 		"rbxassetid://1513966937"
 	}
-	
+
 	local gametbl = {}
 	local coreguitbl = {}
 
@@ -370,7 +369,7 @@ task.spawn(function()
 	cprovider:PreloadAsync({cgui}, function(a)
 		table.insert(coreguitbl,a)
 	end)
-	
+
 	for i, v in pairs(gametbl) do
 		if table.find(badnews, v) then
 			table.remove(gametbl, i)
@@ -381,13 +380,13 @@ task.spawn(function()
 			table.remove(coreguitbl, i)
 		end
 	end
-	
+
 	local find = function(tbl, arg)
 		if type(tbl) ~= "table" then return false end
-		
+
 		for i, v in pairs(tbl) do
 			if v == arg then return true end
-			
+
 			if typeof(v) == typeof(arg) and typeof(arg) == "Instance" then
 				if rawinsequal(v, arg) then
 					return true
@@ -409,7 +408,7 @@ task.spawn(function()
 			self,tbl,fnc=nil,nil,nil
 			return h1(...)
 		end)
-		
+
 		local h2;h2 = if not spooftbl.Index then nil else hookfunction(cprovider.PreloadAsync, function(...)
 			local self, tbl, fnc = ...
 			local method = getnamecallmethod():gsub("^%u", string.lower)
@@ -443,7 +442,7 @@ task.spawn(function()
 		return true
 	end
 
-	local option1 = function()
+	local option1 = function() -- probably detectable by checking assetfetchstatus but im no preloadasync pro so let's just stick with this
 		local h1;h1 = if not spooftbl.Namecall then nil else hookmetamethod(game,"__namecall", function(...)
 			local self, tbl, fnc = ...
 			local method = getnamecallmethod():gsub("^%u", string.lower)
@@ -463,20 +462,18 @@ task.spawn(function()
 						h1({v}, function(a)
 							table.insert(targettbl,a)
 						end)
+					elseif type(v) == "string" then
+						table.insert(targettbl, v)
 					end
 				end
-				
-				for i, v in pairs(targettbl) do
-					fnc(v, Enum.AssetFetchStatus.Success)
-				end
-				
-				return -- void
+
+				return h1(self, targettbl, fnc)
 			end
 
 			self,tbl,fnc=nil,nil,nil
 			return h1(...)
 		end)
-		
+
 		local h2;h2 = if not spooftbl.Index then nil else hookfunction(cprovider.PreloadAsync, function(...)
 			local self, tbl, fnc = ...
 
@@ -495,14 +492,12 @@ task.spawn(function()
 						h2({v}, function(a)
 							table.insert(targettbl,a)
 						end)
+					elseif type(v) == "string" then
+						table.insert(targettbl, v)
 					end
 				end
-
-				for i, v in pairs(targettbl) do
-					fnc(v, Enum.AssetFetchStatus.Success)
-				end
-
-				return -- void
+				
+				return h2(self, targettbl, fnc)
 			end
 
 			self,tbl,fnc=nil,nil,nil
@@ -527,10 +522,10 @@ task.spawn(function()
 
 		local index; index = if not spooftbl.Index then nil else hookfunction(cprovider.PreloadAsync, function(...)
 			local self = ...
-			
+
 			if not checkcaller() and rawinsequal(self, cprovider) then
 				local args = {...}
-				
+
 				if typeof(args[2]) == "function" then
 					hookfunction(args[2], function(asset) end)
 				end
@@ -550,35 +545,35 @@ task.spawn(function()
 	if waithook then
 		local h1;h1=hookmetamethod(game,"__index", function(...)
 			local self, arg = ...
-			
+
 			if not checkcaller() and rawinsequal(self, stats) and type(arg) == "string" and (arg == "InstanceCount" or string.sub(arg, 1, 14) == "InstanceCount\0" or (not stats:FindFirstChild("instanceCount") and (arg == "instanceCount" or string.sub(arg, 1, 14) == "instanceCount\0"))) then
 				return wait(9e9)
 			end
-			
+
 			self,arg=nil,nil
 			return h1(...)
 		end)
 	end
 
 	local org = stats.InstanceCount
-	
+
 	task.spawn(function()
 		while task.wait() do
 			org += math.random(-100, 101) -- this could use some improvement
 		end
 	end)
-	
+
 	local h1;h1 = hookmetamethod(game,"__index", function(...)
 		local self, arg = ...
-		
+
 		if not checkcaller() and rawinsequal(self, stats) and type(arg) == "string" and (arg == "InstanceCount" or string.sub(arg, 1, 14) == "InstanceCount\0" or (not stats:FindFirstChild("instanceCount") and (arg == "instanceCount" or string.sub(arg, 1, 14) == "instanceCount\0"))) then
 			return org
 		end
-		
+
 		self,arg=nil,nil
 		return h1(...)
 	end)
-	
+
 	local h2;h2 = hookfunction(getrenv().Instance.new, function(...)
 		local result = h2(...)
 		if not checkcaller() and typeof(result) == "Instance" and not result:IsDescendantOf(cgui) then
@@ -599,23 +594,23 @@ task.spawn(function()
 		local h1;h1 = if not spooftbl.Namecall then nil else hookmetamethod(game,"__namecall",function(...)
 			local method = getnamecallmethod():gsub("^%u",string.lower);
 			local self = ...
-			
+
 			if not checkcaller() then
 				if rawinsequal(self, uis) and method == "getFocusedTextBox" then
 					return wait(9e9)
 				end
 			end
-			
+
 			self=nil
 			return h1(...)
 		end)
 		local h2;h2 = if not spooftbl.Index then nil else hookfunction(uis.GetFocusedTextBox, function(...)
 			local self = ...
-			
+
 			if not checkcaller() and rawinsequal(self, uis) then
 				return wait(9e9)
 			end
-			
+
 			self=nil
 			return h2(...)
 		end)
@@ -640,7 +635,7 @@ task.spawn(function()
 				end
 			end
 		end
-		
+
 		self=nil
 		return Textbox
 	end)
@@ -673,7 +668,7 @@ task.spawn(function()
 
 	local choice1 = function()
 		local stuff, stuff2
-		
+
 		if not pgui:FindFirstChild("TouchGui") then
 			stuff = Instance.new("ScreenGui",pgui)
 			stuff.Enabled = true
@@ -687,18 +682,18 @@ task.spawn(function()
 			stuff.Enabled = true
 			stuff2 = stuff:FindFirstChild("TouchControlFrame")
 		end
-		
+
 		local mouse = game:GetService("Players").LocalPlayer:GetMouse()
 		local max_X = mouse.ViewSizeX
 		local max_Y = mouse.ViewSizeY
 		mouse = nil;
-		
+
 		-- oh my god this looks so ugly
 
 		local gh1;gh1 = if not spooftbl.Namecall then nil else hookmetamethod(game,"__namecall", function(...)
 			local self, int, int2 = ...
 			local method = getnamecallmethod():gsub("^%u", string.lower)
-			
+
 			if not checkcaller() and rawinsequal(self, pgui) and method == "getGuiObjectsAtPosition" then
 				if type(int) == "number" and type(int2) == "number" then -- realism checks
 					if int > 0 and int <= max_X and int2 <= max_Y and int2 > 0 then -- more realism checks
@@ -706,13 +701,13 @@ task.spawn(function()
 					end 
 				end
 			end
-			
+
 			self,int,int2=nil,nil,nil
 			return gh1(...)
 		end)
 		local gh2;gh2 = if not spooftbl.Index then nil else hookfunction(pgui.GetGuiObjectsAtPosition, function(...)
 			local arg,int,int2 = ...
-			
+
 			if not checkcaller() and arg == pgui then
 				if type(int) == "number" and type(int2) == "number" then -- realism checks
 					if int > 0 and int <= max_X and int2 <= max_Y and int2 > 0 then
@@ -720,27 +715,27 @@ task.spawn(function()
 					end 
 				end
 			end
-			
+
 			arg,int,int2=nil,nil,nil
 			return gh2(...)
 		end)
 	end
-	
+
 	local choice2 = function()
 		local guis = game:GetService("GuiService")
-		
+
 		for i, v in next, getconnections(guis.MenuClosed) do -- spoofconns maybe? ;)
 			v:Disable()
 		end
-		
+
 		local h;h=hookmetamethod(game,"__index", function(...)
 			local self, arg = ...
 			local _arg = (type(arg) == "string" and arg:gsub("^%u", string.lower)) or {sub = function() return "", 1 end}
-			
+
 			if not checkcaller() and rawinsequal(self, guis) and _arg == "menuIsOpen" or _arg:sub(1, 11) == "menuIsOpen\0" then
 				return if not waithook then true else wait(9e9)
 			end
-			
+
 			self,arg=nil,nil
 			return h(...)
 		end)
@@ -782,10 +777,10 @@ task.spawn(function()
 		SomethingOld = hookfunction(getrenv().newproxy, function(...)
 			local proxy = SomethingOld(...)
 			table.insert(wktbl, proxy)
-			
+
 			return proxy
 		end)
-		
+
 		runs.Stepped:Connect(def)
 	end
 
@@ -794,11 +789,11 @@ task.spawn(function()
 			local tbl1, tbl2 = ...
 			if not checkcaller() and type(tbl1) == "table" and type(tbl2) == "table" and rawlen(tbl1) > 0 then
 				local isMode = false
-				
+
 				for i, v in pairs(tbl2) do -- Member table.foreachi is deprecated :(
 					if i == "__mode" and (type(v) == "string" and v:find("v")) then isMode = true end
 				end
-				
+
 				if isMode then
 					local target = {}
 					for i, v in pairs(tbl1) do
@@ -807,15 +802,15 @@ task.spawn(function()
 							rawset(tbl1, i, v)
 						end
 					end
-					
+
 					return h(tbl1, tbl2)
 				end
 			end
-			
+
 			tbl1,tbl2=nil,nil
 			return h(...)
 		end)
-		
+
 		for i, v in getgc(true) do
 			if type(v) == "table" and getmetatable(v) and type(getmetatable(v)) == "table" and (rawget(getmetatable(v), "__mode") == "v" or rawget(getmetatable(v), "__mode") == "kv") then
 				if table.isfrozen(v) then continue end
@@ -824,7 +819,7 @@ task.spawn(function()
 			end
 		end
 	end
-	
+
 	local option3 = function()
 		local h; h = hookfunction(getrenv().setmetatable, function(...)
 			local tbl1, tbl2 = ...
@@ -857,7 +852,7 @@ task.spawn(function()
 							end
 						end)
 					end
-					
+
 					return res
 				end
 			end
