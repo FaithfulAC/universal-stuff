@@ -616,7 +616,7 @@ task.spawn(function()
 		end)
 		return
 	end
-	local _IsDescendantOf = game.IsDescendantOf
+	local _IsDescendantOf = (clonefunction and clonefunction(game.IsDescendantOf)) or game.IsDescendantOf
 
 	local TextboxBypass
 	TextboxBypass = if not spooftbl.Namecall then nil else hookmetamethod(game, "__namecall", function(...)
@@ -629,7 +629,7 @@ task.spawn(function()
 				if Textbox and typeof(Textbox) == "Instance" then
 					local _,err = pcall(_IsDescendantOf, Textbox, gui)
 
-					if err and err:lower():match("the current") then
+					if err and (type(err) == "boolean" and err == true) or (type(err) == "string" and err:lower():match("the current")) then
 						return nil
 					end
 				end
@@ -648,7 +648,7 @@ task.spawn(function()
 			if Textbox and typeof(Textbox) == "Instance" then
 				local _,err = pcall(_IsDescendantOf, Textbox, gui)
 
-				if err and err:lower():match("the current") then
+				if err and (type(err) == "boolean" and err == true) or (type(err) == "string" and err:lower():match("the current")) then
 					return nil
 				end
 			end
