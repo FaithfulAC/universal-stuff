@@ -784,7 +784,7 @@ task.spawn(function()
 		runs.Stepped:Connect(def)
 	end
 
-	local option2 = function()
+	local option2 = function() -- this wont work if they set an empty table's metatable then assign values, which is why 3 is recommended
 		local h; h = hookfunction(getrenv().setmetatable, function(...)
 			local tbl1, tbl2 = ...
 			if not checkcaller() and type(tbl1) == "table" and type(tbl2) == "table" and rawlen(tbl1) > 0 then
@@ -824,7 +824,7 @@ task.spawn(function()
 		local h; h = hookfunction(getrenv().setmetatable, function(...)
 			local tbl1, tbl2 = ...
 
-			if not checkcaller() and type(tbl1) == "table" and type(tbl2) == "table" and rawlen(tbl1) > 0 then
+			if not checkcaller() and type(tbl1) == "table" and type(tbl2) == "table" --[[and rawlen(tbl1) > 0]] then
 				local isMode = false
 				local var = nil
 
