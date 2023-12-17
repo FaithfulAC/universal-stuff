@@ -1,3 +1,5 @@
+-- basically a lua implementation of arg guard (which every executor should have by default rn but GUESS NOT!)
+
 local hmm = hookmetamethod -- hmmmmmmmmmmmmmmmm
 local KeepOriginalHookMetaMethod = getgenv().KeepHMM or getgenv().KeepOriginalHookMetaMethod or false
 
