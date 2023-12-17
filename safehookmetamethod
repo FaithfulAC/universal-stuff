@@ -1,5 +1,5 @@
 local hmm = hookmetamethod -- hmmmmmmmmmmmmmmmm
-local KeepOriginalHookMetaMethod = getgenv().KeepHMM or getgenv().KeepOriginalHookMetaMethod or true
+local KeepOriginalHookMetaMethod = getgenv().KeepHMM or getgenv().KeepOriginalHookMetaMethod or false
 
 -- does not support __tostring cuz that's literally just doing instance.Name and almost no one does tostring(instance)
 
