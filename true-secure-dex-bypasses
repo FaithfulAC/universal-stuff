@@ -839,14 +839,14 @@ task.spawn(function()
 						task.spawn(function()
 							task.wait(math.random(5,8)/10)
 							for i, v in pairs(res) do
-								if type(v) == "userdata" or type(v) == "function" then rawset(res, i, nil) end
+								if type(v) == "userdata" or type(v) == "function" or type(v) == "table" then rawset(res, i, nil) end
 							end
 						end)
 					else
 						task.spawn(function()
 							task.wait(math.random(1,5)/100)
 							for i, v in pairs(res) do
-								if typeof(v) == "Instance" then
+								if typeof(v) == "Instance" then -- idk how kv works so like wtv
 									rawset(res, i, nil)
 								end
 							end
