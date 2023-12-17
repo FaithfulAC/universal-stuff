@@ -20,7 +20,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-
 local GetDebugId = ((clonefunction and pcall(clonefunction, game.GetDebugId) and clonefunction(game.GetDebugId)) or game.GetDebugId)
 
 local rawinsequal = compareinstances or rawinsequal or function(ins1, ins2)
-	return GetDebugId(ins1) == GetDebugId(ins2)
+	return typeof(ins1) == typeof(ins2) and typeof(ins1) == "Instance" and GetDebugId(ins1) == GetDebugId(ins2)
 end
 
 local DexOptions = ((getgenv and getgenv()) or getfenv()).DexOptions or {
