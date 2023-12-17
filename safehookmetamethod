@@ -67,8 +67,8 @@ end)
 getgenv().safehookmetamethod = function(...)
 	local obj, method, fnc = ...
 	if typeof(obj) ~= "Instance" then return hmm(...) end -- object is not an Instance therefore is not supported
-	
-	local original = obj[method]
+
+	local original = getrawmetatable(obj)[method]
 	
 	if method == "__namecall" then
 		local orgnm = __namecall
