@@ -16,7 +16,6 @@
 -- safehookmetamethod (so stupid people don't pass invalid arguments)
 loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/safehookmetamethod"))()
 
--- doing cloneref on a function so speddy sped smh
 local GetDebugId = ((clonefunction and pcall(clonefunction, game.GetDebugId) and clonefunction(game.GetDebugId)) or game.GetDebugId)
 
 local rawinsequal = compareinstances or rawinsequal or function(ins1, ins2)
