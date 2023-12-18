@@ -1,7 +1,7 @@
 -- multi purpose internal coregui executor for the purpose of bypassing a few stuff and bringing more conveniency in exploiting and whatever
 -- if you know about that stupid 0.00045 check designed to detect uwp executors on execution then this in auto execute bypasses that
 
--- made script hub functional
+-- Fixes
 
 -- Instances:
 
@@ -80,7 +80,11 @@ local Name_6 = Instance.new("TextLabel")
 --Properties:
 
 Exec.Name = "Exec"
-Exec.Parent = select(2, pcall(function() return game:GetService("CoreGui") end)) or game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+local cgui = typeof(select(2, pcall(function() return game:GetService("CoreGui") end))) == "Instance" and game:GetService("CoreGui") or game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
+Exec.Parent = cgui
+cgui = nil;
+
 Exec.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 Main.Name = "Main"
@@ -280,7 +284,7 @@ Print.BorderSizePixel = 0
 Print.Position = UDim2.new(0, 0, 0.82996273, 0)
 Print.Size = UDim2.new(1, 0, 0.162, 0)
 Print.Font = Enum.Font.Unknown
-Print.Text = "normal print: on"
+Print.Text = "deterred print: on"
 Print.TextColor3 = Color3.fromRGB(255, 255, 255)
 Print.TextScaled = true
 Print.TextSize = 14.000
@@ -876,8 +880,8 @@ Run.Parent = Holder_3
 Run.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 Run.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Run.BorderSizePixel = 0
-Run.Position = UDim2.new(0.717241168, 0, 0.796142995, 0)
-Run.Size = UDim2.new(0.282758474, 0, 0.203490049, 0)
+Run.Position = UDim2.new(0.653675556, 0, 0.796142995, 0)
+Run.Size = UDim2.new(0.346324325, 0, 0.203490049, 0)
 Run.Font = Enum.Font.Unknown
 Run.Text = "Run"
 Run.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -917,7 +921,7 @@ Name_6.TextWrapped = true
 
 -- Scripts:
 
-local function WUHZU_fake_script() -- Script.MainScript 
+local function QYIQWNJ_fake_script() -- Script.MainScript 
 	local script = Instance.new('LocalScript', Script)
 
 	-- dont mind the fake script im too lazy to remove it
@@ -1195,12 +1199,12 @@ local function WUHZU_fake_script() -- Script.MainScript
 			local thing = loadstring(code.Text)
 			
 			if type(thing) ~= "function" then
-				setnotif("Potential Syntax Error", "Check your code for any issues and try again")
+				setnotif("Syntax Error", "Check your code for any issues and try again")
 				return
 			end
 			
 			if pcallOn then			
-				local _, e = pcall(thing)
+				local _, e = pcall(function() return thing() end)
 				if e then setnotif("Error In Execution", e) end
 			else
 				return coroutine.wrap(thing)()
@@ -1219,21 +1223,34 @@ local function WUHZU_fake_script() -- Script.MainScript
 			printEnabled = not printEnabled
 			if printEnabled then
 				getgenv().print = function(...)
-					MessageOutFunction(..., Enum.MessageType.MessageOutput)
+					MessageOutFunction(tostring(...), Enum.MessageType.MessageOutput)
 				end
 				getgenv().warn = function(...)
-					MessageOutFunction(..., Enum.MessageType.MessageWarning)
+					MessageOutFunction(tostring(...), Enum.MessageType.MessageWarning)
 				end
 				getgenv().error = function(...)
-					MessageOutFunction(..., Enum.MessageType.MessageError)
+					MessageOutFunction(tostring(...), Enum.MessageType.MessageError)
+					return coroutine.yield()
 				end
 				
-				_print.Text = "normal print: on"
+				_print.Text = "deterred print: on"
 			else
 				getgenv().print, getgenv().warn, getgenv().error = defPrint, defWarn, defError
-				_print.Text = "normal print: off"
+				_print.Text = "deterrred print: off"
 			end
 		end)
+		
+		getgenv().print = function(...)
+			MessageOutFunction(tostring(...), Enum.MessageType.MessageOutput)
+		end
+		getgenv().warn = function(...)
+			MessageOutFunction(tostring(...), Enum.MessageType.MessageWarning)
+		end
+		getgenv().error = function(...)
+			MessageOutFunction(tostring(...), Enum.MessageType.MessageError)
+			return coroutine.yield()
+		end
+		
 		clear.MouseButton1Click:Connect(function()
 			code.Text = ""
 		end)
@@ -1554,12 +1571,12 @@ local function WUHZU_fake_script() -- Script.MainScript
 		}
 		
 		local tbl = {
-			["Simple Spy"] = "A seamless and accurate solution for extracting the arguments of fired remotes.",
+			["Simple Spy"] = "A seamless, accurate, and secure solution for extracting the arguments of fired remotes.",
 			["CMD-X"] = "Command utility with a broad range of commands, more than 600 to be more specific.",
 			["Infinite Yield"] = "The classic command utility option for executing your favorite commands.",
-			["Vape v4"] = "Detections begone! Vape v4 bypasses any sort of physics and gui checks you can think of.",
+			["Vape v4"] = "Detections begone! Vape v4 bypasses almost any sort of physics and gui checks you can think of.",
 			["True Secure Dex"] = "Captivate the full ability to use Dex with a true guaranteed security for your experience.",
-			["Dex"] = "No hooks? No problem! This Dex has 0 utilization of any hooks while still maintaining it's stance as a force against detection vectors."
+			["Dex"] = "No hooks? No problem! This Dex has 0 utilization of any hooks while still maintaining its stance as a force against detection vectors."
 		}
 		
 		local loadtbl = {
@@ -1570,9 +1587,6 @@ local function WUHZU_fake_script() -- Script.MainScript
 			["TSD"] = "https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex",
 			["Dex"] = "https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex" -- to be modified
 		}
-		
-		-- for checks and allat
-		local toDisregard = game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses")
 		
 		local function setdesc(str)
 			if str == nil then
@@ -1616,25 +1630,12 @@ local function WUHZU_fake_script() -- Script.MainScript
 			local key = loadtbl[selected.Name]
 			if not key then return end
 			
-			if selected.Name == "Dex" then
-				local ls = loadstring;
-				local called = false
-				
-				getgenv().loadstring = function(...)
-					if select(1,...) == toDisregard then
-						called = true
-						return function()end
-					end
-					
-					return ls(...)
-				end
-				
-				loadstring(game:HttpGet(key))
-				repeat task.wait() until called
-				
-				getgenv().loadstring = ls
+			if selected.Name == "Dex" then -- run true secure dex without bypasses
+				getgenv().TSDBypassesOff = true
+				loadstring(game:HttpGet(key))()
 			else
-				loadstring(game:HttpGet(key))
+				getgenv().TSDBypassesOff = nil
+				loadstring(game:HttpGet(key))()
 			end
 		end)
 	end)()
@@ -1754,4 +1755,4 @@ local function WUHZU_fake_script() -- Script.MainScript
 		end)
 	end)()
 end
-coroutine.wrap(WUHZU_fake_script)()
+coroutine.wrap(QYIQWNJ_fake_script)()
