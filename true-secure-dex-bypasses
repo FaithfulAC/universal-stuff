@@ -262,7 +262,7 @@ task.spawn(function()
 		local self = ...
 		local method = getnamecallmethod():gsub("^%u", string.lower)
 
-		if not checkcaller() and rawinsequal(self, stats) and method == "getTotalMemoryUsageMb" then
+		if not checkcaller() and typeof(self) == "Instance" and rawinsequal(self, stats) and method == "getTotalMemoryUsageMb" then
 			return ret
 		end
 
@@ -272,7 +272,7 @@ task.spawn(function()
 	local h2;h2 = if not spooftbl.Index then nil else hookfunction(stats.GetTotalMemoryUsageMb, function(...)
 		local self = ...
 
-		if not checkcaller() and rawinsequal(self, stats) then
+		if not checkcaller() and typeof(self) == "Instance" and rawinsequal(self, stats) then
 			return ret
 		end
 
