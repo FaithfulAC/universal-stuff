@@ -2,6 +2,11 @@
 
 local hmm = hookmetamethod -- hmmmmmmmmmmmmmmmm
 local KeepOriginalHookMetaMethod = getgenv().KeepHMM or getgenv().KeepOriginalHookMetaMethod or false
+local LoadCStackOverflowBypass = getgenv().LoadCSOBypass or true -- recommended to keep true if the game has a very good anticheat
+
+if LoadCStackOverflowBypass then
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/c-stack-overflow-universal-bypass"))()
+end
 
 -- does not support __tostring cuz that's literally just doing instance.Name and almost no one does tostring(instance)
 
