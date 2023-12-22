@@ -1,7 +1,7 @@
 -- multi purpose internal coregui executor for the purpose of bypassing a few stuff and bringing more conveniency in exploiting and whatever
 -- if you know about that stupid 0.00045 check designed to detect uwp executors on execution then this in auto execute bypasses that
 
--- Fixes
+-- Fixed deter print issues
 
 -- Instances:
 
@@ -52,6 +52,8 @@ local Name_3 = Instance.new("TextLabel")
 local Buttons_3 = Instance.new("Folder")
 local SaveIns = Instance.new("TextButton")
 local ViewScripts = Instance.new("TextButton")
+local ViewGCFunctions = Instance.new("TextButton")
+local ViewGCTables = Instance.new("TextButton")
 local DuoViewer = Instance.new("Frame")
 local Name_4 = Instance.new("TextLabel")
 local Holder = Instance.new("ScrollingFrame")
@@ -80,11 +82,7 @@ local Name_6 = Instance.new("TextLabel")
 --Properties:
 
 Exec.Name = "Exec"
-
-local cgui = typeof(select(2, pcall(function() return game:GetService("CoreGui") end))) == "Instance" and game:GetService("CoreGui") or game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
-Exec.Parent = cgui
-cgui = nil;
-
+Exec.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 Exec.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 Main.Name = "Main"
@@ -615,6 +613,36 @@ ViewScripts.TextScaled = true
 ViewScripts.TextSize = 14.000
 ViewScripts.TextWrapped = true
 
+ViewGCFunctions.Name = "ViewGCFunctions"
+ViewGCFunctions.Parent = Buttons_3
+ViewGCFunctions.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+ViewGCFunctions.BackgroundTransparency = 0.500
+ViewGCFunctions.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ViewGCFunctions.BorderSizePixel = 0
+ViewGCFunctions.Position = UDim2.new(0, 0, 0.44600001, 0)
+ViewGCFunctions.Size = UDim2.new(1, 0, 0.138999999, 0)
+ViewGCFunctions.Font = Enum.Font.Unknown
+ViewGCFunctions.Text = "view gc functions (NOT YET)"
+ViewGCFunctions.TextColor3 = Color3.fromRGB(255, 255, 255)
+ViewGCFunctions.TextScaled = true
+ViewGCFunctions.TextSize = 14.000
+ViewGCFunctions.TextWrapped = true
+
+ViewGCTables.Name = "ViewGCTables"
+ViewGCTables.Parent = Buttons_3
+ViewGCTables.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+ViewGCTables.BackgroundTransparency = 0.500
+ViewGCTables.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ViewGCTables.BorderSizePixel = 0
+ViewGCTables.Position = UDim2.new(0, 0, 0.581613123, 0)
+ViewGCTables.Size = UDim2.new(1, 0, 0.138999999, 0)
+ViewGCTables.Font = Enum.Font.Unknown
+ViewGCTables.Text = "view gc tables (NOT YET)"
+ViewGCTables.TextColor3 = Color3.fromRGB(255, 255, 255)
+ViewGCTables.TextScaled = true
+ViewGCTables.TextSize = 14.000
+ViewGCTables.TextWrapped = true
+
 DuoViewer.Name = "DuoViewer"
 DuoViewer.Parent = Exec
 DuoViewer.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
@@ -921,7 +949,7 @@ Name_6.TextWrapped = true
 
 -- Scripts:
 
-local function QYIQWNJ_fake_script() -- Script.MainScript 
+local function CBRA_fake_script() -- Script.MainScript 
 	local script = Instance.new('LocalScript', Script)
 
 	-- dont mind the fake script im too lazy to remove it
@@ -1223,31 +1251,73 @@ local function QYIQWNJ_fake_script() -- Script.MainScript
 			printEnabled = not printEnabled
 			if printEnabled then
 				getgenv().print = function(...)
-					MessageOutFunction(tostring(...), Enum.MessageType.MessageOutput)
+					local args = {...}
+					for i, v in pairs(args) do
+						args[i] = tostring(v)
+					end
+					
+					local final = table.concat(args, " ")
+					
+					MessageOutFunction(final, Enum.MessageType.MessageOutput)
 				end
 				getgenv().warn = function(...)
-					MessageOutFunction(tostring(...), Enum.MessageType.MessageWarning)
+					local args = {...}
+					for i, v in pairs(args) do
+						args[i] = tostring(v)
+					end
+	
+					local final = table.concat(args, " ")
+					
+					MessageOutFunction(final, Enum.MessageType.MessageWarning)
 				end
 				getgenv().error = function(...)
-					MessageOutFunction(tostring(...), Enum.MessageType.MessageError)
+					local args = {...}
+					for i, v in pairs(args) do
+						args[i] = tostring(v)
+					end
+	
+					local final = table.concat(args, " ")
+					
+					MessageOutFunction(final, Enum.MessageType.MessageError)
 					return coroutine.yield()
 				end
 				
 				_print.Text = "deterred print: on"
 			else
 				getgenv().print, getgenv().warn, getgenv().error = defPrint, defWarn, defError
-				_print.Text = "deterrred print: off"
+				_print.Text = "deterred print: off"
 			end
 		end)
 		
 		getgenv().print = function(...)
-			MessageOutFunction(tostring(...), Enum.MessageType.MessageOutput)
+			local args = {...}
+			for i, v in pairs(args) do
+				args[i] = tostring(v)
+			end
+	
+			local final = table.concat(args, " ")
+	
+			MessageOutFunction(final, Enum.MessageType.MessageOutput)
 		end
 		getgenv().warn = function(...)
-			MessageOutFunction(tostring(...), Enum.MessageType.MessageWarning)
+			local args = {...}
+			for i, v in pairs(args) do
+				args[i] = tostring(v)
+			end
+	
+			local final = table.concat(args, " ")
+	
+			MessageOutFunction(final, Enum.MessageType.MessageWarning)
 		end
 		getgenv().error = function(...)
-			MessageOutFunction(tostring(...), Enum.MessageType.MessageError)
+			local args = {...}
+			for i, v in pairs(args) do
+				args[i] = tostring(v)
+			end
+	
+			local final = table.concat(args, " ")
+	
+			MessageOutFunction(final, Enum.MessageType.MessageError)
 			return coroutine.yield()
 		end
 		
@@ -1755,4 +1825,4 @@ local function QYIQWNJ_fake_script() -- Script.MainScript
 		end)
 	end)()
 end
-coroutine.wrap(QYIQWNJ_fake_script)()
+coroutine.wrap(CBRA_fake_script)()
