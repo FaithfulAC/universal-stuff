@@ -44,7 +44,7 @@ local h; h = hookfunction(getrenv().coroutine.wrap, function(...)
         local cachevalue = checkincache(fnc1)
         if cachevalue and cachevalue[1] == fnc1 then
             if (cachevalue[2] > 194 and cachevalue[2] < 199) then
-                local newfunc; newfunc = newcclosure(function(...)
+                local newfunc; newfunc = newcclosure(function(...) -- C closure is important for avoiding slnaf checks
                     if cachevalue[2] > 198 then cachevalue[5] = true return error("C stack overflow", 2) end -- safe/double check
 
                     if cachevalue[3] then
