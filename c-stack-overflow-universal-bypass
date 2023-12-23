@@ -1,5 +1,7 @@
 -- this will not bypass non-C stack overflow checks (citadel anticheat hint hint), just to be specific!!!!!
 
+getgenv().IsHookingSafe = false
+
 local _cache = {}
 local info = getrenv().debug.info
 
@@ -21,12 +23,16 @@ local function checkincache(func)
 end
 
 local function insertincache(func, ofunc)
-    table.insert(_cache, {func, 1, {ofunc == namecall, ofunc == index, ofunc == newindex}, ofunc}) -- prevent sneaky gcinfo checks
+    table.insert(_cache, {func, 1, {ofunc == namecall, ofunc == index, ofunc == newindex}, ofunc})
     local ins = _cache[#_cache]
 
     task.spawn(function() -- manual gc process
-        repeat task.wait(.25) until ins[5] -- when newfunc is called this will turn true
-        task.wait()
+        repeat task.wait(.5) until ins[5] -- when newfunc is called this will turn true
+        task.wait(.5)
+        if not getgenv().IsHookingSafe then
+            getgenv().IsHookingSafe = true
+        end
+
         table.remove(_cache, table.find(_cache, ins))
     end)
 end
@@ -39,7 +45,7 @@ local h; h = hookfunction(getrenv().coroutine.wrap, function(...)
         if cachevalue and cachevalue[1] == fnc1 then
             if (cachevalue[2] > 194 and cachevalue[2] < 199) then
                 local newfunc; newfunc = newcclosure(function(...)
-                    if cachevalue[2] > 198 then return error("C stack overflow", 2) end -- safe/double check
+                    if cachevalue[2] > 198 then cachevalue[5] = true return error("C stack overflow", 2) end -- safe/double check
 
                     if cachevalue[3] then
                         local bools = cachevalue[3]
