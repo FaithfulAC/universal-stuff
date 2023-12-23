@@ -1,9 +1,23 @@
--- this will not bypass non-C stack overflow checks (citadel anticheat hint hint), just to be specific!!!!!
--- btw im aware of weaktable detections in relation to the functions; this will soon be fixed by instead storing the mem address of a function and checking for that... soon :tm:
+-- C stack overflow bypass by @__europa
+-- thanks to unlimited, xnx, kar and ludi for helping with detections
+
+-- i patched detections found out about but i likely opened up more detection vectors as a result, trying to detect it right now would be nice
 
 getgenv().IsHookingSafe = false
+local _cache, _blacklist;
 
-local _cache = {}
+task.spawn(function()
+    task.spawn(function()
+        task.wait(5)
+        getgenv().IsHookingSafe = true
+    end)
+
+    repeat task.wait(.1) until _cache and #_cache ~= 0
+    getgenv().IsHookingSafe = true
+end)
+
+_cache = {}
+_blacklist = {} -- for optimization purposes 1
 local info = getrenv().debug.info
 
 local print, warn, error = getrenv().print, getrenv().warn, getrenv().error;
@@ -13,9 +27,11 @@ xpcall(function() return game:_() end, function() namecall = info(2,"f") end)
 xpcall(function() return game[nil] end, function() index = info(2,"f") end)
 xpcall(function() game[nil] = nil end, function() newindex = info(2,"f") end)
 
+local h;
+
 local function checkincache(func)
     for i, v in pairs(_cache) do
-        if v[1] == func then
+        if v[1] == tostring(func) then
             return v
         end
     end
@@ -24,28 +40,47 @@ local function checkincache(func)
 end
 
 local function insertincache(func, ofunc)
-    table.insert(_cache, {func, 1, {ofunc == namecall, ofunc == index, ofunc == newindex}, ofunc})
+    local canBlacklist = debug.info(ofunc, "s") == "[C]" and debug.info(ofunc, "n") == ""
+
+    table.insert(_cache, {tostring(func), 1, {ofunc == namecall, ofunc == index, ofunc == newindex}, {
+        f = newcclosure(function(...) return ofunc(...) end),
+        n = debug.info(ofunc, "n")
+    }})
     local ins = _cache[#_cache]
 
     task.spawn(function() -- manual gc process
         repeat task.wait(.1) until ins[5] -- when newfunc is called this will turn true
-        if not getgenv().IsHookingSafe then
-            task.wait(1)
-            getgenv().IsHookingSafe = true
+        if canBlacklist then
+            table.insert(_blacklist, {ins[1], false})
         end
-
         table.remove(_cache, table.find(_cache, ins))
     end)
 end
 
-local h; h = hookfunction(getrenv().coroutine.wrap, function(...)
+local placeholder; -- for optimization purposes 2
+
+h = hookfunction(getrenv().coroutine.wrap, function(...)
     local fnc1 = ...
 
     if not checkcaller() and type(fnc1) == "function" then
+        for i, v in pairs(_blacklist) do
+            if table.find(v, tostring(fnc1)) then -- for optimization purposes 3
+                local res = h(...)
+                v[1] = tostring(res)
+                
+                if v[2] then
+                    return res
+                else
+                    v[2] = true
+                end
+                break
+            end
+        end
+
         local cachevalue = checkincache(fnc1)
-        if cachevalue and cachevalue[1] == fnc1 then
+        if cachevalue then
             if (cachevalue[2] > 194 and cachevalue[2] < 199) then
-                local newfunc; newfunc = newcclosure(function(...) -- C closure is important for avoiding slnaf checks
+                local newfunc; newfunc = placeholder or newcclosure(function(...) -- C closure is important for avoiding slnaf checks
                     if cachevalue[2] > 198 then cachevalue[5] = true return error("C stack overflow", 2) end -- safe/double check
 
                     if cachevalue[3] then
@@ -66,28 +101,38 @@ local h; h = hookfunction(getrenv().coroutine.wrap, function(...)
 
                             if pcall(h(newindex), ...) then return select(2, pcall(h(newindex), ...)) end
                             error(select(2, pcall(h(newindex), ...)), 2)
-                        elseif type(cachevalue[4]) == "function" and debug.info(cachevalue[4], "n") ~= "" then -- func is a C function (gcinfo, assert, etc.)
+                        elseif cachevalue[4] and cachevalue[4]["f"] then
                             cachevalue[5] = true
 
-                            local orig = cachevalue[4]
-                            if pcall(h(orig), ...) then return select(2, pcall(h(orig), ...)) end
-                            error(select(2, pcall(h(orig), ...)), 2)
+                            local orig = cachevalue[4]["f"]
+
+                            if pcall(orig, ...) then return select(2, pcall(orig, ...)) end
+                            error(select(2, pcall(orig, ...)), 2)
                         else
                             cachevalue[5] = true
+                            local __args = {pcall(fnc1, ...)}
 
-                            return fnc1(...) -- default
+                            if __args[1] then return select(2, unpack(__args)) end
+                            return error(select(2, unpack(__args)), 2)
                         end
                     end
                 end)
 
-                cachevalue[1] = newfunc
+                if fnc1 == placeholder then
+                    return newcclosure(function(...)
+                        return placeholder(...)
+                    end)
+                end
+                placeholder = newfunc
+
+                cachevalue[1] = tostring(newfunc)
                 cachevalue[2] += 1
                 
                 return newfunc
             end
 
             local res = h(...)
-            cachevalue[1] = res
+            cachevalue[1] = tostring(res)
             cachevalue[2] += 1
 
             return res
