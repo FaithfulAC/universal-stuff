@@ -27,9 +27,9 @@ local function insertincache(func, ofunc)
     local ins = _cache[#_cache]
 
     task.spawn(function() -- manual gc process
-        repeat task.wait(.5) until ins[5] -- when newfunc is called this will turn true
-        task.wait(.5)
+        repeat task.wait(.1) until ins[5] -- when newfunc is called this will turn true
         if not getgenv().IsHookingSafe then
+            task.wait(1)
             getgenv().IsHookingSafe = true
         end
 
