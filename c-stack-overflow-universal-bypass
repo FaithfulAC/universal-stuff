@@ -22,12 +22,12 @@ end
 
 local function insertincache(func, ofunc)
     table.insert(_cache, {func, 1, {ofunc == namecall, ofunc == index, ofunc == newindex}, ofunc}) -- prevent sneaky gcinfo checks
-    local key = (#_cache)
+    local ins = _cache[#_cache]
 
     task.spawn(function() -- manual gc process
-        repeat task.wait(.25) until _cache[key][5] -- when newfunc is called this will turn true
+        repeat task.wait(.25) until ins[5] -- when newfunc is called this will turn true
         task.wait()
-        table.remove(_cache, key)
+        table.remove(_cache, table.find(_cache, ins))
     end)
 end
 
