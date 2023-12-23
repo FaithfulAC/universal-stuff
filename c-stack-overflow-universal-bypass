@@ -1,4 +1,5 @@
 -- this will not bypass non-C stack overflow checks (citadel anticheat hint hint), just to be specific!!!!!
+-- btw im aware of weaktable detections in relation to the functions; this will soon be fixed by instead storing the mem address of a function and checking for that... soon :tm:
 
 getgenv().IsHookingSafe = false
 
