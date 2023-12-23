@@ -6,6 +6,7 @@ local LoadCStackOverflowBypass = getgenv().LoadCSOBypass or true -- recommended 
 
 if LoadCStackOverflowBypass then
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/c-stack-overflow-universal-bypass"))()
+	repeat task.wait() until getgenv().IsHookingSafe
 end
 
 -- does not support __tostring cuz that's literally just doing instance.Name and almost no one does tostring(instance)
