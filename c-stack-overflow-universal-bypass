@@ -10,16 +10,6 @@ xpcall(function() return game:_() end, function() namecall = info(2,"f") end)
 xpcall(function() return game[nil] end, function() index = info(2,"f") end)
 xpcall(function() game[nil] = nil end, function() newindex = info(2,"f") end)
 
-task.spawn(function()
-    while task.wait(.1) do -- "garbage collect" cache
-        for i, v in pairs(_cache) do
-            if v[1] == nil then
-                table.remove(_cache, i)
-            end
-        end
-    end
-end)
-
 local function checkincache(func)
     for i, v in pairs(_cache) do
         if v[1] == func then
@@ -31,7 +21,14 @@ local function checkincache(func)
 end
 
 local function insertincache(func, ofunc)
-    table.insert(_cache, setmetatable({func, 1, {ofunc == namecall, ofunc == index, ofunc == newindex}, ofunc}, {__mode = "v"})) -- prevent sneaky gcinfo checks
+    table.insert(_cache, {func, 1, {ofunc == namecall, ofunc == index, ofunc == newindex}, ofunc}) -- prevent sneaky gcinfo checks
+    local key = (#_cache)
+
+    task.spawn(function() -- manual gc process
+        repeat task.wait(.25) until _cache[key][5] -- when newfunc is called this will turn true
+        task.wait()
+        table.remove(_cache, key)
+    end)
 end
 
 local h; h = hookfunction(getrenv().coroutine.wrap, function(...)
@@ -48,20 +45,29 @@ local h; h = hookfunction(getrenv().coroutine.wrap, function(...)
                         local bools = cachevalue[3]
 
                         if bools[1] then
+                            cachevalue[5] = true
+
                             if pcall(h(namecall), ...) then return select(2, pcall(h(namecall), ...)) end
                             error(select(2, pcall(h(namecall), ...)), 2)
                         elseif bools[2] then
+                            cachevalue[5] = true
+
                             if pcall(h(index), ...) then return select(2, pcall(h(index), ...)) end
                             error(select(2, pcall(h(index), ...)), 2)
                         elseif bools[3] then
+                            cachevalue[5] = true
+
                             if pcall(h(newindex), ...) then return select(2, pcall(h(newindex), ...)) end
                             error(select(2, pcall(h(newindex), ...)), 2)
                         elseif type(cachevalue[4]) == "function" and debug.info(cachevalue[4], "n") ~= "" then -- func is a C function (gcinfo, assert, etc.)
+                            cachevalue[5] = true
+
                             local orig = cachevalue[4]
-                            
                             if pcall(h(orig), ...) then return select(2, pcall(h(orig), ...)) end
                             error(select(2, pcall(h(orig), ...)), 2)
                         else
+                            cachevalue[5] = true
+
                             return fnc1(...) -- default
                         end
                     end
