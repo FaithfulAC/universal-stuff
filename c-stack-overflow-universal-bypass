@@ -1,8 +1,7 @@
 -- C stack overflow bypass by @__europa
 -- thanks to unlimited, xnx, kar and ludi for helping with detections
 
--- i patched detections found out about but i likely opened up more detection vectors as a result, trying to detect it right now would be nice
-
+-- god damnit xnx your detection alone is screwing this production up >:(
 getgenv().IsHookingSafe = false
 local _cache, _blacklist;
 
