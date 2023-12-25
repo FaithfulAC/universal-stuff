@@ -1,23 +1,9 @@
 -- C stack overflow bypass by @__europa
 -- thanks to unlimited, xnx, ka(x)r and ESPECIALLY ludi for helping with detections
 
-getgenv().IsHookingSafe = false
-local _cache;
+local _cache = {}
 
-task.spawn(function()
-    task.spawn(function()
-        task.wait(5)
-        getgenv().IsHookingSafe = true
-    end)
-
-    repeat task.wait(.1) until _cache and #_cache ~= 0
-    getgenv().IsHookingSafe = true
-end)
-
-_cache = {}
-local info = getrenv().debug.info
-
-local print, warn, error = getrenv().print, getrenv().warn, getrenv().error;
+local info, print, warn, error = getrenv().debug.info, getrenv().print, getrenv().warn, getrenv().error;
 local h;
 
 local function checkincache(func)
@@ -26,7 +12,6 @@ local function checkincache(func)
             return v
         end
     end
-
     return nil
 end
 
@@ -36,11 +21,10 @@ local function insertincache(func, ofunc)
         1, -- for intervals of being wrapped
         (function(...) -- replacement function (to be wrapped)
             local cachevalue = thetbl;
-
-            pcall((h or coroutine.wrap)(ofunc))
+            pcall((h or coroutine.wrap)(ofunc)) -- for good measure (dead coroutine-wise)
 
             local bigerr = select(2, pcall((h or coroutine.wrap)(func)))
-            local bigerr2 = select(2, pcall((h or coroutine.wrap)(ofunc)))
+            local __args = {pcall((h or coroutine.wrap)(ofunc), ...)}
 
             -- safe check (end all be all)
             if (bigerr ~= "cannot resume dead coroutine" and cachevalue[2] > 198) or bigerr == "C stack overflow" then
@@ -50,14 +34,12 @@ local function insertincache(func, ofunc)
             elseif bigerr == "cannot resume dead coroutine" then
                 return error("cannot resume dead coroutine", 2)
             end
-
             cachevalue[4] = true
 
-            if pcall((h or coroutine.wrap)(ofunc), ...) then return select(2, pcall((h or coroutine.wrap)(ofunc), ...)) end
-            error(select(2, pcall((h or coroutine.wrap)(ofunc), ...)), 2)
+            if __args[1] then return select(2, unpack(__args)) end
+            error(select(2, unpack(__args)), 2)
         end),
-        false, -- was function called? gc process below requires this
-        nil
+        false -- was function called? gc process below requires this
     }
 
     table.insert(_cache, thetbl)
@@ -101,8 +83,10 @@ h = hookfunction(getrenv().coroutine.wrap, function(...)
     return h(...)
 end)
 
---[[task.wait(2)
+task.wait(2)
+getgenv().IsHookingSafe = true
 
+--[[
 local hook1; hook1 = hookmetamethod(game,"__namecall", function(...)
     return hook1(...)
 end)
@@ -112,5 +96,5 @@ end)
 local hook3; hook3 = hookmetamethod(game,"__newindex", function(...)
     return hook3(...)
 end)
-
-warn("Hooks loaded")]]
+warn("Hooks loaded")
+]]
