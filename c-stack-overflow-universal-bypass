@@ -1,9 +1,8 @@
 -- C stack overflow bypass by @__europa
 -- thanks to unlimited, xnx, kar and ludi for helping with detections
 
--- god damnit xnx your detection alone is screwing this production up >:(
 getgenv().IsHookingSafe = false
-local _cache, _blacklist;
+local _cache;
 
 task.spawn(function()
     task.spawn(function()
@@ -16,7 +15,6 @@ task.spawn(function()
 end)
 
 _cache = {}
-_blacklist = {} -- for optimization purposes 1
 local info = getrenv().debug.info
 
 local print, warn, error = getrenv().print, getrenv().warn, getrenv().error;
@@ -39,93 +37,73 @@ local function checkincache(func)
 end
 
 local function insertincache(func, ofunc)
-    local canBlacklist = debug.info(ofunc, "s") == "[C]" and debug.info(ofunc, "n") == ""
+    local thetbl; thetbl = {tostring(func), 1, {ofunc == namecall, ofunc == index, ofunc == newindex}, {
+            ["f"] = ofunc,
+            ["n"] = debug.info(ofunc, "n")
+        },
+        (function(...) -- replacement function
+            local cachevalue = thetbl;
+            
+            pcall(coroutine.wrap(ofunc))
+            local bigerr = select(2, pcall(coroutine.wrap(ofunc)))
 
-    table.insert(_cache, {tostring(func), 1, {ofunc == namecall, ofunc == index, ofunc == newindex}, {
-        f = newcclosure(function(...) return ofunc(...) end),
-        n = debug.info(ofunc, "n")
-    }})
-    local ins = _cache[#_cache]
+            -- safe check (end all be all)
+            if cachevalue[2] > 198 and bigerr ~= "cannot resume dead coroutine" then
+                cachevalue[6] = true
 
+                return error("C stack overflow", 2)
+            end
+
+            -- safe check 2 (end all be all)
+            if bigerr == "cannot resume dead coroutine" then
+                return error("cannot resume dead coroutine", 2)
+            end
+
+            if cachevalue[3] then
+                local bools = cachevalue[3]
+
+                if cachevalue[4] and cachevalue[4]["f"] then
+                    cachevalue[6] = true
+
+                    local orig = cachevalue[4]["f"]
+
+                    if pcall(h(orig), ...) then return select(2, pcall(h(orig), ...)) end
+                    error(select(2, pcall(h(orig), ...)), 2)
+                else
+                    cachevalue[6] = true
+                    local __args = {pcall(ofunc, ...)}
+
+                    if __args[1] then return select(2, unpack(__args)) end
+                    return error(select(2, unpack(__args)), 2)
+                end
+            end
+        end),
+        false
+    }
+
+    table.insert(_cache, thetbl)
     task.spawn(function() -- manual gc process
-        repeat task.wait(.1) until ins[5] -- when newfunc is called this will turn true
-        if canBlacklist then
-            table.insert(_blacklist, {ins[1], false})
-        end
-        table.remove(_cache, table.find(_cache, ins))
+        repeat task.wait() until thetbl[6] -- when newfunc is called this will turn true
+
+        table.remove(_cache, table.find(_cache, thetbl))
     end)
 end
 
-local placeholder; -- for optimization purposes 2
-
+-- the actual hook
 h = hookfunction(getrenv().coroutine.wrap, function(...)
     local fnc1 = ...
 
     if not checkcaller() and type(fnc1) == "function" then
-        for i, v in pairs(_blacklist) do
-            if table.find(v, tostring(fnc1)) then -- for optimization purposes 3
-                local res = h(...)
-                v[1] = tostring(res)
-                
-                if v[2] then
-                    return res
-                else
-                    v[2] = true
-                end
-                break
-            end
-        end
-
         local cachevalue = checkincache(fnc1)
         if cachevalue then
+            if cachevalue[6] then return h(...) end
+
             if (cachevalue[2] > 194 and cachevalue[2] < 199) then
-                local newfunc; newfunc = placeholder or newcclosure(function(...) -- C closure is important for avoiding slnaf checks
-                    if cachevalue[2] > 198 then cachevalue[5] = true return error("C stack overflow", 2) end -- safe/double check
-
-                    if cachevalue[3] then
-                        local bools = cachevalue[3]
-
-                        if bools[1] then
-                            cachevalue[5] = true
-
-                            if pcall(h(namecall), ...) then return select(2, pcall(h(namecall), ...)) end
-                            error(select(2, pcall(h(namecall), ...)), 2)
-                        elseif bools[2] then
-                            cachevalue[5] = true
-
-                            if pcall(h(index), ...) then return select(2, pcall(h(index), ...)) end
-                            error(select(2, pcall(h(index), ...)), 2)
-                        elseif bools[3] then
-                            cachevalue[5] = true
-
-                            if pcall(h(newindex), ...) then return select(2, pcall(h(newindex), ...)) end
-                            error(select(2, pcall(h(newindex), ...)), 2)
-                        elseif cachevalue[4] and cachevalue[4]["f"] then
-                            cachevalue[5] = true
-
-                            local orig = cachevalue[4]["f"]
-
-                            if pcall(orig, ...) then return select(2, pcall(orig, ...)) end
-                            error(select(2, pcall(orig, ...)), 2)
-                        else
-                            cachevalue[5] = true
-                            local __args = {pcall(fnc1, ...)}
-
-                            if __args[1] then return select(2, unpack(__args)) end
-                            return error(select(2, unpack(__args)), 2)
-                        end
-                    end
-                end)
-
-                if fnc1 == placeholder then
-                    return newcclosure(function(...)
-                        return placeholder(...)
-                    end)
-                end
-                placeholder = newfunc
+                local newfunc = h(cachevalue[5]) -- wrap the other function !!!
 
                 cachevalue[1] = tostring(newfunc)
                 cachevalue[2] += 1
+                cachevalue[5] = newfunc
                 
                 return newfunc
             end
