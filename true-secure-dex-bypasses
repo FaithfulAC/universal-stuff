@@ -13,7 +13,7 @@
 	babyhamsta for the original secure dex
 ]]
 
--- safehookmetamethod (so stupid people don't pass invalid arguments)
+-- safehookmetamethod (so stupid people don't pass invalid arguments and hookmetamethod isn't detected)
 loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/safehookmetamethod"))()
 
 local GetDebugId = ((clonefunction and pcall(clonefunction, game.GetDebugId) and clonefunction(game.GetDebugId)) or game.GetDebugId)
