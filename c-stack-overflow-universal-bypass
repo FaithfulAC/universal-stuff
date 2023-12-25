@@ -1,5 +1,5 @@
 -- C stack overflow bypass by @__europa
--- thanks to unlimited, xnx, ka(x)r and ludi for helping with detections
+-- thanks to unlimited, xnx, ka(x)r and ESPECIALLY ludi for helping with detections
 
 getgenv().IsHookingSafe = false
 local _cache;
