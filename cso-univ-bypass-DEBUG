@@ -30,13 +30,13 @@ local function insertincache(func, ofunc)
             local bigerr = __args[2]
 
             -- safe check (end all be all)
-            if (bigerr ~= "cannot resume dead coroutine" and cachevalue[2] > 198) then
+            if (bigerr ~= "cannot resume dead coroutine" and cachevalue[2] > 198 and not __args[1]) then
                 cachevalue[4] = true
 
-                warn(">198 and is not dead cor catcher")
+                warn(">198 and is not dead cor catcher", cachevalue[2])
 
                 return error("C stack overflow", 2)
-            elseif bigerr == "cannot resume dead coroutine" then
+            elseif bigerr == "cannot resume dead coroutine" and not __args[1] then
                 warn("Dead cor caught, returning the error...")
 
                 return error("cannot resume dead coroutine", 2)
@@ -114,3 +114,7 @@ local hook3; hook3 = hookmetamethod(game,"__newindex", function(...)
     return hook3(...)
 end)
 warn("Hooks loaded")
+
+task.wait(10)
+getrenv().warn = function()end
+warn = function()end
