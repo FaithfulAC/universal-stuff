@@ -21,17 +21,18 @@ local function insertincache(func, ofunc)
         1, -- for intervals of being wrapped
         (function(...) -- replacement function (to be wrapped)
             local cachevalue = thetbl;
-            pcall((h or coroutine.wrap)(ofunc)) -- for good measure (dead coroutine-wise)
+            pcall((h or coroutine.wrap)(ofunc)) -- for good measure
 
-            local bigerr = select(2, pcall((h or coroutine.wrap)(func)))
             local __args = {pcall((h or coroutine.wrap)(ofunc), ...)}
+            local bigerr = __args[2]
 
             -- safe check (end all be all)
-            if (bigerr ~= "cannot resume dead coroutine" and cachevalue[2] > 198) or bigerr == "C stack overflow" then
+            if (bigerr ~= "cannot resume dead coroutine" and cachevalue[2] > 198) then
                 cachevalue[4] = true
 
                 return error("C stack overflow", 2)
-            elseif bigerr == "cannot resume dead coroutine" then
+            elseif bigerr == "cannot resume dead coroutine" or select(2, pcall((h or coroutine.wrap)(func))) == "cannot resume dead coroutine" then
+
                 return error("cannot resume dead coroutine", 2)
             end
             cachevalue[4] = true
@@ -82,7 +83,6 @@ h = hookfunction(getrenv().coroutine.wrap, function(...)
 
     return h(...)
 end)
-
 task.wait(2)
 getgenv().IsHookingSafe = true
 
