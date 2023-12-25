@@ -1,5 +1,5 @@
 -- C stack overflow bypass by @__europa
--- thanks to unlimited, xnx, kar and ludi for helping with detections
+-- thanks to unlimited, xnx, ka(x)r and ludi for helping with detections
 
 getgenv().IsHookingSafe = false
 local _cache;
@@ -43,42 +43,35 @@ local function insertincache(func, ofunc)
         },
         (function(...) -- replacement function
             local cachevalue = thetbl;
-            
-            pcall(coroutine.wrap(ofunc))
-            local bigerr = select(2, pcall(coroutine.wrap(ofunc)))
+
+            pcall((h or coroutine.wrap)(ofunc))
+
+            local bigerr = select(2, pcall((h or coroutine.wrap)(func)))
+            local bigerr2 = select(2, pcall((h or coroutine.wrap)(ofunc)))
 
             -- safe check (end all be all)
-            if cachevalue[2] > 198 and bigerr ~= "cannot resume dead coroutine" then
+            if cachevalue[2] > 198 or bigerr == "C stack overflow" then
                 cachevalue[6] = true
 
                 return error("C stack overflow", 2)
-            end
-
-            -- safe check 2 (end all be all)
-            if bigerr == "cannot resume dead coroutine" then
+            elseif bigerr == "cannot resume dead coroutine" then
                 return error("cannot resume dead coroutine", 2)
             end
 
-            if cachevalue[3] then
-                local bools = cachevalue[3]
+            if cachevalue[4] then
+                cachevalue[6] = true
 
-                if cachevalue[4] and cachevalue[4]["f"] then
-                    cachevalue[6] = true
+                if pcall((h or coroutine.wrap)(ofunc), ...) then return select(2, pcall((h or coroutine.wrap)(ofunc), ...)) end
+                error(select(2, pcall((h or coroutine.wrap)(ofunc), ...)), 2)
+            else
+                cachevalue[6] = true
+                local __args = {pcall(ofunc, ...)}
 
-                    local orig = cachevalue[4]["f"]
-
-                    if pcall(h(orig), ...) then return select(2, pcall(h(orig), ...)) end
-                    error(select(2, pcall(h(orig), ...)), 2)
-                else
-                    cachevalue[6] = true
-                    local __args = {pcall(ofunc, ...)}
-
-                    if __args[1] then return select(2, unpack(__args)) end
-                    return error(select(2, unpack(__args)), 2)
-                end
+                if __args[1] then return select(2, unpack(__args)) end
+                return error(select(2, unpack(__args)), 2)
             end
         end),
-        false
+        false, nil, --func
     }
 
     table.insert(_cache, thetbl)
@@ -96,14 +89,13 @@ h = hookfunction(getrenv().coroutine.wrap, function(...)
     if not checkcaller() and type(fnc1) == "function" then
         local cachevalue = checkincache(fnc1)
         if cachevalue then
-            if cachevalue[6] then return h(...) end
-
             if (cachevalue[2] > 194 and cachevalue[2] < 199) then
                 local newfunc = h(cachevalue[5]) -- wrap the other function !!!
 
                 cachevalue[1] = tostring(newfunc)
                 cachevalue[2] += 1
                 cachevalue[5] = newfunc
+                --cachevalue[8] = h(...)
                 
                 return newfunc
             end
@@ -111,6 +103,7 @@ h = hookfunction(getrenv().coroutine.wrap, function(...)
             local res = h(...)
             cachevalue[1] = tostring(res)
             cachevalue[2] += 1
+            --cachevalue[8] = res
 
             return res
         else
@@ -123,3 +116,17 @@ h = hookfunction(getrenv().coroutine.wrap, function(...)
 
     return h(...)
 end)
+
+--[[task.wait(2)
+
+local hook1; hook1 = hookmetamethod(game,"__namecall", function(...)
+    return hook1(...)
+end)
+local hook2; hook2 = hookmetamethod(game,"__index", function(...)
+    return hook2(...)
+end)
+local hook3; hook3 = hookmetamethod(game,"__newindex", function(...)
+    return hook3(...)
+end)
+
+warn("Hooks loaded")]]
