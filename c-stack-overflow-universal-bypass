@@ -50,7 +50,7 @@ local function insertincache(func, ofunc)
             local bigerr2 = select(2, pcall((h or coroutine.wrap)(ofunc)))
 
             -- safe check (end all be all)
-            if cachevalue[2] > 198 or bigerr == "C stack overflow" then
+            if (bigerr ~= "cannot resume dead coroutine" and cachevalue[2] > 198) or bigerr == "C stack overflow" then
                 cachevalue[6] = true
 
                 return error("C stack overflow", 2)
