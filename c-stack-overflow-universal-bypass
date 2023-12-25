@@ -18,12 +18,6 @@ _cache = {}
 local info = getrenv().debug.info
 
 local print, warn, error = getrenv().print, getrenv().warn, getrenv().error;
-
-local namecall, index, newindex; -- if these result in different errors your executor should not exist
-xpcall(function() return game:_() end, function() namecall = info(2,"f") end)
-xpcall(function() return game[nil] end, function() index = info(2,"f") end)
-xpcall(function() game[nil] = nil end, function() newindex = info(2,"f") end)
-
 local h;
 
 local function checkincache(func)
@@ -37,11 +31,10 @@ local function checkincache(func)
 end
 
 local function insertincache(func, ofunc)
-    local thetbl; thetbl = {tostring(func), 1, {ofunc == namecall, ofunc == index, ofunc == newindex}, {
-            ["f"] = ofunc,
-            ["n"] = debug.info(ofunc, "n")
-        },
-        (function(...) -- replacement function
+    local thetbl; thetbl = {
+        tostring(func), -- for comparison
+        1, -- for intervals of being wrapped
+        (function(...) -- replacement function (to be wrapped)
             local cachevalue = thetbl;
 
             pcall((h or coroutine.wrap)(ofunc))
@@ -51,32 +44,25 @@ local function insertincache(func, ofunc)
 
             -- safe check (end all be all)
             if (bigerr ~= "cannot resume dead coroutine" and cachevalue[2] > 198) or bigerr == "C stack overflow" then
-                cachevalue[6] = true
+                cachevalue[4] = true
 
                 return error("C stack overflow", 2)
             elseif bigerr == "cannot resume dead coroutine" then
                 return error("cannot resume dead coroutine", 2)
             end
 
-            if cachevalue[4] then
-                cachevalue[6] = true
+            cachevalue[4] = true
 
-                if pcall((h or coroutine.wrap)(ofunc), ...) then return select(2, pcall((h or coroutine.wrap)(ofunc), ...)) end
-                error(select(2, pcall((h or coroutine.wrap)(ofunc), ...)), 2)
-            else
-                cachevalue[6] = true
-                local __args = {pcall(ofunc, ...)}
-
-                if __args[1] then return select(2, unpack(__args)) end
-                return error(select(2, unpack(__args)), 2)
-            end
+            if pcall((h or coroutine.wrap)(ofunc), ...) then return select(2, pcall((h or coroutine.wrap)(ofunc), ...)) end
+            error(select(2, pcall((h or coroutine.wrap)(ofunc), ...)), 2)
         end),
-        false, nil, --func
+        false, -- was function called? gc process below requires this
+        nil
     }
 
     table.insert(_cache, thetbl)
     task.spawn(function() -- manual gc process
-        repeat task.wait() until thetbl[6] -- when newfunc is called this will turn true
+        repeat task.wait() until thetbl[4] -- when newfunc is called this will turn true
 
         table.remove(_cache, table.find(_cache, thetbl))
     end)
@@ -90,12 +76,11 @@ h = hookfunction(getrenv().coroutine.wrap, function(...)
         local cachevalue = checkincache(fnc1)
         if cachevalue then
             if (cachevalue[2] > 194 and cachevalue[2] < 199) then
-                local newfunc = h(cachevalue[5]) -- wrap the other function !!!
+                local newfunc = h(cachevalue[3]) -- wrap the other function !!!
 
                 cachevalue[1] = tostring(newfunc)
                 cachevalue[2] += 1
-                cachevalue[5] = newfunc
-                --cachevalue[8] = h(...)
+                cachevalue[3] = newfunc
                 
                 return newfunc
             end
@@ -103,7 +88,6 @@ h = hookfunction(getrenv().coroutine.wrap, function(...)
             local res = h(...)
             cachevalue[1] = tostring(res)
             cachevalue[2] += 1
-            --cachevalue[8] = res
 
             return res
         else
