@@ -1,4 +1,4 @@
--- C stack overflow bypass by @__europa (beta)
+-- C stack overflow bypass by @__europa
 -- thanks to unlimited, xnx, ka(x)r and ESPECIALLY ludi for helping with detections
 
 local _cache = {}
@@ -8,16 +8,18 @@ local h;
 
 local function checkincache(func)
     for i, v in pairs(_cache) do
-        if v[1] == tostring(func) then
+        if v[1] == func then
             return v
         end
     end
     return nil
 end
 
+
+
 local function insertincache(func, ofunc)
     local thetbl; thetbl = {
-        tostring(func), -- for comparison
+        func, -- for comparison
         1, -- for intervals of being wrapped
         (function(...) -- replacement function (to be wrapped)
             local cachevalue = thetbl;
@@ -40,8 +42,7 @@ local function insertincache(func, ofunc)
             error(select(2, unpack(__args)), 2)
         end),
         function() -- when wrapped function is called, this gc's the table
-            for i = 1, 1000 do task.spawn(assert, "hey") end
-            table.remove(_cache, table.find(_cache, thetbl))
+            task.delay(0, table.remove, _cache, table.find(_cache, thetbl))
         end
     }
 
@@ -58,7 +59,7 @@ h = hookfunction(getrenv().coroutine.wrap, function(...)
             if (cachevalue[2] > 194 and cachevalue[2] < 199) then
                 local newfunc = h(cachevalue[3]) -- wrap the other function !!!
 
-                cachevalue[1] = tostring(newfunc)
+                cachevalue[1] = newfunc
                 cachevalue[2] += 1
                 cachevalue[3] = newfunc
                 
@@ -66,7 +67,7 @@ h = hookfunction(getrenv().coroutine.wrap, function(...)
             end
 
             local res = h(...)
-            cachevalue[1] = tostring(res)
+            cachevalue[1] = res
             cachevalue[2] += 1
 
             return res
