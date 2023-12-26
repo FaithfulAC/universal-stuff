@@ -1,4 +1,4 @@
--- C stack overflow bypass by @__europa (currently in beta)
+-- C stack overflow bypass by @__europa (beta)
 -- thanks to unlimited, xnx, ka(x)r and ESPECIALLY ludi for helping with detections
 
 local _cache = {}
@@ -28,27 +28,24 @@ local function insertincache(func, ofunc)
 
             -- safe check (end all be all)
             if (bigerr ~= "cannot resume dead coroutine" and cachevalue[2] > 198) then
-                cachevalue[4] = true
-
+                task.spawn(cachevalue[4])
                 return error("C stack overflow", 2)
             elseif bigerr == "cannot resume dead coroutine" or select(2, pcall((h or coroutine.wrap)(func))) == "cannot resume dead coroutine" then
-
+                task.spawn(cachevalue[4])
                 return error("cannot resume dead coroutine", 2)
             end
-            cachevalue[4] = true
+            task.spawn(cachevalue[4])
 
             if __args[1] then return select(2, unpack(__args)) end
             error(select(2, unpack(__args)), 2)
         end),
-        false -- was function called? gc process below requires this
+        function() -- when wrapped function is called, this gc's the table
+            for i = 1, 1000 do task.spawn(assert, "hey") end
+            table.remove(_cache, table.find(_cache, thetbl))
+        end
     }
 
     table.insert(_cache, thetbl)
-    task.spawn(function() -- manual gc process
-        repeat task.wait() until thetbl[4] -- when newfunc is called this will turn true
-
-        table.remove(_cache, table.find(_cache, thetbl))
-    end)
 end
 
 -- the actual hook
