@@ -1,4 +1,4 @@
--- C stack overflow bypass by @__europa
+-- C stack overflow bypass by @__europa (should now no longer be detected in any capacity, any detections you find please submit an issue with detection code)
 -- thanks to unlimited, xnx, ka(x)r and ESPECIALLY ludi for helping with detections
 
 local _cache = {}
