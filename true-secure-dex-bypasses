@@ -13,12 +13,12 @@
 	babyhamsta for the original secure dex
 ]]
 
--- safehookmetamethod (so stupid people don't pass invalid arguments and hookmetamethod isn't detected)
+-- safehookmetamethod (so stupid people don't pass invalid arguments)
 loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/safehookmetamethod"))()
 
 local GetDebugId = ((clonefunction and pcall(clonefunction, game.GetDebugId) and clonefunction(game.GetDebugId)) or game.GetDebugId)
 
-local rawinsequal = function(ins1, ins2)
+local rawinsequal = compareinstances or rawinsequal or function(ins1, ins2)
 	return typeof(ins1) == typeof(ins2) and typeof(ins1) == "Instance" and GetDebugId(ins1) == GetDebugId(ins2)
 end
 
@@ -49,7 +49,7 @@ local DexOptions = ((getgenv and getgenv()) or getfenv()).DexOptions or {
 		Waithook = false,
 		Namecall = true,
 		Index = true,
-		Option = 1 -- 1 for realistic spoof 2 for function disabler by super smart mac user ludi
+		Option = 1 -- 1 for realistic spoof 2 for function disabler
 	},
 
 	SpoofInstanceCount = {
@@ -154,16 +154,16 @@ task.spawn(function()
 			if not checkcaller() then
 				return if not waithook then ret else wait(9e9)
 			end
-			
+
 			return h1(...)
 		end)
 		local h2;h2=hookfunction(getrenv().collectgarbage, function(...)
 			local cnt = ...
-			
+
 			if not checkcaller() and type(cnt) == "string" and (cnt == "count" or cnt:sub(1,6) == "count\0") then
 				return if not waithook then ret else wait(9e9)
 			end
-			
+
 			cnt=nil
 			return h2(...)
 		end)
@@ -201,11 +201,11 @@ task.spawn(function()
 		end)
 		local h2;h2=hookfunction(getrenv().collectgarbage, function(...)
 			local cnt = ...
-			
+
 			if not checkcaller() and type(cnt) == "string" and (cnt == "count" or cnt:sub(1,6) == "count\0") then
 				return if not waithook then num else wait(9e9)
 			end
-			
+
 			cnt=nil
 			return h2(...)
 		end)
@@ -498,7 +498,7 @@ task.spawn(function()
 						table.insert(targettbl, v)
 					end
 				end
-				
+
 				return h2(self, targettbl, fnc)
 			end
 
@@ -793,7 +793,7 @@ task.spawn(function()
 				local isMode = false
 
 				for i, v in pairs(tbl2) do -- Member table.foreachi is deprecated :(
-					if i == "__mode" and (type(v) == "string" and v:find("v")) then isMode = true end
+					if i == "__mode" and (type(v) == "string" and string.find(v, "v")) then isMode = true end
 				end
 
 				if isMode then
@@ -814,7 +814,7 @@ task.spawn(function()
 		end)
 
 		for i, v in getgc(true) do
-			if type(v) == "table" and getmetatable(v) and type(getmetatable(v)) == "table" and (rawget(getmetatable(v), "__mode") == "v" or rawget(getmetatable(v), "__mode") == "kv") then
+			if type(v) == "table" and getrawmetatable(v) and type(getrawmetatable(v)) == "table" and type(rawget(getrawmetatable(v), "__mode")) == "string" and string.find(rawget(getrawmetatable(v), "__mode"), "v") then
 				if table.isfrozen(v) then continue end
 				task.wait()
 				table.clear(v)
@@ -837,23 +837,12 @@ task.spawn(function()
 				if isMode then
 					local res = h(...)
 
-					if not string.find(var, "k") then
-						task.spawn(function()
-							task.wait(math.random(5,8)/10)
-							for i, v in pairs(res) do
-								if type(v) == "userdata" or type(v) == "function" or type(v) == "table" then rawset(res, i, nil) end
-							end
-						end)
-					else
-						task.spawn(function()
-							task.wait(math.random(1,5)/100)
-							for i, v in pairs(res) do
-								if typeof(v) == "Instance" then -- idk how kv works so like wtv
-									rawset(res, i, nil)
-								end
-							end
-						end)
-					end
+					task.spawn(function()
+						task.wait(math.random(5,8)/10)
+						for i, v in pairs(res) do
+							if type(v) == "userdata" or type(v) == "function" or type(v) == "table" then rawset(res, i, nil) end
+						end
+					end)
 
 					return res
 				end
@@ -864,7 +853,7 @@ task.spawn(function()
 		end)
 
 		for i, v in getgc(true) do
-			if type(v) == "table" and getmetatable(v) and type(getmetatable(v)) == "table" and (rawget(getmetatable(v), "__mode") == "v" or rawget(getmetatable(v), "__mode") == "kv") then
+			if type(v) == "table" and getrawmetatable(v) and type(getrawmetatable(v)) == "table" and type(rawget(getrawmetatable(v), "__mode")) == "string" and string.find(rawget(getrawmetatable(v), "__mode"), "v") then
 				if table.isfrozen(v) then continue end
 				task.wait()
 				table.clear(v)
