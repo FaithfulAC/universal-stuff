@@ -42,8 +42,8 @@ local function insertincache(func, ofunc)
             if __args[1] then return select(2, unpack(__args)) end
             error(select(2, unpack(__args)), 2)
         end),
-        function() -- when wrapped function is called, this gc's the table
-            task.delay(0, table.remove, _cache, table.find(_cache, thetbl))
+        function() -- when wrapped function is called, this gc's the table... hopefully
+            table.remove(_cache, table.find(_cache, thetbl))
         end
     }
 
@@ -86,7 +86,7 @@ task.wait(2)
 getgenv().IsHookingSafe = true
 
 --[[
-local hook1; hook1 = hookmetamethod(game,"__namecall", function(...)
+    local hook1; hook1 = hookmetamethod(game,"__namecall", function(...)
     return hook1(...)
 end)
 local hook2; hook2 = hookmetamethod(game,"__index", function(...)
