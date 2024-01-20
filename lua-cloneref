@@ -1,4 +1,5 @@
 -- cloneref implemented in lua! made by @__europa
+-- THIS IS NOT MEANT TO BE USED IN A SERIOUS MANNER! A PROPER CLONEREF SHOULD BE MADE IN C(++) NOT LUA
 
 local _cache = {}
 
