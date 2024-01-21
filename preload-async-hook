@@ -1,0 +1,154 @@
+-- made by @__europa
+-- note that this script indeed does error due to a thread identity issue (with coregui) so dont use it right now
+
+local GetDebugId = game.GetDebugId
+
+local cloneref = cloneref or function(...)
+	return ...
+end
+
+local compareinstances = function(a, b)
+	return typeof(a) == typeof(b) and typeof(a) == "Instance" and (a == b or GetDebugId(a) == GetDebugId(b))
+end
+
+local index; -- for optimization purposes (use it as a function for pcalls)
+xpcall(function() return game[nil] end, function() index = debug.info(2, "f") end)
+
+local CoreGui = cloneref(game:GetService("CoreGui"))
+local ContentProvider = cloneref(game:GetService("ContentProvider"))
+local PlayerGui = cloneref(game:GetService("Players").LocalPlayer.PlayerGui)
+
+local InstancesToCircle = getgenv().InstancesToCircle or {
+    -- this is how the table should look
+    [GetDebugId(game)] = game,
+    [GetDebugId(CoreGui)] = CoreGui,
+    [GetDebugId(PlayerGui)] = PlayerGui
+}
+local thing = {}
+
+local randomizeTable = function(t) -- adultmouse
+	local n = #t
+	while n > 0 do
+		local k = math.random(n)
+		t[n], t[k] = t[k], t[n]
+		n -= 1
+	end
+	return t
+end
+
+local safecheck = function(tbl)
+	for i, v in pairs(tbl) do
+		if type(v) ~= "string" and typeof(v) ~= "Instance" then
+			return false
+		end
+	end
+	return true
+end
+
+local find = function(tbl, arg)
+	if type(tbl) ~= "table" then return false end
+
+	for i, v in pairs(tbl) do
+		if typeof(v) == "Instance" and compareinstances(v, arg) then
+            return true
+        end
+	end
+
+	return false
+end
+
+local GetAssetFromInstance = function(ins, parentrecursive)
+	-- since we don't hook the index metamethod this is brilliant!
+	if pcall(index, ins, "Image") then
+		return ins.Image
+	end
+
+	if pcall(index, ins, "SoundId") then
+		return ins.SoundId
+	end
+
+	if pcall(index, ins, "Texture") then
+		return ins.Texture
+	end
+
+	if pcall(index, ins, "MeshId") then
+		return ins.MeshId
+	end
+
+	return nil
+end
+
+for i, v in pairs(InstancesToCircle) do
+	local DebugId = GetDebugId(v)
+	thing[DebugId] = {}
+	local tbl = thing[DebugId]
+
+	for i2, v2 in pairs(v:GetDescendants()) do
+		-- firstly check if an asset does indeed exist
+		local asset = GetAssetFromInstance(v2)
+
+		if asset then
+			table.insert(tbl, {Instance = v2})
+		end
+	end
+end
+
+local h1; h1 = hookmetamethod(game,"__namecall", function(...)
+	local self, tbl, fnc = ...
+	local method = string.gsub(getnamecallmethod(), "^%u", string.lower)
+	if
+        not checkcaller()
+        and typeof(self) == "Instance"
+        and compareinstances(self, ContentProvider)
+        and method == "preloadAsync"
+        and type(tbl) == "table"
+        and safecheck(tbl)
+        and (find(tbl, game) or find(tbl, CoreGui))
+    then
+		local target = {}
+
+		for i, v in pairs(tbl) do
+			if typeof(v) == "Instance" and table.find(InstancesToCircle, v) then
+				local DebugId = table.find(InstancesToCircle, v)
+				if DebugId and thing[DebugId] then
+					table.insert(target, thing[DebugId].Instance)
+					rawset(tbl, i, nil)
+				end
+			end
+		end
+
+		return h1(self, {unpack(randomizeTable(target)), unpack(tbl)}, fnc)
+	end
+
+	return h1(...)
+end)
+
+local h2; h2 = hookfunction(ContentProvider.PreloadAsync, function(...)
+	local self, tbl, fnc = ...
+
+	if
+        not checkcaller()
+        and typeof(self) == "Instance"
+        and compareinstances(self, ContentProvider)
+        and type(tbl) == "table"
+        and safecheck(tbl)
+        and (find(tbl, game) or find(tbl, CoreGui))
+    then
+		local target = {}
+
+		for i, v in pairs(tbl) do
+			if typeof(v) == "Instance" and table.find(InstancesToCircle, v) then
+				local DebugId = table.find(InstancesToCircle, v)
+
+				if DebugId and thing[DebugId] then
+					table.insert(target, thing[DebugId].Instance)
+					rawset(tbl, i, nil)
+				end
+			end
+		end
+
+		return h2(self, {unpack(randomizeTable(target)), unpack(tbl)}, fnc)
+	end
+
+	return h2(...)
+end)
