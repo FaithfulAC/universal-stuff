@@ -1,5 +1,5 @@
 -- made by @__europa
--- note that this script indeed does error due to a thread identity issue (with coregui) so dont use it right now
+-- this script is in beta and probably doesn't work, expect bugs regardless
 
 local GetDebugId = game.GetDebugId
 
@@ -49,7 +49,7 @@ local find = function(tbl, arg)
 	if type(tbl) ~= "table" then return false end
 
 	for i, v in pairs(tbl) do
-		if typeof(v) == "Instance" and compareinstances(v, arg) then
+		if typeof(v) == "Instance" and thing[GetDebugId(v)] then
             return true
         end
 	end
@@ -101,9 +101,8 @@ local h1; h1 = hookmetamethod(game,"__namecall", function(...)
         and typeof(self) == "Instance"
         and compareinstances(self, ContentProvider)
         and method == "preloadAsync"
-        and type(tbl) == "table"
+        and haspresentinstance(tbl)
         and safecheck(tbl)
-        and (find(tbl, game) or find(tbl, CoreGui))
     then
 		local target = {}
 
@@ -130,9 +129,8 @@ local h2; h2 = hookfunction(ContentProvider.PreloadAsync, function(...)
         not checkcaller()
         and typeof(self) == "Instance"
         and compareinstances(self, ContentProvider)
-        and type(tbl) == "table"
+        and haspresentinstance(tbl)
         and safecheck(tbl)
-        and (find(tbl, game) or find(tbl, CoreGui))
     then
 		local target = {}
 
