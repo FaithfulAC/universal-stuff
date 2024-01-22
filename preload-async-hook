@@ -11,6 +11,20 @@ end
 
 local GetDebugId = clonefunction(game.GetDebugId)
 
+local isrestrictedinstance = function(ins)
+	local res = select(2, pcall(GetDebugId, ins))
+
+	return type(res) == "string" and string.find(res, "The current")
+end
+
+local iscoreguipresent = false;
+
+local iscoregui = function(ins) -- to be used in the hooks
+	local res = select(2, pcall(GetDebugId, ins))
+
+	return type(res) == "string" and string.find(res, "CoreGui") and string.find(res, "The current")
+end
+
 local compareinstances = function(a, b)
 	return typeof(a) == typeof(b) and typeof(a) == "Instance" and (a == b or GetDebugId(a) == GetDebugId(b))
 end
@@ -28,6 +42,11 @@ local InstancesToCircle = getgenv().InstancesToCircle or {
     [GetDebugId(CoreGui)] = CoreGui,
     [GetDebugId(PlayerGui)] = PlayerGui
 }
+
+if table.find(InstancesToCircle, CoreGui) then
+	iscoreguipresent = true
+end
+
 local thing = {}
 
 local randomizeTable = function(t) -- adultmouse
@@ -49,12 +68,14 @@ local safecheck = function(tbl)
 	return true
 end
 
-local find = function(tbl, arg)
+local haspresentinstance = function(tbl, arg)
 	if type(tbl) ~= "table" then return false end
 
 	for i, v in pairs(tbl) do
-		if typeof(v) == "Instance" and thing[GetDebugId(v)] then
-            return true
+		if typeof(v) == "Instance" then
+			if ((not isrestrictedinstance(v)) and thing[GetDebugId(v)]) or (iscoreguipresent and iscoregui(v)) then
+				return true
+			end
         end
 	end
 
@@ -111,8 +132,15 @@ local h1; h1 = hookmetamethod(game,"__namecall", function(...)
 		local target = {}
 
 		for i, v in pairs(tbl) do
-			if typeof(v) == "Instance" and table.find(InstancesToCircle, v) then
-				local DebugId = table.find(InstancesToCircle, v)
+			if typeof(v) == "Instance" then
+				local DebugId;
+
+				if iscoreguipresent and iscoregui(v) then
+					DebugId = table.find(InstancesToCircle, CoreGui)
+				elseif (not isrestrictedinstance(v)) and table.find(InstancesToCircle, v) then
+					DebugId = table.find(InstancesToCircle, v)
+				end
+
 				if DebugId and thing[DebugId] then
 					table.insert(target, thing[DebugId].Instance)
 					rawset(tbl, i, nil)
@@ -139,8 +167,14 @@ local h2; h2 = hookfunction(ContentProvider.PreloadAsync, function(...)
 		local target = {}
 
 		for i, v in pairs(tbl) do
-			if typeof(v) == "Instance" and table.find(InstancesToCircle, v) then
-				local DebugId = table.find(InstancesToCircle, v)
+			if typeof(v) == "Instance" then
+				local DebugId;
+
+				if iscoreguipresent and iscoregui(v) then
+					DebugId = table.find(InstancesToCircle, CoreGui)
+				elseif (not isrestrictedinstance(v)) and table.find(InstancesToCircle, v) then
+					DebugId = table.find(InstancesToCircle, v)
+				end
 
 				if DebugId and thing[DebugId] then
 					table.insert(target, thing[DebugId].Instance)
