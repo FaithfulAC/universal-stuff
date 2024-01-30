@@ -86,7 +86,7 @@ task.wait(2)
 getgenv().IsHookingSafe = true
 
 --[[
-    local hook1; hook1 = hookmetamethod(game,"__namecall", function(...)
+local hook1; hook1 = hookmetamethod(game,"__namecall", function(...)
     return hook1(...)
 end)
 local hook2; hook2 = hookmetamethod(game,"__index", function(...)
