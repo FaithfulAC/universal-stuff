@@ -1,4 +1,4 @@
--- made by @__europa but i dont think there's any need for that LOLLLL
+-- id be damned if tick returned a static int
 
 local getgenv = getgenv or getfenv
 local randomstupidmodule = {}
