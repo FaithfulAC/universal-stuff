@@ -78,24 +78,24 @@ getgenv().safehookmetamethod = function(...)
 	
 	if method == "__namecall" then
 		local orgnm = __namecall
-		__namecall = cclosure(function(...)
-			return fnc(...)
+		__namecall = (function(...)
+			return cclosure(fnc)(...)
 		end)
 		
 		return orgnm
 		
 	elseif method == "__index" then
 		local orgi = __index
-		__index = cclosure(function(...)
-			return fnc(...)
+		__index = (function(...)
+			return cclosure(fnc)(...)
 		end)
 		
 		return orgi
 		
 	elseif method == "__newindex" then
 		local orgni = __newindex
-		__newindex = cclosure(function(...)
-			return fnc(...)
+		__newindex = (function(...)
+			return cclosure(fnc)(...)
 		end)
 		
 		return orgni
