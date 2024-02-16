@@ -1,5 +1,4 @@
--- made by @__europa
--- this script is in beta and probably doesn't work, expect bugs regardless
+-- rewrite being planned soon
 
 local cloneref = cloneref or function(...)
 	return ...
