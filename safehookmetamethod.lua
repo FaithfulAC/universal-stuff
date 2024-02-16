@@ -1,6 +1,8 @@
 -- basically a lua implementation of arg guard (which every executor should have by default rn but GUESS NOT!)
 
 local hmm = hookmetamethod -- hmmmmmmmmmmmmmmmm
+local cclosure = newcclosure or coroutine.wrap -- lol, yeah.
+
 local KeepOriginalHookMetaMethod = getgenv().KeepHMM or getgenv().KeepOriginalHookMetaMethod or false
 local LoadCStackOverflowBypass = getgenv().LoadCSOBypass or true -- recommended to keep true if the game has a very good anticheat
 
@@ -8,8 +10,6 @@ if LoadCStackOverflowBypass and not getgenv().IsHookingSafe then -- checking if 
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/c-stack-overflow-universal-bypass"))()
 	repeat task.wait() until getgenv().IsHookingSafe
 end
-
--- does not support __tostring cuz that's literally just doing instance.Name and almost no one does tostring(instance)
 
 local __namecall, __index, __newindex
 __namecall, __index, __newindex = hmm(game,"__namecall", function(...) return __namecall(...) end), hmm(game,"__index", function(...) return __index(...) end), hmm(game,"__newindex", function(...) return __newindex(...) end)
@@ -78,31 +78,31 @@ getgenv().safehookmetamethod = function(...)
 	
 	if method == "__namecall" then
 		local orgnm = __namecall
-		__namecall = function(...)
+		__namecall = cclosure(function(...)
 			return fnc(...)
-		end
+		end)
 		
 		return orgnm
 		
 	elseif method == "__index" then
 		local orgi = __index
-		__index = function(...)
+		__index = cclosure(function(...)
 			return fnc(...)
-		end
+		end)
 		
 		return orgi
 		
 	elseif method == "__newindex" then
 		local orgni = __newindex
-		__newindex = function(...)
+		__newindex = cclosure(function(...)
 			return fnc(...)
-		end
+		end)
 		
 		return orgni
 		
 	end
 	
-	return hmm(...) -- invalid arguments potentially sent
+	return hmm(...)
 end
 
 if not KeepOriginalHookMetaMethod then getgenv().hookmetamethod = safehookmetamethod end
