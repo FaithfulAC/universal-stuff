@@ -24,7 +24,6 @@ local function insertincache(func, ofunc)
         1, -- for intervals of being wrapped
         (function(...) -- replacement function (to be wrapped)
             local cachevalue = thetbl;
-            -- pcall((h or coroutine.wrap)(ofunc)) -- for good measure
 
             local __args = {pcall((h or coroutine.wrap)(ofunc), ...)}
             local bigerr = __args[2]
@@ -86,7 +85,7 @@ task.wait(2)
 getgenv().IsHookingSafe = true
 
 --[[
-local hook1; hook1 = hookmetamethod(game,"__namecall", function(...)
+    local hook1; hook1 = hookmetamethod(game,"__namecall", function(...)
     return hook1(...)
 end)
 local hook2; hook2 = hookmetamethod(game,"__index", function(...)
