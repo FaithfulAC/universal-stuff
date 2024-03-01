@@ -1,12 +1,17 @@
 -- ...for one variation of an anti yield. not meant to be used too universally guys wink wink
 -- ofc made by @__europa make issue for any bugs/logical errors
 
-getgenv().protectedyieldfuncs = {} -- add to this table any functions you would not like to be waithook checked
-local cache = setmetatable({}, {__mode = "v"}) -- mode prob not necessary, depends on thread/function property of garbage collection
+--[[
+add to the protectedyieldfuncs table any functions you would not like to be waithook checked
+also mode is prob not necessary, depends on thread/function property of garbage collection
+]]
+
+getgenv().protectedyieldfuncs = {}
+local cache = {}
 
 local function findincache(thr)
     for i, v in pairs(cache) do
-        if v[1] == thr then
+        if v.thread == thr then
             return v
         end
     end
@@ -18,7 +23,7 @@ local cr; cr = hookfunction(getrenv().coroutine.create, function(...)
     local func = ...
     if not checkcaller() and typeof(func) == "function" and table.find(protectedyieldfuncs, func) then
         local res = cr(...)
-        table.insert(cache, {res, func})
+        cache[#cache + 1] = setmetatable({thread = res, func = func}, {__mode = "v"}) -- im avoiding table.insert simply because this looks cooler and easier to manage, probably
         return res
     end
 
@@ -28,7 +33,7 @@ end)
 local rs; rs = hookfunction(getrenv().coroutine.resume, function(...)
     local thr = ...
     if not checkcaller() and typeof(thr) == "thread" and findincache(thr) then
-        local func = findincache(thr)[2]
+        local func = findincache(thr).func
         return pcall(func, select(2,...))
     end
 
