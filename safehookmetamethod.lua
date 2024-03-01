@@ -7,7 +7,7 @@ local KeepOriginalHookMetaMethod = getgenv().KeepHMM or getgenv().KeepOriginalHo
 local LoadCStackOverflowBypass = getgenv().LoadCSOBypass or true -- recommended to keep true if the game has a very good anticheat
 
 if LoadCStackOverflowBypass and not getgenv().IsHookingSafe then -- checking if c stack overflow bypass was already initiated
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/c-stack-overflow-universal-bypass"))()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/c-stack-overflow-universal-bypass.lua"))()
 	repeat task.wait() until getgenv().IsHookingSafe
 end
 
