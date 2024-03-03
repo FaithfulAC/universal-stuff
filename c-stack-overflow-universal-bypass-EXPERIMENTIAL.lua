@@ -19,17 +19,17 @@ end
 local function insertincache(func, ofunc)
     local thetbl; thetbl = {
         func,
-        iscclosure(ofunc) and 1 or 0,
+        1,
         (function(...)
             local cachevalue = thetbl;
 
             local __args = {pcall((h or coroutine.wrap)(ofunc), ...)}
             local bigerr = __args[2]
 
-            if (bigerr ~= "cannot resume dead coroutine" and cachevalue[2] > 198) then
+            if (bigerr ~= "cannot resume dead coroutine" and select(2, pcall((h or coroutine.wrap)(func))) ~= "cannot resume dead coroutine") and cachevalue[2] > 198 then
                 task.spawn(cachevalue[4])
                 return error("C stack overflow", 2)
-            elseif bigerr == "cannot resume dead coroutine" or select(2, pcall((h or coroutine.wrap)(func))) == "cannot resume dead coroutine" then
+            elseif bigerr == "cannot resume dead coroutine" then
                 task.spawn(cachevalue[4])
                 return error("cannot resume dead coroutine", 2)
             end
@@ -52,13 +52,12 @@ h = hookfunction(getrenv().coroutine.wrap, function(...)
     if not checkcaller() and type(fnc1) == "function" then
         local cachevalue = checkincache(fnc1)
         if cachevalue then
-            --if (cachevalue[2] > 194 and cachevalue[2] < 199) then
-            if cachevalue[2] == 195 then -- dont do any more wrapping of the same function, or maybe do it permamently for every increase :man_shrugging:
+            if (cachevalue[2] > 194 and cachevalue[2] < 199) then
                 local newfunc = h(cachevalue[3])
 
                 cachevalue[1] = newfunc
                 cachevalue[2] += 1
-                --cachevalue[3] = newfunc
+                cachevalue[3] = newfunc
                 
                 return newfunc
             end
