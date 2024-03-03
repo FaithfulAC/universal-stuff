@@ -26,12 +26,12 @@ local function insertincache(func, ofunc)
             local __args = {pcall((h or coroutine.wrap)(ofunc), ...)}
             local bigerr = __args[2]
 
-            if bigerr ~= "cannot resume dead coroutine" and cachevalue[2] > 198 then
+            if cachevalue[2] > 198 and select(2, pcall((h or coroutine.wrap)(func))) ~= "cannot resume dead coroutine" then
                 task.spawn(cachevalue[4])
                 return error("C stack overflow", 2)
-            --[[elseif bigerr == "cannot resume dead coroutine" and select(2, pcall((h or coroutine.wrap)(func))) == "cannot resume dead coroutine" then
+            elseif bigerr == "cannot resume dead coroutine" then
                 task.spawn(cachevalue[4])
-                return error("cannot resume dead coroutine", 2)]]
+                return error("cannot resume dead coroutine", 2)
             end
             task.spawn(cachevalue[4])
 
