@@ -6,78 +6,78 @@ local info, print, warn, error = getrenv().debug.info, getrenv().print, getrenv(
 local h;
 
 local function checkincache(func)
-    for i, v in pairs(_cache) do
-        if v[1] == func then
-            return v
-        end
-    end
-    return nil
+	for i, v in pairs(_cache) do
+		if v[1] == func then
+			return v
+		end
+	end
+	return nil
 end
 
 warn(1)
 
 local function insertincache(func, ofunc)
-    local thetbl; thetbl = {
-        func,
-        1,
-        (function(...)
-            local cachevalue = thetbl;
+	local thetbl; thetbl = {
+		func,
+		1,
+		(function(...)
+			local cachevalue = thetbl;
 
-            local __args = {pcall((h or coroutine.wrap)(ofunc), ...)}
-            local bigerr = __args[2]
+			local __args = {pcall((h or coroutine.wrap)(ofunc), ...)}
+			local bigerr = __args[2]
 
-            if cachevalue[2] > 198 and bigerr ~= "cannot resume dead coroutine" and select(2, pcall((h or coroutine.wrap)(func))) ~= "cannot resume dead coroutine" then
-                task.spawn(cachevalue[4])
-                warn(bigerr, cachevalue[2], select(2, pcall(h(func))), "Went to C stack overflow")
-                return error("C stack overflow", 2)
-            elseif bigerr == "cannot resume dead coroutine" then
-                task.spawn(cachevalue[4])
-                warn(bigerr, cachevalue[2]. select(2, pcall(h(func))), "Went to dead coroutine")
-                return error("cannot resume dead coroutine", 2)
-            end
+			if cachevalue[2] > 198 and bigerr ~= "cannot resume dead coroutine" and select(2, pcall((h or coroutine.wrap)(func))) ~= "cannot resume dead coroutine" then
+				task.spawn(cachevalue[4])
+				warn(bigerr, cachevalue[2], select(2, pcall(h(func))), "Went to C stack overflow")
+					return error("C stack overflow", 2)
+			elseif bigerr == "cannot resume dead coroutine" then
+				task.spawn(cachevalue[4])
+				warn(bigerr, cachevalue[2]. select(2, pcall(h(func))), "Went to dead coroutine")
+				return error("cannot resume dead coroutine", 2)
+			end
 
-            warn(bigerr, select(2, pcall(h(func))), "Went to default error")
-            task.spawn(cachevalue[4])
+			warn(bigerr, select(2, pcall(h(func))), "Went to default error")
+			task.spawn(cachevalue[4])
 
-            if __args[1] then return select(2, unpack(__args)) end
-            error(select(2, unpack(__args)), 2)
-        end),
-        function()
-            table.remove(_cache, table.find(_cache, thetbl))
-        end
-    }
+			if __args[1] then return select(2, unpack(__args)) end
+			error(select(2, unpack(__args)), 2)
+		end),
+		function()
+			table.remove(_cache, table.find(_cache, thetbl))
+		end
+	}
 
-    table.insert(_cache, thetbl)
+	table.insert(_cache, thetbl)
 end
 
 h = hookfunction(getrenv().coroutine.wrap, function(...)
-    local fnc1 = ...
+	local fnc1 = ...
 
-    if not checkcaller() and type(fnc1) == "function" then
-        local cachevalue = checkincache(fnc1)
-        if cachevalue then
-            if (cachevalue[2] > 194 and cachevalue[2] < 199) then
-                local newfunc = h(cachevalue[3])
+	if not checkcaller() and type(fnc1) == "function" then
+		local cachevalue = checkincache(fnc1)
+		if cachevalue then
+			if (cachevalue[2] > 194 and cachevalue[2] < 199) then
+				local newfunc = h(cachevalue[3])
 
-                cachevalue[1] = newfunc
-                cachevalue[2] += 1
-                cachevalue[3] = newfunc
-                
-                return newfunc
-            end
+				cachevalue[1] = newfunc
+				cachevalue[2] += 1
+				cachevalue[3] = newfunc
 
-            local res = h(...)
-            cachevalue[1] = res
-            cachevalue[2] += 1
+				return newfunc
+			end
 
-            return res
-        else
-            local res = h(...)
-            insertincache(res, fnc1)
-            
-            return res
-        end
-    end
+			local res = h(...)
+			cachevalue[1] = res
+			cachevalue[2] += 1
 
-    return h(...)
+			return res
+		else
+			local res = h(...)
+			insertincache(res, fnc1)
+
+			return res
+		end
+	end
+
+	return h(...)
 end)
