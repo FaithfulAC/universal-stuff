@@ -2,6 +2,8 @@
 -- (should now no longer be detected in any capacity [except for (C) stack overflow checks which can be fixed by converting this code into the C side], please submit an issue if a detection is found)
 -- thanks to unlimited, xnx, ka(x)r and ESPECIALLY ludi for helping with detections
 
+-- Under maintenance to fix detection that intentionally returns a scuffed error
+
 local _cache = {}
 
 local info, print, warn, error = getrenv().debug.info, getrenv().print, getrenv().warn, getrenv().error;
