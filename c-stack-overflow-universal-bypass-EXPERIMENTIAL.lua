@@ -14,7 +14,7 @@ local function checkincache(func)
 	return nil
 end
 
-warn(1)
+warn(2)
 
 local function insertincache(func, ofunc)
 	local thetbl; thetbl = {
