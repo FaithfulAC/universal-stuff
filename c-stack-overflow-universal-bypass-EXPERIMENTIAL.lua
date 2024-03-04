@@ -32,7 +32,7 @@ local function insertincache(func, ofunc)
 					return error("C stack overflow", 2)
 			elseif bigerr == "cannot resume dead coroutine" or select(2, pcall(h(func), ...)) == "cannot resume dead coroutine" then
 				task.spawn(cachevalue[4])
-				warn(bigerr, cachevalue[2]. select(2, pcall(h(func), ...)), "Went to dead coroutine\n")
+				warn(bigerr, cachevalue[2], select(2, pcall(h(func), ...)), "Went to dead coroutine\n")
 				return error("cannot resume dead coroutine", 2)
 			end
 
