@@ -7,14 +7,14 @@ local h;
 
 local function checkincache(func)
 	for i, v in pairs(_cache) do
-		if v[1] == func then
+		if v[1] == func or v[3] == func then
 			return v
 		end
 	end
 	return nil
 end
 
-warn(2)
+warn('loaded')
 
 local function insertincache(func, ofunc)
 	local thetbl; thetbl = {
@@ -28,15 +28,12 @@ local function insertincache(func, ofunc)
 
 			if cachevalue[2] > 198 and bigerr ~= "cannot resume dead coroutine" then
 				task.spawn(cachevalue[4])
-				warn(bigerr, cachevalue[2], select(2, pcall(h(func), ...)), "Went to C stack overflow\n")
-					return error("C stack overflow", 2)
+				return error("C stack overflow", 2)
 			elseif bigerr == "cannot resume dead coroutine" or select(2, pcall(h(func), ...)) == "cannot resume dead coroutine" then
 				task.spawn(cachevalue[4])
-				warn(bigerr, cachevalue[2], select(2, pcall(h(func), ...)), "Went to dead coroutine\n")
 				return error("cannot resume dead coroutine", 2)
 			end
 
-			warn(bigerr, select(2, pcall(h(func))), "Went to default error\n")
 			task.spawn(cachevalue[4])
 
 			if __args[1] then return select(2, unpack(__args)) end
@@ -56,14 +53,19 @@ h = hookfunction(getrenv().coroutine.wrap, function(...)
 	if not checkcaller() and type(fnc1) == "function" then
 		local cachevalue = checkincache(fnc1)
 		if cachevalue then
-			if (cachevalue[2] > 194 and cachevalue[2] < 199) then
+			if cachevalue[2] > 194 and cachevalue[2] <= 198 then
 				local newfunc = h(cachevalue[3])
 
-				cachevalue[1] = newfunc
+				cachevalue[1] = h(cachevalue[1])
 				cachevalue[2] += 1
 				cachevalue[3] = newfunc
 
 				return newfunc
+			elseif cachevalue[2] > 198 then
+				cachevalue[1] = h(cachevalue[1])
+				cachevalue[2] += 1
+				
+				return cachevalue[1]
 			end
 
 			local res = h(...)
