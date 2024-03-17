@@ -432,14 +432,26 @@ task.spawn(function()
 	end)
 end)
 
--- guiobjects circumnav.
+-- guiobjects circumnav. (you do a setcore to detect this and i kill you)
 task.spawn(function()
+	local doobityVisible = true
+	
+	task.spawn(function() -- randomly auto set doobityVisible to true
+		while task.wait(math.random()*3) do
+			doobityVisible = true
+		end
+	end)
+	
 	local h1; h1 = hookmetamethod(game, "__namecall", function(...)
-		local self, arg = ...
+		local self, arg1, arg2 = ...
 		local method = string.gsub(getnamecallmethod(), "^%u", string.lower)
 		
-		if not checkcaller() and compareinstances(self, StarterGui) and method == "getCore" and arg == "DevConsoleVisible" then
-			return true
+		if not checkcaller() and compareinstances(self, StarterGui) and rawequal(arg1, "DevConsoleVisible") then
+			if method == "getCore" then
+				return doobityVisible
+			elseif method == "setCore" and rawequal(arg2, false) then
+				doobityVisible = false
+			end
 		end
 		
 		return h1(...)
@@ -448,11 +460,21 @@ task.spawn(function()
 	local h2; h2 = hookfunction(StarterGui.GetCore, function(...)
 		local self, arg = ...
 		
-		if not checkcaller() and compareinstances(self, StarterGui) and arg == "DevConsoleVisible" then
-			return true
+		if not checkcaller() and compareinstances(self, StarterGui) and rawequal(arg, "DevConsoleVisible") then
+			return doobityVisible
 		end
 		
 		return h2(...)
+	end)
+	
+	local h3; h3 = hookfunction(StarterGui.SetCore, function(...)
+		local self, arg1, arg2 = ...
+		
+		if not checkcaller() and compareinstances(self, StarterGui) and rawequal(arg1, "DevConsoleVisible") and rawequal(arg2, false) then
+			doobityVisible = false
+		end
+		
+		return h3(...)
 	end)
 end)
 
