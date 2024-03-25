@@ -44,7 +44,6 @@ local function insertincache(func, ofunc)
     table.insert(_cache, thetbl)
 end
 
--- the actual hook
 h = hookfunction(getrenv().coroutine.wrap, function(...)
     local fnc1 = ...
 
