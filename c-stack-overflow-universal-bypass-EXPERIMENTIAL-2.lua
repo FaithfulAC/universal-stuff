@@ -1,9 +1,3 @@
--- C stack overflow bypass by @__europa
--- (should now no longer be detected in any capacity [except for (C) stack overflow checks which can be fixed by converting this code into the C side], please submit an issue if a detection is found)
--- thanks to unlimited, xnx, ka(x)r and ESPECIALLY ludi for helping with detections
-
--- Under maintenance to fix detection vector(s), hence https://github.com/FaithfulAC/universal-stuff/edit/main/c-stack-overflow-universal-bypass-EXPERIMENTIAL.lua
-
 local _cache = {}
 
 local info, print, warn, error = getrenv().debug.info, getrenv().print, getrenv().warn, getrenv().error;
@@ -22,15 +16,14 @@ end
 
 local function insertincache(func, ofunc)
     local thetbl; thetbl = {
-        func, -- for comparison
-        1, -- for intervals of being wrapped
-        (function(...) -- replacement function (to be wrapped)
+        func,
+        1,
+        (function(...)
             local cachevalue = thetbl;
 
             local __args = {pcall(iscclosure(ofunc) and h(ofunc) or ofunc, ...)}
             local bigerr = __args[2]
 
-            -- safe check (end all be all)
             if (bigerr ~= "cannot resume dead coroutine" and cachevalue[2] > 198) then
                 task.spawn(cachevalue[4])
                 return error("C stack overflow", 0)
@@ -43,7 +36,7 @@ local function insertincache(func, ofunc)
             if __args[1] then return select(2, unpack(__args)) end
             error(select(2, unpack(__args)), 0)
         end),
-        function() -- when wrapped function is called, this gc's the table... hopefully
+        function()
             table.remove(_cache, table.find(_cache, thetbl))
         end
     }
@@ -59,7 +52,7 @@ h = hookfunction(getrenv().coroutine.wrap, function(...)
         local cachevalue = checkincache(fnc1)
         if cachevalue then
             if cachevalue[2] == 195 then
-                local newfunc = h(cachevalue[3]) -- wrap the other function !!!
+                local newfunc = h(cachevalue[3])
 
                 cachevalue[1] = newfunc
                 cachevalue[2] += 1
@@ -83,16 +76,3 @@ h = hookfunction(getrenv().coroutine.wrap, function(...)
 
     return h(...)
 end)
-
---[[
-    local hook1; hook1 = hookmetamethod(game,"__namecall", function(...)
-    return hook1(...)
-end)
-local hook2; hook2 = hookmetamethod(game,"__index", function(...)
-    return hook2(...)
-end)
-local hook3; hook3 = hookmetamethod(game,"__newindex", function(...)
-    return hook3(...)
-end)
-warn("Hooks loaded")
-]]
