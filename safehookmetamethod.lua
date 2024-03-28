@@ -1,7 +1,7 @@
 -- basically a lua implementation of arg guard (which every executor should have by default rn but GUESS NOT!)
 
 local hmm = hookmetamethod -- hmmmmmmmmmmmmmmmm
-local cclosure = newcclosure or coroutine.wrap -- lol, yeah.
+local cclosure = newcclosure
 
 local KeepOriginalHookMetaMethod = getgenv().KeepHMM or getgenv().KeepOriginalHookMetaMethod or false
 local LoadCStackOverflowBypass = getgenv().LoadCSOBypass or false -- keeping false cuz it is detectable and there are other hookmm detection methods
