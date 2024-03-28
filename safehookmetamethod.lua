@@ -19,7 +19,7 @@ hmm(game,"__index",__index)
 hmm(game,"__newindex",__newindex)
 
 local isSafeIndex = function(arg)
-	return (type(arg) == "string" and string.len(arg) < 256) or type(arg) == "number" -- run safehookmetamethod if you want to hook index a property, not an instance!!!
+	return (typeof(arg) == "string" and #arg < 256) -- run safehookmetamethod if you want to hook index a property, not an instance!!!
 end
 
 local sNamecall, sIndex, sNewindex = 
@@ -36,7 +36,7 @@ local sNamecall, sIndex, sNewindex =
 	local args = {...}
 	local self = args[1]
 	
-	if typeof(self) == "Instance" and isSafeIndex(args[2]) and select("#", ...) >= 2 then return true end
+	if typeof(self) == "Instance" and (isSafeIndex(args[2]) or typeof(args[2]) == "number") and select("#", ...) >= 2 then return true end
 	return false
 	
 end, function(...)
