@@ -4,7 +4,7 @@ local hmm = hookmetamethod -- hmmmmmmmmmmmmmmmm
 local cclosure = newcclosure or coroutine.wrap -- lol, yeah.
 
 local KeepOriginalHookMetaMethod = getgenv().KeepHMM or getgenv().KeepOriginalHookMetaMethod or false
-local LoadCStackOverflowBypass = getgenv().LoadCSOBypass or true -- recommended to keep true if the game has a very good anticheat
+local LoadCStackOverflowBypass = getgenv().LoadCSOBypass or false -- keeping false cuz it is detectable and there are other hookmm detection methods
 
 if LoadCStackOverflowBypass and not getgenv().IsHookingSafe then -- checking if c stack overflow bypass was already initiated
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/c-stack-overflow-universal-bypass.lua"))()
