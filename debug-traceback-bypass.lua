@@ -5,6 +5,7 @@ local h; h = hookfunction(getrenv().debug.traceback, function(...)
 
     if not checkcaller() and typeof(res) == "string" and string.match(res, exploitsrc) then
         res = string.gsub(res, exploitsrc .. ":%d+\n", "")
+        res = string.gsub(res, exploitsrc .. ":%d+", "")
     end
 
     return res
