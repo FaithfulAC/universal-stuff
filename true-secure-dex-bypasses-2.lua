@@ -1,15 +1,12 @@
---[[
-	https://youtu.be/PTVHOEFqlkw
-	demo of true secure dex being (properly) used on some popular anticheat-specific games
-]]
-
--- forks from universal bypasses by babyhamsta and obviously originally inspired by secure dex by babyhamsta
+-- inspiration from universal bypasses by babyhamsta and obviously originally inspired by secure dex by babyhamsta
 -- if you find any errors or detections in the logic of any of these hooks please submit an issue (or pull request if you're that dedicated)
 
 --[[
+	made by @__europa
+
 	big thanks to:
-	kaxr for indirectly helping make true secure dex as secure as it is
-	ludi for his detectable but still applicable preloadasync hook (removed for this version)
+	kar for indirectly helping make true secure dex as secure as it is
+	ludi for his detectable preloadasync hook lol (removed for this version)
 	babyhamsta for the original secure dex
 ]]
 
@@ -34,8 +31,7 @@ local compareinstances = (org and function(ins1, ins2)
 	end
 	
 	return false
-end)
-	or function(ins1, ins2)
+end) or function(ins1, ins2)
 	return typeof(ins1) == typeof(ins2) and typeof(ins1) == "Instance" and GetDebugId(ins1) == GetDebugId(ins2)
 end
 
@@ -49,20 +45,100 @@ local ContentProvider = cloneref(game:GetService("ContentProvider"))
 local StarterGui = cloneref(game:GetService("StarterGui"))
 local PlayerGui = cloneref(game:GetService("Players").LocalPlayer:FindFirstChildWhichIsA("PlayerGui"))
 local DexGui = Dex or Bypassed_Dex or CoreGui:FindFirstChild("RobloxGui") -- for textbox
-
 repeat task.wait() until game:IsLoaded()
+
+-- for realism of gcinfo, inscount, and memory spoofs
+local gcinfo_ret, inscount_ret, memtag_ret, totalmem_ret
+	= gcinfo(), Stats.InstanceCount, Stats:GetMemoryUsageMbForTag("Gui"), Stats:GetTotalMemoryUsageMb();
+
+local GetRandomMemoryIncrease = function()
+	return ((math.random(1e7, 1e9)*1005)+.5)/1e14
+end
+
+local GuiClasses = { -- instances that can increase memory for gui
+	TextLabel = GetRandomMemoryIncrease(),
+	TextButton = GetRandomMemoryIncrease(),
+	Frame = GetRandomMemoryIncrease(),
+	VideoFrame = GetRandomMemoryIncrease(),
+	ViewportFrame = GetRandomMemoryIncrease(),
+	ScrollingFrame = GetRandomMemoryIncrease(),
+	ImageLabel = GetRandomMemoryIncrease(),
+	ImageButton = GetRandomMemoryIncrease()
+}
+
+game.DescendantAdded:Connect(function(ins) -- mark those under datamodel
+	if not IsDescendantOf(ins, DexGui) then
+		if table.find(GuiClasses, ins.ClassName) then
+			memtag_ret += GuiClasses[ins.ClassName]
+		end
+		ins = nil
+		inscount_ret += 1
+	end
+end)
+
+game.DescendantRemoving:Connect(function(ins)
+	if not IsDescendantOf(ins, DexGui) then
+		ins = nil
+		task.wait(math.random())
+		inscount_ret -= 1
+	end
+end)
+
+local OrgClone;
+
+local markup = function(...)
+	local result = OrgClone(...)
+
+	if not checkcaller() and typeof(result) == "Instance" and result.Parent == nil then
+		if table.find(GuiClasses, result.ClassName) then
+			memtag_ret += GuiClasses[result.ClassName]
+		end
+		
+		inscount_ret += 1
+	end
+
+	return result
+end
+
+OrgClone = hookfunction(game.Clone, markup)
+hookfunction(game.clone, markup)
+
+local CloneHook; CloneHook = hookmetamethod(game, "__namecall", function(...)
+	local self = ...
+	local method = getnamecallmethod()
+
+	if not checkcaller() and typeof(self) == "Instance" and (method == "Clone" or method == "clone") then
+		return markup(...)
+	end
+
+	return CloneHook(...)
+end)
+
+local InsCountHook; InsCountHook = hookfunction(getrenv().Instance.new, function(...)
+	local result = InsCountHook(...)
+
+	if not checkcaller() and typeof(result) == "Instance" and select(2,...) == nil then
+		if table.find(GuiClasses, result.ClassName) then
+			memtag_ret += GuiClasses[result.ClassName]
+		end
+		
+		inscount_ret += 1
+	end
+
+	return result
+end)
 
 -- gcinfo / collectgarbage spoof
 task.spawn(function()
-	local ret, max, mini;
+	local max, mini;
 	
 	max = gcinfo() + math.random(math.floor(gcinfo()/6), math.floor(gcinfo()/4))
 	mini = gcinfo() - math.random(math.floor(gcinfo()/6), math.floor(gcinfo()/4))
-	ret = gcinfo()
+	gcinfo_ret = gcinfo()
 
 	local function decrease()
 		for i = 1, 4 do
-			ret = max - math.floor(((max - mini*1.25)*(i/4))+math.random(-20,20))
+			gcinfo_ret = max - math.floor(((max - mini*1.25)*(i/4))+math.random(-20,20))
 			task.wait(math.random(25,45)/1000)
 		end
 	end
@@ -72,21 +148,21 @@ task.spawn(function()
 
 	task.spawn(function()
 		while RunService.Heartbeat:Wait() do
-			if ret > max + math.random(-50,50) then decrease() end
+			if gcinfo_ret > max + math.random(-50,50) then decrease() end
 			
-			ret += math.floor(math.random(range1,range2)/10000)
+			gcinfo_ret += math.floor(math.random(range1,range2)/10000)
 			game.ItemChanged:Wait()
 			
-			ret += math.random(2)
+			gcinfo_ret += math.random(2)
 			game.ItemChanged:Wait()
 			
-			ret += 1
+			gcinfo_ret += 1
 		end
 	end)
 
 	local h1; h1 = hookfunction(getrenv().gcinfo, function(...)
 		if not checkcaller() then
-			return ret
+			return gcinfo_ret
 		end
 		
 		return h1(...)
@@ -96,7 +172,7 @@ task.spawn(function()
 		local cnt = ...
 
 		if not checkcaller() and typeof(cnt) == "string" and string.split(cnt, "\0")[1] == "count" then
-			return ret
+			return gcinfo_ret
 		end
 
 		return h2(...)
@@ -105,14 +181,12 @@ end)
 
 -- memory spoof
 task.spawn(function()
-	local ret = Stats:GetTotalMemoryUsageMb()
-
 	task.spawn(function()
 		local switchoff = false
 		
 		while RunService.Heartbeat:Wait() do
 			switchoff = not switchoff
-			ret += (math.random(-2,2)/(if switchoff then 32 else 64)) - (math.random(-1,1)/2)
+			totalmem_ret += (math.random(-2,2)/(if switchoff then 32 else 64)) - (math.random(-1,1)/2)
 
 			task.wait(math.random(1,3)/90)
 		end
@@ -123,7 +197,7 @@ task.spawn(function()
 		local method = string.gsub(getnamecallmethod(), "^%u", string.lower)
 
 		if not checkcaller() and compareinstances(self, Stats) and method == "getTotalMemoryUsageMb" then
-			return ret
+			return totalmem_ret
 		end
 		
 		return h1(...)
@@ -133,7 +207,7 @@ task.spawn(function()
 		local self = ...
 
 		if not checkcaller() and compareinstances(self, Stats) then
-			return ret
+			return totalmem_ret
 		end
 
 		return h2(...)
@@ -150,15 +224,13 @@ task.spawn(function()
 			typeof(item) == "string" and string.split(item, "\0")[1] == "Gui"
 	end
 
-	local ret = Stats:GetMemoryUsageMbForTag(enum)
-
 	task.spawn(function()
 		local switchoff = false
 		
 		while RunService.Heartbeat:Wait() do
 			if math.random(1, 10) == 1 then
 				switchoff = not switchoff
-				ret += math.random(-2,2)/(if switchoff then 64 else 128) + (math.random(-1,1)/20)
+				memtag_ret += math.random(-2,2)/(if switchoff then 64 else 128) + (math.random(-1,1)/20)
 
 				task.wait(math.random(1,3)/90)
 			end
@@ -170,17 +242,17 @@ task.spawn(function()
 		local method = string.gsub(getnamecallmethod(), "^%u", string.lower)
 
 		if not checkcaller() and compareinstances(self, Stats) and method == "getMemoryUsageMbForTag" and isGui(newenum) then
-			return ret
+			return memtag_ret
 		end
 
 		return h1(...)
 	end)
 	
-	local h2; h2 = hookfunction(Stats.GetTotalMemoryUsageMb, function(...)
+	local h2; h2 = hookfunction(Stats.GetMemoryUsageMbForTag, function(...)
 		local self, arg = ...
 
 		if not checkcaller() and compareinstances(self, Stats) and isGui(arg) then
-			return ret
+			return memtag_ret
 		end
 
 		return h2(...)
@@ -312,23 +384,6 @@ end)
 
 -- instancecount bypass
 task.spawn(function()
-	local org = Stats.InstanceCount
-	
-	game.DescendantAdded:Connect(function(ins) -- mark those under datamodel
-		if not IsDescendantOf(ins, CoreGui) then
-			ins = nil
-			org += 1
-		end
-	end)
-	
-	game.DescendantRemoving:Connect(function(ins)
-		if not IsDescendantOf(ins, CoreGui) then
-			ins = nil
-			task.wait(math.random())
-			org -= 1
-		end
-	end)
-
 	local h1; h1 = hookmetamethod(game,"__index", function(...)
 		local self, arg = ...
 
@@ -336,49 +391,13 @@ task.spawn(function()
 			local res = h1(...)
 			
 			if string.split(string.gsub(arg, "^%u", string.lower), "\0")[1] == "instanceCount" and typeof(res) == "number" then
-				return org
+				return inscount_ret
 			end
 			
 			return res
 		end
 		
 		return h1(...)
-	end)
-
-	local h2; h2 = hookfunction(getrenv().Instance.new, function(...) -- mark those under nil
-		local result = h2(...)
-		
-		if not checkcaller() and typeof(result) == "Instance" and select(2,...) == nil then
-			org += 1
-		end
-
-		return result
-	end)
-	
-	local orgclone;
-	
-	local markup = function(...)
-		local result = orgclone(...)
-		
-		if not checkcaller() and typeof(result) == "Instance" and result.Parent == nil then
-			org += 1
-		end
-
-		return result
-	end
-	
-	orgclone = hookfunction(game.Clone, markup)
-	hookfunction(game.clone, markup)
-	
-	local h3; h3 = hookmetamethod(game, "__namecall", function(...)
-		local self = ...
-		local method = getnamecallmethod()
-		
-		if not checkcaller() and typeof(self) == "Instance" and (method == "Clone" or method == "clone") then
-			return markup(...)
-		end
-		
-		return h3(...)
 	end)
 end)
 
