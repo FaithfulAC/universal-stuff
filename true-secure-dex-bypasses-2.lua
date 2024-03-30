@@ -526,21 +526,21 @@ task.spawn(function()
 								and
 								(type(v) == "userdata" or typeof(v) == "table")
 							then
-								rawset(res, i, nil)
+								rawset(res, v, nil)
 								i, v = nil, nil
 							end
 						end
 					elseif Mode == "v" then
 						for i, v in pairs(res) do
 							if type(v) == "userdata" or typeof(v) == "table" then
-								rawset(res, i, nil)
+								rawset(res, v, nil)
 								i, v = nil, nil
 							end
 						end
 					elseif Mode == "k" then
 						for i, v in pairs(res) do
 							if type(i) == "userdata" or typeof(i) == "table" then
-								rawset(res, i, nil)
+								rawset(res, v, nil)
 								i, v = nil, nil
 							end
 						end
