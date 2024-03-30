@@ -1,8 +1,6 @@
 -- C stack overflow bypass by @__europa
--- (should now no longer be detected in any capacity [except for (C) stack overflow checks which can be fixed by converting this code into the C side], please submit an issue if a detection is found)
+-- can be circumnavigated in many ways however this can be used to bypass most of the skidded hook checks
 -- thanks to unlimited, xnx, ka(x)r and ESPECIALLY ludi for helping with detections
-
--- Under maintenance to fix detection vector(s), hence https://github.com/FaithfulAC/universal-stuff/edit/main/c-stack-overflow-universal-bypass-EXPERIMENTIAL.lua
 
 local _cache = {}
 
