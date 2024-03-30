@@ -9,7 +9,7 @@
 --[[
 	big thanks to:
 	kaxr for indirectly helping make true secure dex as secure as it is
-	ludi for his detectable but still applicable preloadasync hook
+	ludi for his detectable but still applicable preloadasync hook (removed for this version)
 	babyhamsta for the original secure dex
 ]]
 
