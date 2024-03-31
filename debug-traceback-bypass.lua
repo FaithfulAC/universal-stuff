@@ -1,4 +1,4 @@
-local exploitsrc = debug.info(1, "s")
+local exploitsrc = debug.info(1, "s") -- if your exploit src changes every execution you're fucked
 
 local h; h = hookfunction(getrenv().debug.traceback, function(...)
     local res = h(...)
