@@ -1,13 +1,13 @@
 --[[
-C stack overflow bypass by @__europa
-weaktable detections fixed, still not an impenetrable bypass
-can absolutely be used to bypass skidded hookfunction detections though ;)
-thanks to these people for helping with detections:
+	C stack overflow bypass by @__europa
+	weaktable detections fixed, still not an impenetrable bypass
+	can absolutely be used to bypass skidded hookfunction detections though ;)
+	thanks to these people for helping with detections:
 
-unlimited (@unlimited_objects)
-xnx (@xoifail)
-kar (@kaxr)
-ludi (@ludi.) -- especially ludi :)
+	unlimited (@unlimited_objects)
+	xnx (@xoifail)
+	kar (@kaxr)
+	ludi (@ludi.) -- especially ludi :)
 ]]
 
 local _cache = {}
