@@ -20,8 +20,8 @@ local function checkincache(func)
 	for i, v in _cache do
 		if v[1] == func then
 			return v
-        elseif not v[1] then -- gc (__mode = "v")
-            _cache[i] = nil
+        	elseif not v[1] then -- gc (__mode = "v")
+            		_cache[i] = nil
 		end
 	end
 	return nil
