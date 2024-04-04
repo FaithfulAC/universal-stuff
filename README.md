@@ -1,1 +1,1 @@
-Hi. No point in reading this, the entire thing is self-explanatory; these are meant to be used universally, simple.
+Hey there. This repository consists of many different things that may prove convenient to me at some point in time. Or maybe never. Hopefully they can help you, though. ;)
