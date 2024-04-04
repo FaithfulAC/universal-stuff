@@ -6,9 +6,8 @@ local cclosure = newcclosure
 local KeepOriginalHookMetaMethod = getgenv().KeepHMM or getgenv().KeepOriginalHookMetaMethod or false
 local LoadCStackOverflowBypass = getgenv().LoadCSOBypass or false -- keeping false cuz it is detectable and there are other hookmm detection methods
 
-if LoadCStackOverflowBypass and not getgenv().IsHookingSafe then -- checking if c stack overflow bypass was already initiated
+if LoadCStackOverflowBypass then -- checking if c stack overflow bypass was already initiated
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/c-stack-overflow-universal-bypass.lua"))()
-	repeat task.wait() until getgenv().IsHookingSafe
 end
 
 local __namecall, __index, __newindex
