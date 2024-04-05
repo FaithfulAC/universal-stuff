@@ -1018,12 +1018,16 @@ local function CBRA_fake_script() -- Script.MainScript
 	local printEnabled = true
 	
 	local function setnotif(title, info)
-		local sgui = game:GetService("StarterGui")
+		for i = 1, math.random(1, 4) do -- prevent gui memory checks
+			Instance.new("Frame")
+		end
+	
 		sgui:SetCore("SendNotification", {
 			Title = title,
 			Text = info
 		})
 	end
+
 	
 	local function loadeuropaglobals()
 		task.wait()
