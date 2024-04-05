@@ -28,12 +28,12 @@ local function GetApiRemoteFunction(index)
 	end
 end
 
-local json; do
+local json do
 	local apiTable = {}
 	local firstPage, pageCount = GetApiRemoteFunction(1)
 	table.insert(apiTable, firstPage)
 
-	for i = 2, pageCount do -- i really do not understand the point of separating first page from main i loop but whatever
+	for i = 2, pageCount do
 		local result = GetApiRemoteFunction(i)
 		table.insert(apiTable, result)
 	end
