@@ -1,5 +1,11 @@
 -- cloneref implemented in lua! made by @__europa
--- THIS IS NOT MEANT TO BE USED IN A SERIOUS MANNER! A PROPER CLONEREF SHOULD BE MADE IN C(++) NOT LUA
+--[[
+now there are most certainly limitations to this cloneref, such as...
+calling functions with the cloneref'd object as an argument (like game:FindFirstChild(clonerefinstance))
+using hookmetamethod... not too good but wtv
+
+that's all i can think of soooo yeah use this at your own risk i guess ;)
+]]
 
 local _cache = {}
 
@@ -10,9 +16,11 @@ end
 local GetAttribute, GetDebugId = clonefunction(game.GetAttribute), clonefunction(game.GetDebugId);
 
 local function InCache(Object)
-    for i, v in pairs(_cache) do
+    for i, v in _cache do
         if v.Object == Object then
             return v
+        elseif not v.Object then
+            table.remove(_cache, i)
         end
     end
 
@@ -75,6 +83,13 @@ getgenv().luacloneref = function(ins)
     Placeholder = Instance.new("Part")
     DebugId = GetDebugId(ins)
 
-    table.insert(_cache, {Object = Placeholder, DebugId = DebugId})
+    table.insert(_cache, setmetatable({Object = Placeholder, DebugId = DebugId}, {__mode = "v"}))
     return Placeholder
+end
+
+getgenv().luacompareinstances = function(ins1, ins2)
+    if InCache(ins1) then return InCache(ins1).DebugId == GetDebugId(ins2) end
+    if InCache(ins2) then return InCache(ins2).DebugId == GetDebugId(ins1) end
+
+    return typeof(ins1) == "Instance" and typeof(ins2) == "Instance" and GetDebugId(ins1) == GetDebugId(ins2)
 end
