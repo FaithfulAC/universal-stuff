@@ -1,7 +1,6 @@
 --[[
 	C stack overflow bypass by @__europa
-	weaktable detections fixed, still not an impenetrable bypass
-	can absolutely be used to bypass skidded hookfunction detections though ;)
+	can be used to bypass skidded hookfunction detections
 	thanks to these people for helping with detections:
 
 	unlimited (@unlimited_objects)
@@ -20,8 +19,8 @@ local function checkincache(func)
 	for i, v in _cache do
 		if v[1] == func then
 			return v
-        	elseif not v[1] then -- gc (__mode = "v")
-            		_cache[i] = nil
+		elseif not v[1] then -- gc (__mode = "v")
+			_cache[i] = nil
 		end
 	end
 	return nil
@@ -37,12 +36,14 @@ local function insertincache(func, ofunc)
 			local __args = {pcall(h(ofunc), ...)}
 			local bigerr = __args[2]
 
-			if (bigerr ~= "cannot resume dead coroutine" and cachevalue[2] > 198) then
-				task.spawn(cachevalue[4])
-				return error("C stack overflow", 2)
-			elseif bigerr == "cannot resume dead coroutine" or select(2, pcall(h(func))) == "cannot resume dead coroutine" then
-				task.spawn(cachevalue[4])
-				return error("cannot resume dead coroutine", 2)
+			if not __args[1] then
+				if (bigerr ~= "cannot resume dead coroutine" and cachevalue[2] > 198) then
+					task.spawn(cachevalue[4])
+					return error("C stack overflow", 2)
+				elseif bigerr == "cannot resume dead coroutine" or select(2, pcall(h(func))) == "cannot resume dead coroutine" then
+					task.spawn(cachevalue[4])
+					return error("cannot resume dead coroutine", 2)
+				end
 			end
 			task.spawn(cachevalue[4])
 
@@ -67,7 +68,7 @@ h = hookfunction(getrenv().coroutine.wrap, function(...)
 			if cachevalue[2] == 195 then
 				local newfunc = h(cachevalue[3])
 				cachevalue[1], cachevalue[3] = newfunc, newfunc
-				
+
 				cachevalue[2] += 1
 				return newfunc
 			end
