@@ -27,7 +27,7 @@ local function checkincache(func)
 end
 
 local function insertincache(func, ofunc)
-	local thetbl; thetbl = setmetatable({
+	local thetbl; thetbl = {
 		func,
 		1,
 		function(...)
@@ -53,7 +53,7 @@ local function insertincache(func, ofunc)
 		function()
 			table.remove(_cache, table.find(_cache, thetbl))
 		end
-	}, {__mode = "v"})
+	}
 
 	table.insert(_cache, thetbl)
 end
