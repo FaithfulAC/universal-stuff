@@ -1,6 +1,7 @@
---[[ undergoing rewrite trust
-	C stack overflow bypass by @__europa
-	can be used to bypass skidded hookfunction detections
+--[[
+	C stack overflow bypass (rewritten) by @__europa
+	there are 3+ unique vulnerabilities to this bypass excluding stack overflow checks
+	i challenge whoever to bypass those vectors and do a pull request, bounty is 0 robux
 	thanks to these people for helping with detections:
 
 	unlimited (@unlimited_objects)
@@ -9,82 +10,88 @@
 	ludi (@ludi.) -- especially ludi :)
 ]]
 
-local _cache = {}
-local blacklist = getgenv().blacklist or getgenv().CStackOverflowBypassBlacklist or {}
+local Cache = {}
+local WrapHook;
 
-local info, print, warn, error = getrenv().debug.info, getrenv().print, getrenv().warn, getrenv().error;
-local h;
-
-local function checkincache(func)
-	for i, v in _cache do
-		if v[1] == func then
-			return v
-		elseif not v[1] then -- gc (__mode = "v")
-			_cache[i] = nil
+local function IsInCache(func)
+	for i, tbl in Cache do
+		if tbl.Wrapped == func or tbl.ReplacementFunc == func then
+			return tbl
 		end
 	end
 	return nil
 end
 
-local function insertincache(func, ofunc)
-	local thetbl; thetbl = {
-		func,
-		1,
-		function(...)
-			local cachevalue = thetbl;
-
-			local __args = {pcall(h(ofunc), ...)}
-			local bigerr = __args[2]
-
-			if not __args[1] then
-				if (bigerr ~= "cannot resume dead coroutine" and cachevalue[2] > 198) then
-					task.spawn(cachevalue[4])
-					return error("C stack overflow", 2)
-				elseif bigerr == "cannot resume dead coroutine" or select(2, pcall(h(func))) == "cannot resume dead coroutine" then
-					task.spawn(cachevalue[4])
-					return error("cannot resume dead coroutine", 2)
+local function InsertInCache(func, wrapped)
+	if typeof(func) ~= "function" or typeof(wrapped) ~= "function" then return end
+	
+	local New; New = {
+		WrapCount = 1,
+		Original = func,
+		ReplacementFunc = function(...)			
+			local args = {pcall(WrapHook(func), ...)}
+			
+			if not args[1] then
+				local err = args[2]
+				
+				if err ~= "cannot resume dead coroutine" and New.WrapCount > 198 then
+					task.spawn(New.Gc)
+					return error("C stack overflow", 0)
+				elseif err == "cannot resume dead coroutine" or select(2, pcall(WrapHook(wrapped))) == "cannot resume dead coroutine" then
+					task.spawn(New.Gc)
+					return error("cannot resume dead coroutine", 0)
 				end
+				
+				task.spawn(New.Gc)
+				return error(err, 0)
 			end
-			task.spawn(cachevalue[4])
-
-			if __args[1] then return select(2, unpack(__args)) end
-			error(select(2, unpack(__args)), 2)
+			
+			task.spawn(New.Gc)			
+			return select(2, unpack(args))
 		end,
-		function()
-			table.remove(_cache, table.find(_cache, thetbl))
-		end
+		Wrapped = wrapped,
+		Gc = function()
+			table.remove(Cache, table.find(Cache, New))
+		end,
 	}
-
-	table.insert(_cache, thetbl)
+	
+	table.insert(Cache, New)
 end
 
--- the actual hook
-h = hookfunction(getrenv().coroutine.wrap, function(...)
-	local fnc1 = ...
-
-	if not checkcaller() and typeof(fnc1) == "function" and not table.find(blacklist, fnc1) then
-		local cachevalue = checkincache(fnc1)
-		if cachevalue then
-			if cachevalue[2] == 195 then
-				local newfunc = h(cachevalue[3])
-				cachevalue[1], cachevalue[3] = newfunc, newfunc
-
-				cachevalue[2] += 1
-				return newfunc
+WrapHook = hookfunction(getrenv().coroutine.wrap, function(...)
+	local Target = ...
+	
+	if not checkcaller() and typeof(Target) == "function" then
+		local CacheTbl = IsInCache(Target)
+		
+		if CacheTbl then
+			CacheTbl.WrapCount += 1
+			
+			if CacheTbl.WrapCount == 195 then
+				local NewFunc = WrapHook(CacheTbl.ReplacementFunc)
+				CacheTbl.Original, CacheTbl.ReplacementFunc = NewFunc, NewFunc
+				CacheTbl.Wrapped = WrapHook(CacheTbl.Wrapped)
+				
+				return NewFunc
+			elseif CacheTbl.WrapCount < 195 or CacheTbl.WrapCount > 198 then
+				local NewFunc = WrapHook(CacheTbl.Wrapped)
+				CacheTbl.Wrapped = NewFunc
+				
+				return NewFunc
 			end
-
-			local res = h(...)
-			cachevalue[1] = res
-			cachevalue[2] += 1
-
-			return res
+			
+			local NewFunc = WrapHook(CacheTbl.ReplacementFunc)
+			CacheTbl.Original, CacheTbl.ReplacementFunc = NewFunc, NewFunc
+			CacheTbl.Wrapped = WrapHook(WrapHook(CacheTbl.Wrapped))
+			
+			return NewFunc
 		else
-			local res = h(...)
-			insertincache(res, fnc1)
-
-			return res
+			local arg = WrapHook(...)
+			InsertInCache(Target, arg)
+			
+			return arg
 		end
 	end
-
-	return h(...)
+	
+	return WrapHook(...)
 end)
