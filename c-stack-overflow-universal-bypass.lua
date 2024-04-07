@@ -1,4 +1,4 @@
---[[
+--[[ undergoing rewrite trust
 	C stack overflow bypass by @__europa
 	can be used to bypass skidded hookfunction detections
 	thanks to these people for helping with detections:
