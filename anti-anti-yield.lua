@@ -1,4 +1,4 @@
--- ...for one variation of an anti yield. not meant to be used too universally guys wink wink
+-- ...for one variation of an anti yield. not meant to be used universally guys wink wink
 -- ofc made by @__europa make issue for any bugs/logical errors
 
 --[[
