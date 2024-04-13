@@ -49,7 +49,7 @@ end, function(...)
 	local args = {...}
 	local self = args[1]
 	
-	if typeof(self) == "Instance" and isSafeIndex(args[2]) and #args >= 3 then return true end
+	if typeof(self) == "Instance" and isSafeIndex(args[2]) and select("#", ...) >= 3 then return true end
 	return false
 	
 end
