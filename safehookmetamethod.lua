@@ -1,5 +1,11 @@
 -- basically a lua implementation of arg guard (which every executor should have by default rn but GUESS NOT!)
 
+local options = shmmoptions or safehookmetamethodoptions or {
+	Namecall = true,
+	Index = true,
+	Newindex = true
+}
+
 local hmm = hookmetamethod -- hmmmmmmmmmmmmmmmm
 local cclosure = newcclosure
 
@@ -43,33 +49,38 @@ end, function(...)
 	local args = {...}
 	local self = args[1]
 	
-	if typeof(self) == "Instance" and isSafeIndex(args[2]) and select("#", ...) >= 3 then return true end
+	if typeof(self) == "Instance" and isSafeIndex(args[2]) and #args >= 3 then return true end
 	return false
 	
 end
 
 local __oldnamecall, __oldindex, __oldnewindex = __namecall, __index, __newindex;
 
-hmm(game,"__namecall", function(...)
-	local args = {...}
-	if not sNamecall(...) then return __oldnamecall(...) end
+if options.Namecall then
+	hmm(game,"__namecall", function(...)
+		local args = {...}
+		if not sNamecall(...) then return __oldnamecall(...) end
 	
-	return __namecall(...)
-end)
+		return __namecall(...)
+	end)
+end
 
-hmm(game,"__index", function(...)
-	local args = {...}
-	if not sIndex(...) then return __oldindex(...) end
+if options.Index then
+	hmm(game,"__index", function(...)
+		local args = {...}
+		if not sIndex(...) then return __oldindex(...) end
 	
-	return __index(...)
-end)
+		return __index(...)
+	end)
+end
 
-hmm(game,"__newindex", function(...)
-	local args = {...}
-	if not sNewindex(...) then return __oldnewindex(...) end
+if options.Newindex then
+	hmm(game,"__newindex", function(...)
+		local args = {...}
+		if not sNewindex(...) then return __oldnewindex(...) end
 	
-	return __newindex(...)
-end)
+		return __newindex(...)
+	end)
 
 getgenv().safehookmetamethod = function(...)
 	local obj, method, fnc = ...
