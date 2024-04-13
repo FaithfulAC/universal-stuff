@@ -3,6 +3,10 @@
 
 -- Fixed deter print issues
 
+for i = 1, math.random(2, 5) do
+	Instance.new("Script"):Destroy()
+end
+
 -- Instances:
 
 local Exec = Instance.new("ScreenGui")
