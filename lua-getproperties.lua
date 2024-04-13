@@ -1,6 +1,7 @@
 -- Mostly ripped from Dex's RbxApi handling
 
-local jsonstring = game:HttpGet("http://anaminus.github.io/rbx/json/api/latest.json")
+--local jsonstring = game:HttpGet("http://anaminus.github.io/rbx/json/api/latest.json")
+local jsonstring = game:HttpGet("https://raw.githubusercontent.com/MaximumADHD/Roblox-Client-Tracker/roblox/API-Dump.json")
 local maxChunkSize = 100 * 1000
 
 local apiChunks = {}
