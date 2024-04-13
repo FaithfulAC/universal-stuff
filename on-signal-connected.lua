@@ -1,8 +1,3 @@
--- made by @__europa
--- note that new exploit connections will not be registered when this is first ran (which it should be first ran)
--- this is for safety measures as calling getconnections in one of the onSignalConnected functions will c stack overflow in some Certain executors
--- so there you have it :)
-
 local rbxsignal = game.Changed -- RBXScriptSignal, to be used as the example metatable whose metamethods will be hooked (will be turned to nil later)
 local host = {}
 
@@ -51,7 +46,7 @@ local h; h = hookmetamethod(rbxsignal, "__index", function(...)
 					end,
 
 					Connect = function(self, func)
-						if self ~= new then return error("Expected ':' not '.' calling signal-member function Disconnect", 0) end
+						if self ~= new then return error("Expected ':' not '.' calling signal-member function Connect", 0) end
 						
 						new.Function = func
 						if not table.find(host, new) then
@@ -76,23 +71,25 @@ end)
 rbxsignal = nil;
 local temphost = {}
 
-for i, v in next, getgc() do
-	if typeof(v) == "function" and iscclosure(v) then
-		if getrenv().debug.info(v, "n") == "Connect" and not table.find(temphost, v) then
-			local temp; temp = hookfunction(v, function(...)
-				local self, func = ...
+if workspace.DistributedGameTime > 1 then -- practically means not run in autoexec
+	for i, v in next, getgc() do
+		if typeof(v) == "function" and iscclosure(v) then
+			if getrenv().debug.info(v, "n") == "Connect" and not table.find(temphost, v) then
+				local temp; temp = hookfunction(v, function(...)
+					local self, func = ...
 
-				if not checkcaller() and typeof(self) == "RBXScriptSignal" and typeof(func) == "function" then
-					local res2 = temp(...)
-					fire(self, res2, func)
+					if not checkcaller() and typeof(self) == "RBXScriptSignal" and typeof(func) == "function" then
+						local res2 = temp(...)
+						fire(self, res2, func)
 
-					return res2
-				end
+						return res2
+					end
 
-				return temp(...)
-			end)
+					return temp(...)
+				end)
 
-			table.insert(temphost, v)
+				table.insert(temphost, v)
+			end
 		end
 	end
 end
