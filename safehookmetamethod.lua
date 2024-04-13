@@ -81,32 +81,27 @@ if options.Newindex then
 	
 		return __newindex(...)
 	end)
-
+end
+	
 getgenv().safehookmetamethod = function(...)
 	local obj, method, fnc = ...
 	if typeof(obj) ~= "Instance" then return hmm(...) end -- object is not an Instance therefore is not supported
 	
 	if method == "__namecall" then
 		local orgnm = __namecall
-		__namecall = (function(...)
-			return cclosure(fnc)(...)
-		end)
+		__namecall = cclosure(fnc)
 		
 		return orgnm
 		
 	elseif method == "__index" then
 		local orgi = __index
-		__index = (function(...)
-			return cclosure(fnc)(...)
-		end)
+		__index = cclosure(fnc)
 		
 		return orgi
 		
 	elseif method == "__newindex" then
 		local orgni = __newindex
-		__newindex = (function(...)
-			return cclosure(fnc)(...)
-		end)
+		__newindex = cclosure(fnc)
 		
 		return orgni
 		
