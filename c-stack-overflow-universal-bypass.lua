@@ -1,5 +1,5 @@
 --[[
-	C stack overflow bypass (rewritten) by @__europa
+	C stack overflow bypass (rewritten but discontinued for now :(( ) by @__europa
 	there are 3+ unique vulnerabilities to this bypass excluding stack overflow checks
 	i challenge whoever to bypass those vectors and do a pull request, bounty is 0 robux
 	thanks to these people for helping with detections:
