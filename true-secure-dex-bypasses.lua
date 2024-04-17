@@ -536,6 +536,8 @@ task.spawn(function()
 	end
 	
 	folder:Destroy()
+
+	local CanBeCollected = function(obj) return (typeof(obj) == "table" or type(obj) == "userdata") or (typeof(obj) == "function" and iscclosure(obj)) end
 	
 	local h; h = hookfunction(getrenv().setmetatable, function(...)
 		local tbl1, tbl2 = ...
@@ -563,9 +565,9 @@ task.spawn(function()
 					if Mode == "kv" then
 						for i, v in pairs(res) do
 							if
-								(type(i) == "userdata" or typeof(i) == "table")
+								CanBeCollected(i)
 								and
-								(type(v) == "userdata" or typeof(v) == "table")
+								CanBeCollected(v)
 							then
 								rawset(res, v, nil)
 								i, v = nil, nil
@@ -573,14 +575,14 @@ task.spawn(function()
 						end
 					elseif Mode == "v" then
 						for i, v in pairs(res) do
-							if type(v) == "userdata" or typeof(v) == "table" then
+							if CanBeCollected(v) then
 								rawset(res, v, nil)
 								i, v = nil, nil
 							end
 						end
 					elseif Mode == "k" then
 						for i, v in pairs(res) do
-							if type(i) == "userdata" or typeof(i) == "table" then
+							if CanBeCollected(i) then
 								rawset(res, v, nil)
 								i, v = nil, nil
 							end
