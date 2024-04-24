@@ -21,7 +21,7 @@ end
 
 for i, Script in Dex:GetDescendants() do
 	if Script.ClassName == "Script" or Script.ClassName == "LocalScript" then
-		local func = loadstring(Script.Source, "=" .. Script:GetFullName())
+		local func = loadstring(Script.Source) -- no source will be defined for detection/security purposes
 		getfenv(func).script = Script
 		--setfenv(func, 1)
 		
