@@ -9,7 +9,7 @@ local fire = function(signal, ...)
 	end
 end
 
-local h; h = hookmetamethod(rbxsignal, "__index", function(...)
+local h; h = hookmetamethod(rbxsignal, "__index", newcclosure(function(...)
 	local self, prop = ...
 	
 	if typeof(self) == "RBXScriptSignal" and typeof(prop) == "string" then
@@ -66,7 +66,7 @@ local h; h = hookmetamethod(rbxsignal, "__index", function(...)
 	end
 
 	return h(...)
-end)
+end))
 
 rbxsignal = nil;
 local temphost = {}
