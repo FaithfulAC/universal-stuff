@@ -1,4 +1,7 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses.lua"))()
+if getrenv and hookfunction and hookmetamethod then
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses.lua"))()
+end
+
 task.wait(.2)
 
 -- it's broken, fuck! revert to babyhamsta's model i guess :(
