@@ -1026,7 +1026,7 @@ local function CBRA_fake_script() -- Script.MainScript
 			Instance.new("Frame")
 		end
 	
-		sgui:SetCore("SendNotification", {
+		game:GetService("StarterGui"):SetCore("SendNotification", {
 			Title = title,
 			Text = info
 		})
