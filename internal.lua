@@ -1036,7 +1036,7 @@ local function CBRA_fake_script() -- Script.MainScript
 	local function loadeuropaglobals()
 		task.wait()
 		if getgenv().europa then return end
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/Megaprojects/main/europa%20library%20wip"))()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/Megaprojects/main/europa_library_wip.lua"))()
 		setnotif("Library", "Europa Library Loaded")
 	end
 	
