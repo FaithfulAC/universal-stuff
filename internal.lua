@@ -1042,7 +1042,7 @@ local function CBRA_fake_script() -- Script.MainScript
 	
 	local tempe = select(2, pcall(loadeuropaglobals))
 	if tempe and not tempe:find("HttpGet") and not tempe:find("CoreScripts") then
-		error("An error occured while loading europatech:", ((string.split(tempe, ":")[3]) or tempe))
+		warn("An error occured while loading europatech: " .. ((string.split(tempe, ":")[3]) or tempe))
 		return
 	end
 	
