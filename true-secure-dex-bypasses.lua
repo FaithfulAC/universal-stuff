@@ -57,7 +57,7 @@ local GuiService = cloneref(game:GetService("GuiService"))
 local ContentProvider = cloneref(game:GetService("ContentProvider"))
 local StarterGui = cloneref(game:GetService("StarterGui"))
 local PlayerGui = cloneref(game:GetService("Players").LocalPlayer:FindFirstChildWhichIsA("PlayerGui"))
-local DexGui = Dex or Bypassed_Dex or CoreGui:FindFirstChild("RobloxGui") -- for textbox
+local DexGui = Dex or Bypassed_Dex or CoreGui -- for textbox
 repeat task.wait() until game:IsLoaded()
 
 -- for realism of gcinfo, inscount, and memory spoofs
@@ -447,10 +447,10 @@ task.spawn(function()
 	end)
 
 	local h2; h2 = hookfunction(UserInputService.GetFocusedTextBox, function(...)
-		local self, arg = ...
+		local self = ...
 
 		if not checkcaller() then
-			if compareinstances(self, UserInputService) and (typeof(arg) == "string" and string.split(string.gsub(arg, "^%u", string.lower), "\0")[1] == "getFocusedTextBox") then
+			if compareinstances(self, UserInputService) then
 				local Textbox = h2(...)
 
 				if typeof(Textbox) == "Instance" then
