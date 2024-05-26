@@ -22,6 +22,7 @@ local getconnections = getconnections
 local getgc = getgc
 local getreg = getreg
 local checkcaller = checkcaller or function() return false end
+local iscclosure = iscclosure or function(func) return debug.info(func, "s") == "[C]" end
 
 local GetDebugId = clonefunction(game.GetDebugId)
 local IsDescendantOf = clonefunction(game.IsDescendantOf)
@@ -42,7 +43,7 @@ local compareinstances = (org and function(ins1, ins2)
 	if typeof(ins1) == typeof(ins2) and typeof(ins1) == "Instance" then
 		return org(ins1, ins2)
 	end
-	
+
 	return false
 end) or function(ins1, ins2)
 	return typeof(ins1) == typeof(ins2) and typeof(ins1) == "Instance" and GetDebugId(ins1) == GetDebugId(ins2)
@@ -81,7 +82,7 @@ local GuiClasses = { -- instances that can increase memory for gui
 
 game.DescendantAdded:Connect(function(ins) -- mark those under datamodel
 	if not IsDescendantOf(ins, DexGui) then
-		if table.find(GuiClasses, ins.ClassName) then
+		if GuiClasses[result.ClassName] then
 			memtag_ret += GuiClasses[ins.ClassName]
 		end
 		ins = nil
@@ -103,10 +104,10 @@ local markup = function(...)
 	local result = OrgClone(...)
 
 	if not checkcaller() and typeof(result) == "Instance" and result.Parent == nil then
-		if table.find(GuiClasses, result.ClassName) then
+		if GuiClasses[result.ClassName] then
 			memtag_ret += GuiClasses[result.ClassName]
 		end
-		
+
 		inscount_ret += 1
 	end
 
@@ -127,14 +128,30 @@ local CloneHook; CloneHook = hookmetamethod(game, "__namecall", function(...)
 	return CloneHook(...)
 end)
 
-local InsCountHook; InsCountHook = hookfunction(getrenv().Instance.new, function(...)
+local InsCountHook, InsCountHook2;
+
+InsCountHook = hookfunction(getrenv().Instance.new, function(...)
 	local result = InsCountHook(...)
 
 	if not checkcaller() and typeof(result) == "Instance" and select(2,...) == nil then
-		if table.find(GuiClasses, result.ClassName) then
+		if GuiClasses[result.ClassName] then
 			memtag_ret += GuiClasses[result.ClassName]
 		end
-		
+
+		inscount_ret += 1
+	end
+
+	return result
+end)
+
+InsCountHook2 = hookfunction(getrenv().Instance.fromExisting, function(...)
+	local result = InsCountHook2(...)
+
+	if not checkcaller() and typeof(result) == "Instance" then
+		if GuiClasses[result.ClassName] then
+			memtag_ret += GuiClasses[result.ClassName]
+		end
+
 		inscount_ret += 1
 	end
 
@@ -145,7 +162,7 @@ end)
 task.spawn(function()
 	if not options.gcinfo then return end
 	local max, mini;
-	
+
 	max = gcinfo() + math.random(math.floor(gcinfo()/6), math.floor(gcinfo()/4))
 	mini = gcinfo() - math.random(math.floor(gcinfo()/6), math.floor(gcinfo()/4))
 	gcinfo_ret = gcinfo()
@@ -163,13 +180,13 @@ task.spawn(function()
 	task.spawn(function()
 		while RunService.Heartbeat:Wait() do
 			if gcinfo_ret > max + math.random(-50,50) then decrease() end
-			
+
 			gcinfo_ret += math.floor(math.random(range1,range2)/10000)
 			game.ItemChanged:Wait()
-			
+
 			gcinfo_ret += math.random(2)
 			game.ItemChanged:Wait()
-			
+
 			gcinfo_ret += 1
 		end
 	end)
@@ -178,10 +195,10 @@ task.spawn(function()
 		if not checkcaller() then
 			return gcinfo_ret
 		end
-		
+
 		return h1(...)
 	end)
-	
+
 	local h2; h2 = hookfunction(getrenv().collectgarbage, function(...)
 		local cnt = ...
 
@@ -198,7 +215,7 @@ task.spawn(function()
 	if not options.GetTotalMemoryUsageMb then return end
 	task.spawn(function()
 		local switchoff = false
-		
+
 		while RunService.Heartbeat:Wait() do
 			switchoff = not switchoff
 			totalmem_ret += (math.random(-2,2)/(if switchoff then 32 else 64)) - (math.random(-1,1)/2)
@@ -214,10 +231,10 @@ task.spawn(function()
 		if not checkcaller() and compareinstances(self, Stats) and method == "getTotalMemoryUsageMb" then
 			return totalmem_ret
 		end
-		
+
 		return h1(...)
 	end)
-	
+
 	local h2; h2 = hookfunction(Stats.GetTotalMemoryUsageMb, function(...)
 		local self = ...
 
@@ -233,7 +250,7 @@ end)
 task.spawn(function()
 	if not options.GetMemoryUsageMbForTag then return end
 	local enum = Enum.DeveloperMemoryTag.Gui
-	
+
 	local function isGui(item)
 		return
 			typeof(item) == "EnumItem" and item == enum or
@@ -242,7 +259,7 @@ task.spawn(function()
 
 	task.spawn(function()
 		local switchoff = false
-		
+
 		while RunService.Heartbeat:Wait() do
 			if math.random(1, 10) == 1 then
 				switchoff = not switchoff
@@ -263,7 +280,7 @@ task.spawn(function()
 
 		return h1(...)
 	end)
-	
+
 	local h2; h2 = hookfunction(Stats.GetMemoryUsageMbForTag, function(...)
 		local self, arg = ...
 
@@ -316,7 +333,7 @@ task.spawn(function()
 				return true
 			end
 		end
-		
+
 		return false
 	end
 
@@ -345,7 +362,7 @@ task.spawn(function()
 
 		if not checkcaller() and compareinstances(self, ContentProvider) and method == "preloadAsync" and type(tbl) == "table" and (find(tbl, game) or find(tbl,CoreGui)) and safecheck(tbl) then
 			local targettbl = {}
-			
+
 			for i, v in pairs(tbl) do
 				if table.find(tbl, v) == i then
 					if v == game then
@@ -375,7 +392,7 @@ task.spawn(function()
 
 		if not checkcaller() and compareinstances(self, ContentProvider) and type(tbl) == "table" and (find(tbl,game) or find(tbl,CoreGui)) and safecheck(tbl) then
 			local targettbl = {}
-			
+
 			for i, v in pairs(tbl) do
 				if table.find(tbl, v) == i then
 					if v == game then
@@ -407,14 +424,14 @@ task.spawn(function()
 
 		if not checkcaller() and compareinstances(self, Stats) and type(arg) == "string" then
 			local res = h1(...)
-			
+
 			if string.split(string.gsub(arg, "^%u", string.lower), "\0")[1] == "instanceCount" and typeof(res) == "number" then
 				return inscount_ret
 			end
-			
+
 			return res
 		end
-		
+
 		return h1(...)
 	end)
 end)
@@ -429,7 +446,7 @@ task.spawn(function()
 		if not checkcaller() then
 			if compareinstances(self, UserInputService) and method == "getFocusedTextBox" then
 				local Textbox = h1(...)
-				
+
 				if typeof(Textbox) == "Instance" then
 					local _,err = pcall(IsDescendantOf, Textbox, DexGui)
 
@@ -437,12 +454,12 @@ task.spawn(function()
 						return nil
 					end
 				end
-				
+
 				return Textbox
 			end
 		end
 
-		
+
 		return h1(...)
 	end)
 
@@ -474,17 +491,17 @@ end)
 task.spawn(function()
 	if not options.GuiObjects then return end
 	local doobityVisible = true
-	
+
 	task.spawn(function() -- randomly auto set doobityVisible to true
 		while task.wait(math.random()*3) do
 			doobityVisible = true
 		end
 	end)
-	
+
 	local h1; h1 = hookmetamethod(game, "__namecall", function(...)
 		local self, arg1, arg2 = ...
 		local method = string.gsub(getnamecallmethod(), "^%u", string.lower)
-		
+
 		if not checkcaller() and compareinstances(self, StarterGui) and rawequal(arg1, "DevConsoleVisible") then
 			if method == "getCore" then
 				return doobityVisible
@@ -492,27 +509,27 @@ task.spawn(function()
 				doobityVisible = false
 			end
 		end
-		
+
 		return h1(...)
 	end)
-	
+
 	local h2; h2 = hookfunction(StarterGui.GetCore, function(...)
 		local self, arg = ...
-		
+
 		if not checkcaller() and compareinstances(self, StarterGui) and rawequal(arg, "DevConsoleVisible") then
 			return doobityVisible
 		end
-		
+
 		return h2(...)
 	end)
-	
+
 	local h3; h3 = hookfunction(StarterGui.SetCore, function(...)
 		local self, arg1, arg2 = ...
-		
+
 		if not checkcaller() and compareinstances(self, StarterGui) and rawequal(arg1, "DevConsoleVisible") and rawequal(arg2, false) then
 			doobityVisible = false
 		end
-		
+
 		return h3(...)
 	end)
 end)
@@ -520,7 +537,7 @@ end)
 -- weaktable bypass
 task.spawn(function()
 	if not options.Weaktable then return end
-	
+
 	local list;
 	local folder = Instance.new("Folder") -- if ur doing an instance count check look above ;)
 	folder.Name = tostring(math.random())
@@ -534,11 +551,11 @@ task.spawn(function()
 			end
 		end
 	end
-	
+
 	folder:Destroy()
 
 	local CanBeCollected = function(obj) return (typeof(obj) == "table" or type(obj) == "userdata") or (typeof(obj) == "function" and iscclosure(obj)) end
-	
+
 	local h; h = hookfunction(getrenv().setmetatable, function(...)
 		local tbl1, tbl2 = ...
 
@@ -546,7 +563,7 @@ task.spawn(function()
 			local Mode;
 			if typeof(rawget(tbl2, "__mode")) == "string" then
 				local temp = string.split(rawget(tbl2, "__mode"), "\0")[1]
-				
+
 				if string.find(temp, "v") and string.find(temp, "k") then
 					Mode = "kv"
 				elseif string.find(temp, "v") then
@@ -561,7 +578,7 @@ task.spawn(function()
 
 				task.spawn(function()
 					task.wait(math.random(1,30)/60)
-					
+
 					if Mode == "kv" then
 						for i, v in pairs(res) do
 							if
