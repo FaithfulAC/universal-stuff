@@ -1,7 +1,5 @@
 --[[
-	C stack overflow bypass (plz someone pull req with check of how many c closures the function is in) by @__europa
-	there are 3+ unique vulnerabilities to this bypass excluding stack overflow checks
-	i challenge whoever to bypass those vectors and do a pull request, bounty is 0 robux
+        new script coming, and it wont just target coroutine.wrap ;)
 	thanks to these people for helping with detections:
 
 	unlimited (@unlimited_objects)
