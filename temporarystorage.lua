@@ -14,7 +14,7 @@ local __newindex; __newindex = hookmetamethod(game, "__newindex", function(...)
 		prop = split(prop, "\0")[1]
 
 		for i, v in pairs(spoofcache) do
-			if compareinstances(v.Instance, self) and prop == v.Property and pcall(__newindex, ...) then
+			if compareinstances(v.Instance, self) and prop == v.Property then
 				local message = format("Unable to assign property %s. Property is read only", prop)
 
 				return error(message, 0)
@@ -25,6 +25,7 @@ local __newindex; __newindex = hookmetamethod(game, "__newindex", function(...)
 	return __newindex(...)
 end)
 
+-- will work only on properties that are by default not read-only
 local setpropertyreadonly = function(ins, prop, bool)
 	if bool then
 		table.insert(spoofcache, {Instance = cloneref(ins), Property = prop})
