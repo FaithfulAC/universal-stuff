@@ -21,7 +21,6 @@ do
     Dex.Name = name
 end
 local orgfenv = getfenv()
-orgfenv.script = nil
 
 for i, Script in Dex:GetDescendants() do
     if Script.ClassName == "Script" or Script.ClassName == "LocalScript" then
@@ -29,7 +28,7 @@ for i, Script in Dex:GetDescendants() do
         local literal = {script = Script}
         
         setfenv(func, setmetatable(literal, {
-            __index = function(_, b) return orgfenv[b] or rawget(literal, b) end,
+            __index = function(self, b) if b == "script" then return rawget(literal, b) end return orgfenv[b] end,
             __newindex = rawset -- yeah might as well 🙂
         }))
         
