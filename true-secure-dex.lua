@@ -28,7 +28,7 @@ for i, Script in Dex:GetDescendants() do
         local literal = {script = Script}
         
         setfenv(func, setmetatable(literal, {
-            __index = function(self, b) if b == "script" then return rawget(literal, b) end return orgfenv[b] end,
+            __index = function(self, b) if b == "script" then return rawget(literal, b) end return orgfenv[b] or rawget(literal, b) end,
             __newindex = rawset -- yeah might as well 🙂
         }))
         
