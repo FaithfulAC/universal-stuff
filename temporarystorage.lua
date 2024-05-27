@@ -13,7 +13,7 @@ local __newindex; __newindex = hookmetamethod(game, "__newindex", function(...)
     if not checkcaller() and typeof(self) == "Instance" and typeof(prop) == "string" then
         prop = split(prop, "\0")[1]
         for i, v in pairs(spoofcache) do
-            if compareinstances(v.Instance, self) and prop == v.Property then
+            if compareinstances(v.Instance, self) and prop == v.Property and pcall(__newindex, ...) then
                 local message = format("Unable to assign property %s. Property is read only", prop)
 
                 return error(message, 0)
