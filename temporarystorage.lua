@@ -3,6 +3,7 @@
 ]]
 
 -- setpropertyreadonly(<Instance>, <string>, <boolean>)
+-- setpropertyunchangeable(<Instance>, <string>, <boolean>)
 
 local spoofcache = {}
 local preventioncache = {}
@@ -11,7 +12,7 @@ local split, format, gsub, lower, upper = string.split, string.format, string.gs
 local __newindex; __newindex = hookmetamethod(game, "__newindex", function(...)
 	local self, prop = ...
 
-	if not checkcaller() and typeof(self) == "Instance" and typeof(prop) == "string" then
+	if not checkcaller() and typeof(self) == "Instance" and typeof(prop) == "string" and select("#", ...) > 2 then
 		prop = split(prop, "\0")[1]
 		local checksub = false
 
