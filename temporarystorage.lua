@@ -110,14 +110,19 @@ local h; h = hookfunction(getrenv().debug.info, function(...)
 end)
 
 local h2; h2 = hookfunction(setfenv, function(...)
-	local func = ...
+	local func, tbl = ...
 
-	if not checkcaller() and (typeof(func) == "number" or tfind(func, tospoof)) then
-		if typeof(func) == "function" then return error("'setfenv' cannot change environment of given object", 0) end
+	if not checkcaller() and (typeof(func) == "number" or tfind(func, tospoof)) and typeof(tbl) == "table" then
+		if typeof(func) == "function" then
+			-- will error, this is probably a safer option because of xpcall stack checks where they can check for if error exists in call stack
+			return h2(gcinfo, {})
+			--return error("'setfenv' cannot change environment of given object", 0)
+		end
 		local orgargs = {pcall(h, func, "f")}
 
 		if orgargs[1] and tfind(tospoof, orgargs[2]) then
-			return error("'setfenv' cannot change environment of given object", 0)
+			return h2(gcinfo, {})
+			--return error("'setfenv' cannot change environment of given object", 0)
 		end
 	end
 
