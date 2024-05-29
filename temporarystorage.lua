@@ -14,7 +14,7 @@ local __newindex; __newindex = hookmetamethod(game, "__newindex", function(...)
 	if not checkcaller() and typeof(self) == "Instance" and typeof(prop) == "string" then
 		prop = split(prop, "\0")[1]
 		local checksub = false
-			
+
 		if pcall(function() return self[gsub(prop, "^%u", lower)] end) and self[gsub(prop, "^%u", lower)] == self[prop] then
 			checksub = true
 		end
@@ -42,7 +42,7 @@ local setpropertyreadonly = function(ins, prop, bool)
 	if typeof(ins) ~= "Instance" or typeof(prop) ~= "string" or typeof(bool) ~= "boolean" then
 		return error("exploit synapse script-ware krampus im using an exploit plz ban me", 0)
 	end
-	
+
 	if bool then
 		table.insert(spoofcache, {Instance = cloneref(ins), Property = prop})
 	else
@@ -59,7 +59,7 @@ local setpropertyunchangeable = function(ins, prop, bool)
 	if typeof(ins) ~= "Instance" or typeof(prop) ~= "string" or typeof(bool) ~= "boolean" then
 		return error("exploit synapse script-ware krampus im using an exploit plz ban me", 0)
 	end
-	
+
 	if bool then
 		table.insert(preventioncache, {Instance = cloneref(ins), Property = prop})
 	else
@@ -78,50 +78,50 @@ local split, gsub, insert, tfind = string.split, string.gsub, table.insert, tabl
 local tospoof = {}
 
 local h; h = hookfunction(getrenv().debug.info, function(...)
-    local func, str = ...
+	local func, str = ...
 
-    if not checkcaller() and (typeof(func) == "number" or tfind(func, tospoof)) and typeof(str) == "string" then
-        local orgargs = {pcall(h, func, "nf")}
+	if not checkcaller() and (typeof(func) == "number" or tfind(func, tospoof)) and typeof(str) == "string" then
+		local orgargs = {pcall(h, func, "nf")}
 
-        if orgargs[1] and ((typeof(func) == "number" and tfind(tospoof, orgargs[3])) or true) then
-            str = split(str, "\0")[1]
-            local args = {}
+		if orgargs[1] and ((typeof(func) == "number" and tfind(tospoof, orgargs[3])) or true) then
+			str = split(str, "\0")[1]
+			local args = {}
 
-            gsub(str, ".", function(a)
-                if a == "s" then
-                    insert(args, "[C]")
-                elseif a == "l" then
-                    insert(args, -1)
-                elseif a == "n" then
-                    insert(args, orgargs[2])
-                elseif a == "a" then
-                    insert(args, 0)
-                    insert(args, true)
-                elseif a == "f" then
-                    insert(args, orgargs[3])
-                end
-            end)
+			gsub(str, ".", function(a)
+				if a == "s" then
+					insert(args, "[C]")
+				elseif a == "l" then
+					insert(args, -1)
+				elseif a == "n" then
+					insert(args, orgargs[2])
+				elseif a == "a" then
+					insert(args, 0)
+					insert(args, true)
+				elseif a == "f" then
+					insert(args, orgargs[3])
+				end
+			end)
 
-            return unpack(args)
-        end
-    end
+			return unpack(args)
+		end
+	end
 
-    return h(...)
+	return h(...)
 end)
 
 local h2; h2 = hookfunction(setfenv, function(...)
-    local func = ...
+	local func = ...
 
-    if not checkcaller() and (typeof(func) == "number" or tfind(func, tospoof)) then
-        if typeof(func) == "function" then return error("'setfenv' cannot change environment of given object", 0) end
-        local orgargs = {pcall(h, func, "f")}
+	if not checkcaller() and (typeof(func) == "number" or tfind(func, tospoof)) then
+		if typeof(func) == "function" then return error("'setfenv' cannot change environment of given object", 0) end
+		local orgargs = {pcall(h, func, "f")}
 
-        if orgargs[1] and tfind(tospoof, orgargs[2]) then
-            return error("'setfenv' cannot change environment of given object", 0)
-        end
-    end
+		if orgargs[1] and tfind(tospoof, orgargs[2]) then
+			return error("'setfenv' cannot change environment of given object", 0)
+		end
+	end
 
-    return h2(...)
+	return h2(...)
 end)
 
 local spoofcclosure = function(func, bool)
