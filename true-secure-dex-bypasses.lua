@@ -10,7 +10,7 @@
 	babyhamsta for the original secure dex
 ]]
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/safehookmetamethod.lua"))()
+-- loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/safehookmetamethod.lua"))()
 
 local clonefunction = clonefunc or clonefunction or function(...) return ... end
 local cloneref = cloneref or function(...) return ... end
