@@ -82,7 +82,7 @@ local GuiClasses = { -- instances that can increase memory for gui
 
 game.DescendantAdded:Connect(function(ins) -- mark those under datamodel
 	if not IsDescendantOf(ins, DexGui) then
-		if GuiClasses[result.ClassName] then
+		if GuiClasses[ins.ClassName] then
 			memtag_ret += GuiClasses[ins.ClassName]
 		end
 		ins = nil
