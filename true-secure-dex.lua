@@ -1,5 +1,5 @@
 if getrenv and hookfunction and hookmetamethod then -- how to detect being ran on corescript plz
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses.lua"), "=Bypasses")()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses.lua"))()
 end
 
 task.wait(.2)
