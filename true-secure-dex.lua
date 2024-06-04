@@ -1,5 +1,5 @@
 if getrenv and hookfunction and hookmetamethod then -- how to detect being ran on corescript plz
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses.lua"))()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses.lua"))()
 end
 
 task.wait(.2)
@@ -10,28 +10,37 @@ getgenv().Dex = game:GetObjects("rbxassetid://9352453730")[1]
 Dex.Parent = (gethui and gethui() ~= game:GetService("CoreGui") and gethui()) or game:GetService("CoreGui").RobloxGui
 
 do
-    local characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    local name = ""
+	local characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	local name = ""
 
-    for i = 1, math.random(10, 19) do
-        local randint = math.random(#characters)
-        name = name .. string.sub(characters, randint, randint)
-    end
+	for i = 1, math.random(10, 19) do
+		local randint = math.random(#characters)
+		name = name .. string.sub(characters, randint, randint)
+	end
 
-    Dex.Name = name
+	Dex.Name = name
 end
 local orgfenv = getfenv()
 
 for i, Script in Dex:GetDescendants() do
-    if Script:IsA("BaseScript") then
-        local func = loadstring(Script.Source, "=" .. Script:GetFullName())
-        local literal = {script = Script}
-        
-        setfenv(func, setmetatable(literal, {
-            __index = function(self, b) return rawget(literal, b) or orgfenv[b] end,
-            __newindex = rawset -- yeah might as well 🙂
-        }))
-        
-        task.spawn(func)
-    end
+	if Script:IsA("BaseScript") then
+		local func = loadstring(Script.Source, "=" .. Script:GetFullName())
+		local RealFenv = {script = Script}
+
+		local Fenv = setmetatable({}, {
+			__index = function(_, key)
+				return RealFenv[key] or getfenv()[key]
+			end,
+			__newindex = function(_, key, value)
+				if RealFenv[key] == nil then
+					getfenv()[key] = value
+				else
+					RealFenv[key] = value
+				end
+			end
+		})
+
+		setfenv(func, Fenv)
+		task.spawn(func)
+	end
 end
