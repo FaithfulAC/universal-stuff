@@ -4,9 +4,9 @@ end
 
 task.wait(.2)
 
-getgenv().Dex = game:GetObjects("rbxassetid://14878398926")[1]
+--getgenv().Dex = game:GetObjects("rbxassetid://14878398926")[1]
 
---getgenv().Dex = game:GetObjects("rbxassetid://9352453730")[1]
+getgenv().Dex = game:GetObjects("rbxassetid://9352453730")[1]
 Dex.Parent = (gethui and gethui() ~= game:GetService("CoreGui") and gethui()) or game:GetService("CoreGui").RobloxGui
 
 do
