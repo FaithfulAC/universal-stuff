@@ -1,5 +1,5 @@
-if getrenv and hookfunction and hookmetamethod then -- how to detect being ran on corescript plz
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses.lua"))()
+if getrenv and hookfunction and hookmetamethod and not identifyexecutor():lower():find("solara") then
+	task.spawn(loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses.lua")))
 end
 
 task.wait(.2)
