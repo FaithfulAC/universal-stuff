@@ -28,6 +28,8 @@ local GetDebugId = clonefunction(game.GetDebugId)
 local IsDescendantOf = clonefunction(game.IsDescendantOf)
 local org = compareinstances
 
+print(tick())
+
 local options = getgenv().DexOptions or getgenv().options or {
 	gcinfo = true,
 	GetTotalMemoryUsageMb = true,
@@ -60,6 +62,8 @@ local StarterGui = cloneref(game:GetService("StarterGui"))
 local PlayerGui = cloneref(game:GetService("Players").LocalPlayer:FindFirstChildWhichIsA("PlayerGui"))
 local DexGui = Dex or Bypassed_Dex or CoreGui -- for textbox
 repeat task.wait() until game:IsLoaded()
+
+print(tick())
 
 -- for realism of gcinfo, inscount, and memory spoofs
 local gcinfo_ret, inscount_ret, memtag_ret, totalmem_ret
@@ -97,6 +101,8 @@ game.DescendantRemoving:Connect(function(ins)
 		inscount_ret -= 1
 	end
 end)
+
+print(tick())
 
 local OrgClone;
 
@@ -157,6 +163,8 @@ InsCountHook2 = hookfunction(getrenv().Instance.fromExisting, function(...)
 
 	return result
 end)
+
+print(tick())
 
 -- gcinfo / collectgarbage spoof
 task.spawn(function()
@@ -614,3 +622,5 @@ task.spawn(function()
 		return h(...)
 	end)
 end)
+
+warn(tick())
