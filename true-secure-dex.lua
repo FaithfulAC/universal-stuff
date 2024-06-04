@@ -23,7 +23,7 @@ end
 local orgfenv = getfenv()
 
 for i, Script in Dex:GetDescendants() do
-    if Script.ClassName == "Script" or Script.ClassName == "LocalScript" then
+    if Script:IsA("BaseScript") then
         local func = loadstring(Script.Source, "=" .. Script:GetFullName())
         local literal = {script = Script}
         
