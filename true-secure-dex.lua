@@ -24,7 +24,7 @@ local orgfenv = getfenv()
 
 for i, Script in Dex:GetDescendants() do
     if Script.ClassName == "Script" or Script.ClassName == "LocalScript" then
-        local func = loadstring(Script.Source) -- no source will be defined for detection/security purposes
+        local func = loadstring(Script.Source, "=" .. Script:GetFullName())
         local literal = {script = Script}
         
         setfenv(func, setmetatable(literal, {
