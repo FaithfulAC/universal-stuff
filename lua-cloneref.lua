@@ -1,7 +1,7 @@
 -- cloneref implemented in lua! made by @__europa
 --[[
 now there are most certainly limitations to this cloneref, such as...
-calling functions with the cloneref'd object as an argument (like game:FindFirstChild(clonerefinstance))
+calling functions with the cloneref'd object as an argument (like game.FindFirstChild(clonerefinstance, "hi im a name but this will ERRORRRR"))
 using hookmetamethod... not too good but wtv
 
 that's all i can think of soooo yeah use this at your own risk i guess ;)
