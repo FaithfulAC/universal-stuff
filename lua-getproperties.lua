@@ -43,7 +43,6 @@ getgenv().getproperties = function(instance)
                     table.insert(properties, member.Name)
                 end
             end
-            break
         end
     end
     
@@ -71,7 +70,6 @@ getgenv().getfunctions = function(instance)
                     table.insert(functions, member.Name)
                 end
             end
-            break
         end
     end
     
