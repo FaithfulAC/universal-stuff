@@ -84,7 +84,7 @@ local Name_6 = Instance.new("TextLabel")
 --Properties:
 
 Exec.Name = "Exec"
-Exec.Parent = game:GetService("CoreGui").RobloxGui
+Exec.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 Exec.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 Main.Name = "Main"
@@ -428,9 +428,9 @@ _Line_.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 _Line_.BackgroundTransparency = 1.000
 _Line_.BorderColor3 = Color3.fromRGB(0, 0, 0)
 _Line_.BorderSizePixel = 0
-_Line_.Size = UDim2.new(1, 0, 0.125, 0)
+_Line_.Size = UDim2.new(1, 0, 0.075000003, 0)
 _Line_.Font = Enum.Font.Unknown
-_Line_.Text = "	-	yo guys i think this is the console"
+_Line_.Text = "  --  yo guys i think this is the console"
 _Line_.TextColor3 = Color3.fromRGB(255, 255, 255)
 _Line_.TextScaled = true
 _Line_.TextSize = 14.000
@@ -1040,7 +1040,7 @@ local function main() -- Script.MainScript
 	
 	local tempe = select(2, pcall(loadeuropaglobals))
 	if tempe and not tempe:find("HttpGet") and not tempe:find("CoreScripts") then
-		error("An error occured while loading europatech: " .. ((string.split(tempe, ":")[3]) or tempe))
+		error("An error occured while loading europatech: " .. ((string.split(tempe, ":")[3]) or tempe), 0)
 		return
 	end
 	
@@ -1082,9 +1082,9 @@ local function main() -- Script.MainScript
 		newline.Name = "Line"
 		newline.BackgroundTransparency = 1
 		newline.TextXAlignment = Enum.TextXAlignment.Left
-		newline.Size = UDim2.new(1+offset, 0, 0.125, 0)
+		newline.Size = UDim2.new(1+offset, 0, 0.075, 0)
 		newline.TextColor = color
-		newline.Text = "\t-\t" .. str
+		newline.Text = "  --  " .. str
 		if bolden == true then
 			newline.FontFace.Weight = Enum.FontWeight.Bold
 		end
@@ -1836,5 +1836,4 @@ local function main() -- Script.MainScript
 		end)
 	end)()
 end
-
 coroutine.wrap(main)()
