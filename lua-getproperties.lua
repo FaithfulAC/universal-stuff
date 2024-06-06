@@ -23,56 +23,99 @@ local function CreateFakeIndexInstance(class)
     return fake
 end
 
-getgenv().getproperties = function(instance)
-    local properties = {}
+getgenv().getproperties = function(class)
+    local properties = {
+        "Archivable", "Capabilities",
+        "ClassName", "DataCost",
+        "Name", "Parent",
+        "RobloxLocked", "Sandboxed",
+        "SourceAssetId", "UniqueId",
+    }
 
-    if typeof(instance) == "string" then
-        if not pcall(Instance.new, instance) then
-            instance = CreateFakeIndexInstance(instance)
-        else
-            instance = Instance.new(instance)
-        end
-    elseif typeof(instance) ~= "Instance" then
+    if typeof(class) == "Instance" then
+        class = class.ClassName
+    elseif typeof(class) ~= "string" then
         return error("bad argument #1 (string or Instance expected)")
     end
     
-    for i, class in ipairs(apiData.Classes) do
-        if instance:IsA(class.Name) then
-            for _, member in ipairs(class.Members) do
+    for i, otherclass in ipairs(apiData.Classes) do
+        if class == otherclass.Name then
+            for _, member in ipairs(otherclass.Members) do
                 if member.MemberType == "Property" then
                     table.insert(properties, member.Name)
                 end
             end
+            break
         end
     end
     
-    instance:Destroy(); instance = nil;
     return properties
 end
 
-getgenv().getfunctions = function(instance)
-    local functions = {}
+getgenv().getfunctions = function(class)
+    local functions = {
+        "AddTag", "ClearAllChildren",
+        "Clone", "Destroy",
+        "FindFirstAncestor", "FindFirstAncestorOfClass",
+        "FindFirstAncestorWhichIsA", "FindFirstChild",
+        "FindFirstChildOfClass", "FindFirstChildWhichIsA",
+        "FindFirstDescendant", "GetActor",
+        "GetAttribute", "GetAttributeChangedSignal",
+        "GetAttributes", "GetChildren",
+        "GetDebugId", "GetDescendants",
+        "GetFullName", "GetPropertyChangedSignal",
+        "GetTags", "HasTag",
+        "IsA", "IsAncestorOf",
+        "IsDescendantOf", "IsPropertyModified",
+        "Remove", "RemoveTag",
+        "ResetPropertyToDefault", "SetAttribute",
+        "WaitForChild", "children",
+    }
 
-    if typeof(instance) == "string" then
-        if not pcall(Instance.new, instance) then
-            instance = CreateFakeIndexInstance(instance)
-        else
-            instance = Instance.new(instance)
-        end
-    elseif typeof(instance) ~= "Instance" then
+    if typeof(class) == "Instance" then
+        class = class.ClassName
+    elseif typeof(class) ~= "string" then
         return error("bad argument #1 (string or Instance expected)")
     end
     
-    for _, class in ipairs(apiData.Classes) do
-        if instance:IsA(class.Name) then
-            for _, member in ipairs(class.Members) do
+    for i, otherclass in ipairs(apiData.Classes) do
+        if class == otherclass.Name then
+            for _, member in ipairs(otherclass.Members) do
                 if member.MemberType == "Function" then
                     table.insert(functions, member.Name)
                 end
             end
+            break
         end
     end
     
-    instance:Destroy(); instance = nil;
     return functions
+end
+
+getgenv().getevents = function(class)
+    local events = {
+        "AncestryChanged", "AttributeChanged",
+        "Changed", "ChildAdded",
+        "ChildRemoved", "DescendantAdded",
+        "DescendantRemoving", "Destroying",
+    }
+
+    if typeof(class) == "Instance" then
+        class = class.ClassName
+    elseif typeof(class) ~= "string" then
+        return error("bad argument #1 (string or Instance expected)")
+    end
+    
+    for i, otherclass in ipairs(apiData.Classes) do
+        if class == otherclass.Name then
+            for _, member in ipairs(otherclass.Members) do
+                if member.MemberType == "Event" then
+                    table.insert(events, member.Name)
+                end
+            end
+            break
+        end
+    end
+    
+    return events
 end
