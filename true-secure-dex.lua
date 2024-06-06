@@ -33,11 +33,7 @@ for i, Script in Dex:GetDescendants() do
 				return orgfenv[key] or RealFenv[key]
 			end,
 			__newindex = function(_, key, value)
-				if RealFenv[key] == nil then
-					orgfenv[key] = value
-				else
-					RealFenv[key] = value
-				end
+				RealFenv[key] = value
 			end
 		})
 
