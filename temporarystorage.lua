@@ -66,7 +66,7 @@ local setpropertyunchangeable = function(ins, prop, bool)
 	else
 		for i, v in pairs(preventioncache) do
 			if compareinstances(v.Instance, ins) then
-				table.remove(prevevntioncache, i)
+				table.remove(preventioncache, i)
 				break
 			end
 		end
