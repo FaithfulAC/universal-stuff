@@ -1,4 +1,4 @@
--- Mostly ripped from Dex's RbxApi handling
+-- doesnt work. Help!
 
 --local jsonstring = game:HttpGet("http://anaminus.github.io/rbx/json/api/latest.json")
 local jsonstring = game:HttpGet("https://raw.githubusercontent.com/MaximumADHD/Roblox-Client-Tracker/roblox/API-Dump.json")
