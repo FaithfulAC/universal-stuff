@@ -29,11 +29,12 @@ for i, Script in Dex:GetDescendants() do
 
 		local Fenv = setmetatable({}, {
 			__index = function(_, key)
-				return RealFenv[key] or getfenv()[key]
+				if key == "script" then return RealFenv[key] end
+				return orgfenv[key] or RealFenv[key]
 			end,
 			__newindex = function(_, key, value)
 				if RealFenv[key] == nil then
-					getfenv()[key] = value
+					orgfenv[key] = value
 				else
 					RealFenv[key] = value
 				end
