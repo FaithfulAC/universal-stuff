@@ -1,3 +1,4 @@
+-- it actually works now yay
 local cloneref = cloneref or function(...) return ... end
 local HttpService = cloneref(game:GetService("HttpService"))
 local url = "https://raw.githubusercontent.com/MaximumADHD/Roblox-Client-Tracker/roblox/API-Dump.json"
