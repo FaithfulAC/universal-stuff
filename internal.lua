@@ -1,13 +1,11 @@
 -- multi purpose internal coregui executor for the purpose of bypassing a few stuff and bringing more conveniency in exploiting and whatever
 -- if you know about that stupid 0.00045 check designed to detect uwp executors on execution then this in auto execute bypasses that
 
--- Fixed deter print issues
-
 for i = 1, math.random(2, 5) do
 	Instance.new("Script"):Destroy()
 end
 
--- Instances:
+-- hey again, i expanded the console's size and also fixed the indenting, quote unquote
 
 local Exec = Instance.new("ScreenGui")
 local Main = Instance.new("Frame")
@@ -86,7 +84,7 @@ local Name_6 = Instance.new("TextLabel")
 --Properties:
 
 Exec.Name = "Exec"
-Exec.Parent = game:GetService("CoreGui")
+Exec.Parent = game:GetService("CoreGui").RobloxGui
 Exec.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 Main.Name = "Main"
@@ -395,8 +393,8 @@ Console_2.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
 Console_2.BackgroundTransparency = 1.000
 Console_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Console_2.BorderSizePixel = 0
-Console_2.Position = UDim2.new(0.717591465, 0, 0, 0)
-Console_2.Size = UDim2.new(0.282327175, 0, 0.385906011, 0)
+Console_2.Position = UDim2.new(0.610565364, 0, 0, 0)
+Console_2.Size = UDim2.new(0.389353335, 0, 0.472495705, 0)
 Console_2.Visible = false
 
 Name_2.Name = "Name"
@@ -432,7 +430,7 @@ _Line_.BorderColor3 = Color3.fromRGB(0, 0, 0)
 _Line_.BorderSizePixel = 0
 _Line_.Size = UDim2.new(1, 0, 0.125, 0)
 _Line_.Font = Enum.Font.Unknown
-_Line_.Text = "-- yo guys i think this is the console"
+_Line_.Text = "	-	yo guys i think this is the console"
 _Line_.TextColor3 = Color3.fromRGB(255, 255, 255)
 _Line_.TextScaled = true
 _Line_.TextSize = 14.000
@@ -450,7 +448,7 @@ Warn.Parent = Modes
 Warn.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
 Warn.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Warn.BorderSizePixel = 0
-Warn.Position = UDim2.new(-0.212313026, 0, 0.443687171, 0)
+Warn.Position = UDim2.new(-0.212313041, 0, 0.443687171, 0)
 Warn.Size = UDim2.new(0.211999997, 0, 0.143999994, 0)
 Warn.Font = Enum.Font.Unknown
 Warn.Text = "warn: on"
@@ -464,7 +462,7 @@ Print_2.Parent = Modes
 Print_2.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
 Print_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Print_2.BorderSizePixel = 0
-Print_2.Position = UDim2.new(-0.212313026, 0, 0.299456388, 0)
+Print_2.Position = UDim2.new(-0.212313041, 0, 0.299456388, 0)
 Print_2.Size = UDim2.new(0.211999997, 0, 0.143999994, 0)
 Print_2.Font = Enum.Font.Unknown
 Print_2.Text = "print: on"
@@ -478,7 +476,7 @@ Error.Parent = Modes
 Error.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
 Error.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Error.BorderSizePixel = 0
-Error.Position = UDim2.new(-0.212313026, 0, 0.587917924, 0)
+Error.Position = UDim2.new(-0.212313041, 0, 0.582164586, 0)
 Error.Size = UDim2.new(0.211999997, 0, 0.143999994, 0)
 Error.Font = Enum.Font.Unknown
 Error.Text = "error: on"
@@ -492,7 +490,7 @@ Info.Parent = Modes
 Info.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
 Info.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Info.BorderSizePixel = 0
-Info.Position = UDim2.new(-0.212313026, 0, 0.155225605, 0)
+Info.Position = UDim2.new(-0.212313041, 0, 0.155225605, 0)
 Info.Size = UDim2.new(0.211999997, 0, 0.143999994, 0)
 Info.Font = Enum.Font.Unknown
 Info.Text = "info: on"
@@ -551,7 +549,7 @@ Hide.Parent = Console_2
 Hide.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 Hide.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Hide.BorderSizePixel = 0
-Hide.Position = UDim2.new(-0.21231328, 0, 0, 0)
+Hide.Position = UDim2.new(-0.210223734, 0, 0, 0)
 Hide.Size = UDim2.new(0.210174829, 0, 0.155225605, 0)
 Hide.Font = Enum.Font.Unknown
 Hide.Text = "hide"
@@ -953,7 +951,7 @@ Name_6.TextWrapped = true
 
 -- Scripts:
 
-local function CBRA_fake_script() -- Script.MainScript 
+local function main() -- Script.MainScript 
 	local script = Instance.new('LocalScript', Script)
 
 	-- dont mind the fake script im too lazy to remove it
@@ -989,11 +987,12 @@ local function CBRA_fake_script() -- Script.MainScript
 	local saveinstance = saveinstance or nil
 	local setclipboard = setclipboard or nil
 	local writefile = writefile or nil
-	local decompile = decompile or nil
+	local decompile = decompile or disassemble or nil
 	local getscripts = getscripts or nil
 	local europa = europa or nil
-	local Players = (cloneref and cloneref(game:GetService("Players"))) or game:GetService("Players")
-	local LocalPlayer = (cloneref and cloneref(Players.LocalPlayer)) or Players.LocalPlayer
+	local Players = cloneref(game:GetService("Players"))
+	local LocalPlayer = cloneref(Players.LocalPlayer)
+	local sgui = cloneref(game:GetService("StarterGui"))
 	
 	getgenv().print, getgenv().warn, getgenv().error = print, warn, error
 	
@@ -1022,16 +1021,15 @@ local function CBRA_fake_script() -- Script.MainScript
 	local printEnabled = true
 	
 	local function setnotif(title, info)
-		for i = 1, math.random(1, 4) do -- prevent gui memory checks
+		for i = 1, math.random(1, 3) do -- prevent gui memory checks
 			Instance.new("Frame")
 		end
-	
-		game:GetService("StarterGui"):SetCore("SendNotification", {
+		
+		sgui:SetCore("SendNotification", {
 			Title = title,
 			Text = info
 		})
 	end
-
 	
 	local function loadeuropaglobals()
 		task.wait()
@@ -1042,7 +1040,7 @@ local function CBRA_fake_script() -- Script.MainScript
 	
 	local tempe = select(2, pcall(loadeuropaglobals))
 	if tempe and not tempe:find("HttpGet") and not tempe:find("CoreScripts") then
-		warn("An error occured while loading europatech: " .. ((string.split(tempe, ":")[3]) or tempe))
+		error("An error occured while loading europatech: " .. ((string.split(tempe, ":")[3]) or tempe))
 		return
 	end
 	
@@ -1086,7 +1084,7 @@ local function CBRA_fake_script() -- Script.MainScript
 		newline.TextXAlignment = Enum.TextXAlignment.Left
 		newline.Size = UDim2.new(1+offset, 0, 0.125, 0)
 		newline.TextColor = color
-		newline.Text = str
+		newline.Text = "\t-\t" .. str
 		if bolden == true then
 			newline.FontFace.Weight = Enum.FontWeight.Bold
 		end
@@ -1128,6 +1126,7 @@ local function CBRA_fake_script() -- Script.MainScript
 		local numoflines = 1
 		codeholder.Scroller.AutomaticCanvasSize = Enum.AutomaticSize.XY
 		code.MultiLine = true
+		
 		code:GetPropertyChangedSignal("Text"):Connect(function()
 			local txt = code.Text
 			
@@ -1138,13 +1137,13 @@ local function CBRA_fake_script() -- Script.MainScript
 			
 			if txt:find("\n") then -- increases horizontial length of code
 				for i, v in pairs(string.split(txt, "\n")) do
-					if v:len() > 22 and (0.05*(v:len()-22)) > maxofoneline then
-						maxofoneline = (0.05*(v:len()-22))
+					if #v > 22 and (0.05*(#v-22)) > maxofoneline then
+						maxofoneline = (0.05*(#v-22))
 					end
 				end
 			else
-				if txt:len() > 22 and (0.05*(txt:len()-22)) > maxofoneline then
-					maxofoneline = (0.05*(txt:len()-22))
+				if #txt > 22 and (0.05*(#txt-22)) > maxofoneline then
+					maxofoneline = (0.05*(#txt-22))
 				end
 			end
 			
@@ -1493,11 +1492,13 @@ local function CBRA_fake_script() -- Script.MainScript
 		
 		loadviewer = function()
 			if not getscripts then warn("Viewer cannot be loaded because im too lazy to not use my globals") return end
+			
 			for i, v in pairs(duoholder:GetChildren()) do
 				if v:IsA("TextLabel") then
 					v:Destroy()
 				end
 			end
+			
 			for i, v in getscripts() do
 				if typeof(v) ~= "Instance" then continue end -- for the retarded exploits
 				if getgenv().BlacklistCoreGui and v:FindFirstAncestorOfClass("CoreGui") then continue end
@@ -1650,20 +1651,20 @@ local function CBRA_fake_script() -- Script.MainScript
 		
 		local tbl = {
 			["Simple Spy"] = "A seamless, accurate, and secure solution for extracting the arguments of fired remotes.",
-			["CMD-X"] = "Command utility with a broad range of commands, more than 600 to be more specific.",
+			["CMD-X"] = "Command utility with a broad range of commands, more than 600 to be specific.",
 			["Infinite Yield"] = "The classic command utility option for executing your favorite commands.",
 			["Vape v4"] = "Detections begone! Vape v4 bypasses almost any sort of physics and gui checks you can think of.",
-			["True Secure Dex"] = "Captivate the full ability to use Dex with a true guaranteed security for your experience.",
+			["True Secure Dex"] = "Captivate the full ability to use Dex with true guaranteed security for your experience.",
 			["Dex"] = "No hooks? No problem! This Dex has 0 utilization of any hooks while still maintaining its stance as a force against detection vectors."
 		}
 		
 		local loadtbl = {
 			["SSpy"] = "https://raw.githubusercontent.com/78n/SimpleSpy/main/SimpleSpySource.lua",
 			["CmdX"] = "https://raw.githubusercontent.com/CMD-X/CMD-X/master/Source",
-			["IY"] = "https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source",
+			["InfY"] = "https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source",
 			["VV4"] = "https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/main/NewMainScript.lua",
-			["TSD"] = "https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex",
-			["Dex"] = "https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex" -- to be modified
+			["TSDex"] = "https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua",
+			["Dex"] = "https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua" -- to be modified
 		}
 		
 		local function setdesc(str)
@@ -1709,10 +1710,12 @@ local function CBRA_fake_script() -- Script.MainScript
 			if not key then return end
 			
 			if selected.Name == "Dex" then -- run true secure dex without bypasses
-				getgenv().TSDBypassesOff = true
+				local renv = getgenv().getrenv
+				getgenv().getrenv = nil
+				
 				loadstring(game:HttpGet(key))()
+				getgenv().getrenv = renv
 			else
-				getgenv().TSDBypassesOff = nil
 				loadstring(game:HttpGet(key))()
 			end
 		end)
@@ -1833,4 +1836,5 @@ local function CBRA_fake_script() -- Script.MainScript
 		end)
 	end)()
 end
-coroutine.wrap(CBRA_fake_script)()
+
+coroutine.wrap(main)()
