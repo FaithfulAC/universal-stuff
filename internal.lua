@@ -84,7 +84,7 @@ local Name_6 = Instance.new("TextLabel")
 --Properties:
 
 Exec.Name = "Exec"
-Exec.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+Exec.Parent = game:GetService("CoreGui").RobloxGui
 Exec.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 Main.Name = "Main"
