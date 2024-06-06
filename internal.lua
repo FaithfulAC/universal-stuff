@@ -1,5 +1,6 @@
 -- multi purpose internal coregui executor for the purpose of bypassing a few stuff and bringing more conveniency in exploiting and whatever
 -- if you know about that stupid 0.00045 check designed to detect uwp executors on execution then this in auto execute bypasses that
+-- self note: CHECK WHAT THE GUI IS BEING PARENTED TO
 
 for i = 1, math.random(2, 5) do
 	Instance.new("Script"):Destroy()
