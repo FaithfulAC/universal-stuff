@@ -107,3 +107,5 @@ getgenv().getevents = function(class)
     
     return events
 end
+
+return apiData
