@@ -11,18 +11,6 @@ end
 
 local apiData = fetchData(url)
 
-local function CreateFakeIndexInstance(class)
-    local fake = {
-        Destroy = function()end
-    }
-
-    function fake:IsA(otherclass)
-        return otherclass == class
-    end
-
-    return fake
-end
-
 getgenv().getproperties = function(class)
     local properties = {
         "Archivable", "Capabilities",
