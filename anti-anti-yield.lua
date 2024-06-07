@@ -3,6 +3,7 @@
 
 --[[
 add to the protectedyieldfuncs table any functions you would not like to be waithook checked
+you could also additionally do a check for hookfunction before returning a yield by checking coroutine.isyieldable()
 also mode is prob not necessary, depends on thread/function property of garbage collection
 ]]
 
@@ -23,7 +24,7 @@ local cr; cr = hookfunction(getrenv().coroutine.create, function(...)
     local func = ...
     if not checkcaller() and typeof(func) == "function" and table.find(protectedyieldfuncs, func) then
         local res = cr(...)
-        cache[#cache + 1] = setmetatable({thread = res, func = func}, {__mode = "v"}) -- im avoiding table.insert simply because this looks cooler and easier to manage, probably
+        table.insert(cache, setmetatable({thread = res, func = func}, {__mode = "v"})) -- wtf was i thinking
         return res
     end
 
