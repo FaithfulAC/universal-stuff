@@ -4,7 +4,7 @@ end
 
 task.wait(.2)
 
--- stupid silly roblox moderation, i might just have to convert this into gui2lua
+-- stupid silly roblox moderation, i might just have to convert this into gui2lua or make my own dex
 -- getgenv().Dex = game:GetObjects("rbxassetid://14878398926")[1]
 
 getgenv().Dex = game:GetObjects("rbxassetid://9352453730")[1]
