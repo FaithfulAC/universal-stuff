@@ -5,9 +5,8 @@ end
 task.wait(.2)
 
 -- stupid silly roblox moderation, i might just have to convert this into gui2lua or make my own dex
--- getgenv().Dex = game:GetObjects("rbxassetid://14878398926")[1]
+getgenv().Dex = game:GetObjects("rbxassetid://14878398926")[1]
 
-getgenv().Dex = game:GetObjects("rbxassetid://9352453730")[1]
 Dex.Parent = (gethui and gethui() ~= game:GetService("CoreGui") and gethui()) or game:GetService("CoreGui").RobloxGui
 
 do
@@ -23,22 +22,25 @@ do
 end
 local orgfenv = getfenv()
 
-for i, Script in Dex:GetDescendants() do
-	if Script:IsA("BaseScript") then
-		local func = loadstring(Script.Source, "=" .. Script:GetFullName())
-		local RealFenv = {script = Script}
+local scriptlist = {
+	[1] = Dex:FindFirstChild("Selection"),
+	[2] = Dex:FindFirstChild("Explorer", true),
+	[3] = Dex:FindFirstChild("Properties", true),
+	[4] = Dex:FindFirstChild("Editor", true)
+}
 
-		local Fenv = setmetatable({}, {
-			__index = function(_, key)
-				if key == "script" then return RealFenv[key] end
-				return orgfenv[key] or RealFenv[key]
-			end,
-			__newindex = function(_, key, value)
-				RealFenv[key] = value
-			end
-		})
+local list = {
+	[1] = "Selection.lua",
+	[2] = "Explorer.lua",
+	[3] = "Properties.lua",
+	[4] = "Editor.lua"
+}
 
-		setfenv(func, Fenv)
-		task.spawn(func)
-	end
+orgfenv.GetScript = function(int)
+	return scriptlist[int]
+end
+
+for i, Script in pairs(scriptlist) do
+	local data = game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/TSD-script-storage/main/" .. list[i])
+	task.spawn(loadstring(data, "=" .. Script:GetFullName()))
 end
