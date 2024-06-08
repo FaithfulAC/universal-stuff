@@ -43,7 +43,7 @@ end
 for i, Script in pairs(scriptlist) do
 	local data = game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/TSD-script-storage/main/" .. list[i])
 	local func = loadstring(data, "=" .. Script:GetFullName())
-	setfenv(func, 1)
+	setfenv(func, getfenv(1))
 	
 	task.spawn(func, GetScript)
 end
