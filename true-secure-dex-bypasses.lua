@@ -95,6 +95,11 @@ game.DescendantRemoving:Connect(function(ins)
 		ins = nil
 		task.wait(math.random())
 		inscount_ret -= 1
+		
+		if math.random(2) == 2 then -- just in case
+			task.wait(math.random())
+			inscount_ret -= 1
+		end
 	end
 end)
 
@@ -133,7 +138,7 @@ local InsCountHook, InsCountHook2;
 InsCountHook = hookfunction(getrenv().Instance.new, function(...)
 	local result = InsCountHook(...)
 
-	if not checkcaller() and typeof(result) == "Instance" and select(2,...) == nil then
+	if not checkcaller() and typeof(result) == "Instance" then
 		if GuiClasses[result.ClassName] then
 			memtag_ret += GuiClasses[result.ClassName]
 		end
@@ -348,8 +353,8 @@ task.spawn(function()
 	end
 
 	local safecheck = function(tbl)
-		for i, v in pairs(tbl) do
-			if type(v) ~= "string" and typeof(v) ~= "Instance" then
+		for i = 1, rawlen(tbl) do
+			if type(rawget(tbl, i)) ~= "string" and typeof(rawget(tbl, i)) ~= "Instance" then
 				return false
 			end
 		end
