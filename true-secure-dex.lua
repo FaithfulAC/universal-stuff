@@ -23,10 +23,10 @@ end
 local orgfenv = getfenv()
 
 local scriptlist = {
-	[1] = Dex:FindFirstChild("Selection"),
-	[2] = Dex:FindFirstChild("Explorer", true),
-	[3] = Dex:FindFirstChild("Properties", true),
-	[4] = Dex:FindFirstChild("Editor", true)
+	[1] = Dex:FindFirstChild("SCRIPT_Selection"),
+	[2] = Dex:FindFirstChild("SCRIPT_Explorer", true),
+	[3] = Dex:FindFirstChild("SCRIPT_Properties", true),
+	[4] = Dex:FindFirstChild("SCRIPT_Editor", true)
 }
 
 local list = {
