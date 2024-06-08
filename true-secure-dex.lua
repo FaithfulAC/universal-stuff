@@ -36,11 +36,11 @@ local list = {
 	[4] = "Editor.lua"
 }
 
-orgfenv.GetScript = function(int)
+function GetScript(int)
 	return scriptlist[int]
 end
 
 for i, Script in pairs(scriptlist) do
 	local data = game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/TSD-script-storage/main/" .. list[i])
-	task.spawn(loadstring(data, "=" .. Script:GetFullName()))
+	task.spawn(loadstring(data, "=" .. Script:GetFullName()), GetScript)
 end
