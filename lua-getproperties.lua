@@ -13,7 +13,7 @@ local apiData = fetchData(url)
 
 getgenv().getproperties = function(class)
     local properties = {
-        "Archivable", "Capabilities",
+        "Archivable",
         "ClassName", "DataCost",
         "Name", "Parent",
         "RobloxLocked", "Sandboxed",
