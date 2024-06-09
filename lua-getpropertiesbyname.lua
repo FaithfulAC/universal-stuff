@@ -12,7 +12,7 @@ end
 
 local apiData = fetchData(url)
 
-getgenv().getproperties = function(class)
+getgenv().getpropertiesbyname = function(class)
     local properties = {
         "Archivable",
         "ClassName", "DataCost",
@@ -41,7 +41,7 @@ getgenv().getproperties = function(class)
     return properties
 end
 
-getgenv().getfunctions = function(class)
+getgenv().getfunctionsbyname = function(class)
     local functions = {
         "AddTag", "ClearAllChildren",
         "Clone", "Destroy",
@@ -81,7 +81,7 @@ getgenv().getfunctions = function(class)
     return functions
 end
 
-getgenv().getevents = function(class)
+getgenv().geteventsbyname = function(class)
     local events = {
         "AncestryChanged", "AttributeChanged",
         "Changed", "ChildAdded",
@@ -109,7 +109,7 @@ getgenv().getevents = function(class)
     return events
 end
 
-getgenv().getcallbacks = function(class)
+getgenv().getcallbacksbyname = function(class)
     local callbacks = {}
 
     if typeof(class) == "Instance" then
