@@ -108,4 +108,29 @@ getgenv().getevents = function(class)
     return events
 end
 
+getgenv().getcallbacks = function(class)
+    local callbacks = {
+        
+    }
+
+    if typeof(class) == "Instance" then
+        class = class.ClassName
+    elseif typeof(class) ~= "string" then
+        return error("bad argument #1 (string or Instance expected)")
+    end
+    
+    for i, otherclass in ipairs(apiData.Classes) do
+        if class == otherclass.Name then
+            for _, member in ipairs(otherclass.Members) do
+                if member.MemberType == "Callback" then
+                    table.insert(callbacks, member.Name)
+                end
+            end
+            break
+        end
+    end
+    
+    return callbacks
+end
+
 return apiData
