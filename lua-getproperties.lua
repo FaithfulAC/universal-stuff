@@ -16,7 +16,7 @@ getgenv().getproperties = function(class)
         "Archivable",
         "ClassName", "DataCost",
         "Name", "Parent",
-        "RobloxLocked", "Sandboxed",
+        "RobloxLocked",
         "SourceAssetId", "UniqueId",
     }
 
