@@ -1,4 +1,3 @@
--- it actually works now yay
 local cloneref = cloneref or function(...) return ... end
 local HttpService = cloneref(game:GetService("HttpService"))
 local url = "https://raw.githubusercontent.com/MaximumADHD/Roblox-Client-Tracker/roblox/API-Dump.json"
@@ -11,14 +10,14 @@ end
 
 local apiData = fetchData(url)
 
+local function sortAlphabetic(t, property)
+	table.sort(t, function(x,y)
+		return x[property] < y[property]
+	end)
+end
+
 getgenv().getproperties = function(class)
-    local properties = {
-        "Archivable",
-        "ClassName", "DataCost",
-        "Name", "Parent",
-        "RobloxLocked",
-        "UniqueId",
-    }
+    local properties = {}
 
     if typeof(class) == "Instance" then
         class = class.ClassName
@@ -27,16 +26,24 @@ getgenv().getproperties = function(class)
     end
     
     for i, otherclass in ipairs(apiData.Classes) do
-        if class == otherclass.Name then
+        if otherclass.Name == "Instance" then
             for _, member in ipairs(otherclass.Members) do
                 if member.MemberType == "Property" then
-                    table.insert(properties, member.Name)
+                    table.insert(properties, member)
                 end
             end
+        elseif class == otherclass.Name then
+            for _, member in ipairs(otherclass.Members) do
+                if member.MemberType == "Property" then
+                    table.insert(properties, member)
+                end
+            end
+            
             break
         end
     end
-    
+
+    sortAlphabetic(properties, "Name")
     return properties
 end
 
