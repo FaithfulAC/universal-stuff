@@ -109,9 +109,7 @@ getgenv().getevents = function(class)
 end
 
 getgenv().getcallbacks = function(class)
-    local callbacks = {
-        
-    }
+    local callbacks = {}
 
     if typeof(class) == "Instance" then
         class = class.ClassName
