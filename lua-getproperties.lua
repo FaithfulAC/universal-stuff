@@ -73,7 +73,8 @@ getgenv().getfunctions = function(class)
             break
         end
     end
-    
+
+    sortAlphabetic(functions, "Name")
     return functions
 end
 
@@ -103,7 +104,8 @@ getgenv().getevents = function(class)
             break
         end
     end
-    
+
+    sortAlphabetic(events, "Name")
     return events
 end
 
@@ -133,7 +135,8 @@ getgenv().getcallbacks = function(class)
             break
         end
     end
-    
+
+    sortAlphabetic(callbacks, "Name")
     return callbacks
 end
 
