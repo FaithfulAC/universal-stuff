@@ -17,7 +17,7 @@ getgenv().getproperties = function(class)
         "ClassName", "DataCost",
         "Name", "Parent",
         "RobloxLocked",
-        "SourceAssetId", "UniqueId",
+        "UniqueId",
     }
 
     if typeof(class) == "Instance" then
