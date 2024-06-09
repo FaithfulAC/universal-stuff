@@ -48,24 +48,7 @@ getgenv().getproperties = function(class)
 end
 
 getgenv().getfunctions = function(class)
-    local functions = {
-        "AddTag", "ClearAllChildren",
-        "Clone", "Destroy",
-        "FindFirstAncestor", "FindFirstAncestorOfClass",
-        "FindFirstAncestorWhichIsA", "FindFirstChild",
-        "FindFirstChildOfClass", "FindFirstChildWhichIsA",
-        "FindFirstDescendant", "GetActor",
-        "GetAttribute", "GetAttributeChangedSignal",
-        "GetAttributes", "GetChildren",
-        "GetDebugId", "GetDescendants",
-        "GetFullName", "GetPropertyChangedSignal",
-        "GetTags", "HasTag",
-        "IsA", "IsAncestorOf",
-        "IsDescendantOf", "IsPropertyModified",
-        "Remove", "RemoveTag",
-        "ResetPropertyToDefault", "SetAttribute",
-        "WaitForChild", "children",
-    }
+    local functions = {}
 
     if typeof(class) == "Instance" then
         class = class.ClassName
@@ -74,12 +57,19 @@ getgenv().getfunctions = function(class)
     end
     
     for i, otherclass in ipairs(apiData.Classes) do
-        if class == otherclass.Name then
+        if otherclass.Name == "Instance" then
             for _, member in ipairs(otherclass.Members) do
                 if member.MemberType == "Function" then
-                    table.insert(functions, member.Name)
+                    table.insert(functions, member)
                 end
             end
+        elseif class == otherclass.Name then
+            for _, member in ipairs(otherclass.Members) do
+                if member.MemberType == "Function" then
+                    table.insert(functions, member)
+                end
+            end
+            
             break
         end
     end
@@ -88,12 +78,7 @@ getgenv().getfunctions = function(class)
 end
 
 getgenv().getevents = function(class)
-    local events = {
-        "AncestryChanged", "AttributeChanged",
-        "Changed", "ChildAdded",
-        "ChildRemoved", "DescendantAdded",
-        "DescendantRemoving", "Destroying",
-    }
+    local events = {}
 
     if typeof(class) == "Instance" then
         class = class.ClassName
@@ -102,12 +87,19 @@ getgenv().getevents = function(class)
     end
     
     for i, otherclass in ipairs(apiData.Classes) do
-        if class == otherclass.Name then
+        if otherclass.Name == "Instance" then
             for _, member in ipairs(otherclass.Members) do
                 if member.MemberType == "Event" then
-                    table.insert(events, member.Name)
+                    table.insert(events, member)
                 end
             end
+        elseif class == otherclass.Name then
+            for _, member in ipairs(otherclass.Members) do
+                if member.MemberType == "Event" then
+                    table.insert(events, member)
+                end
+            end
+            
             break
         end
     end
@@ -125,12 +117,19 @@ getgenv().getcallbacks = function(class)
     end
     
     for i, otherclass in ipairs(apiData.Classes) do
-        if class == otherclass.Name then
+        if otherclass.Name == "Instance" then
             for _, member in ipairs(otherclass.Members) do
                 if member.MemberType == "Callback" then
-                    table.insert(callbacks, member.Name)
+                    table.insert(callbacks, member)
                 end
             end
+        elseif class == otherclass.Name then
+            for _, member in ipairs(otherclass.Members) do
+                if member.MemberType == "Callback" then
+                    table.insert(callbacks, member)
+                end
+            end
+            
             break
         end
     end
