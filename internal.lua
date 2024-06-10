@@ -994,7 +994,8 @@ local function main() -- Script.MainScript
 	local Players = cloneref(game:GetService("Players"))
 	local LocalPlayer = cloneref(Players.LocalPlayer)
 	local sgui = cloneref(game:GetService("StarterGui"))
-	
+
+	getgenv().EUROPA_INTERNAL_LOADED = true
 	getgenv().print, getgenv().warn, getgenv().error = print, warn, error
 	
 	local gui = script.Parent.Parent
