@@ -140,4 +140,9 @@ getgenv().getcallbacks = function(class)
 	return callbacks
 end
 
-return apiData
+return apiData, {
+	getproperties = getproperties,
+	getfunctions = getfunctions,
+	getevents = getevents,
+	getcallbacks = getcallbacks,
+}
