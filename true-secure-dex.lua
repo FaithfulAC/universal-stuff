@@ -7,6 +7,7 @@ local getgenv, gethui, getrenv, hookmetamethod, hookfunction, identifyexecutor =
 
 local foldername = "TSDex"
 local path = foldername .. "/lua-getproperties.lua"
+local versionpath = foldername .. "/tsd-version.txt"
 
 if not isfolder(foldername) then
 	makefolder(foldername)
@@ -61,11 +62,16 @@ local list = {
 
 for i, Script in pairs(scriptlist) do
 	-- set the scripts found in github to files in TSDex folder, so the script runs faster next time
-	local data = readfile(foldername .. list[i])
+	local newversion = game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/TSD-script-storage/main/tsd-version.txt")
 
-	if not data then
-		data = game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/TSD-script-storage/main" .. list[i])
-		writefile(foldername .. list[i], data)
+	if newversion ~= readfile(versionpath) then
+		writefile(versionpath, newversion)
+		local data = readfile(foldername .. list[i])
+
+		if not data then
+			data = game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/TSD-script-storage/main" .. list[i])
+			writefile(foldername .. list[i], data)
+		end
 	end
 
 	local func = loadstring(data, "=" .. Script:GetFullName())
