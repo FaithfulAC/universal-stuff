@@ -64,9 +64,15 @@ for i, Script in pairs(scriptlist) do
 	-- set the scripts found in github to files in TSDex folder, so the script runs faster next time
 	local newversion = game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/TSD-script-storage/main/tsd-version.txt")
 
+	local data;
 	if newversion ~= readfile(versionpath) then
-		writefile(versionpath, newversion)
-		local data = readfile(foldername .. list[i])
+		if i == #scriptlist then
+			writefile(versionpath, newversion)
+		end
+		data = game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/TSD-script-storage/main" .. list[i])
+		writefile(foldername .. list[i], data)
+	else
+		data = readfile(foldername .. list[i])
 
 		if not data then
 			data = game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/TSD-script-storage/main" .. list[i])
