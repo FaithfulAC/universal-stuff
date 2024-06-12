@@ -10,6 +10,7 @@
 	babyhamsta for the original secure dex
 ]]
 
+-- so no invalid arguments for stuff like InstanceCount
 loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/safehookmetamethod.lua"))()
 
 local clonefunction = clonefunc or clonefunction or function(...) return ... end
@@ -94,6 +95,10 @@ game.DescendantRemoving:Connect(function(ins)
 	if not IsDescendantOf(ins, DexGui) then
 		ins = nil
 		task.wait(math.random())
+		
+		if GuiClasses[ins.ClassName] then
+			memtag_ret -= GuiClasses[ins.ClassName]
+		end
 		inscount_ret -= 1
 		
 		if math.random(2) == 2 then -- just in case
@@ -266,7 +271,7 @@ task.spawn(function()
 		local switchoff = false
 
 		while RunService.Heartbeat:Wait() do
-			if math.random(1, 10) == 1 then
+			if math.random(1, 10) < 3 then
 				switchoff = not switchoff
 				memtag_ret += math.random(-2,2)/(if switchoff then 64 else 128) + (math.random(-1,1)/20)
 
@@ -331,8 +336,10 @@ task.spawn(function()
 	local find = function(tbl, arg)
 		if type(tbl) ~= "table" then return false end
 
-		for i, v in pairs(tbl) do
-			if v == arg and table.find(tbl, v) == i then return true end
+		for _, v in ipairs(tbl) do
+			if rawequal(v, arg) then
+				return true
+			end
 
 			if compareinstances(v, arg) then
 				return true
@@ -368,21 +375,17 @@ task.spawn(function()
 		if not checkcaller() and compareinstances(self, ContentProvider) and method == "preloadAsync" and type(tbl) == "table" and (find(tbl, game) or find(tbl,CoreGui)) and safecheck(tbl) then
 			local targettbl = {}
 
-			for i, v in pairs(tbl) do
-				if table.find(tbl, v) == i then
-					if v == game then
-						for _, v2 in pairs(randomizeTable(gametbl)) do
-							table.insert(targettbl,v2)
-						end
-					elseif v == CoreGui then
-						for _, v2 in pairs(randomizeTable(coreguitbl)) do
-							table.insert(targettbl,v2)
-						end
-					elseif (typeof(v) == "string" or typeof(v) == "Instance") then
-						table.insert(targettbl, v)
+			for _, v in ipairs(tbl) do
+				if v == game then
+					for _, v2 in pairs(randomizeTable(gametbl)) do
+						table.insert(targettbl,v2)
 					end
-				else
-					rawset(tbl, i, v)
+				elseif v == CoreGui then
+					for _, v2 in pairs(randomizeTable(coreguitbl)) do
+						table.insert(targettbl,v2)
+					end
+				elseif (typeof(v) == "string" or typeof(v) == "Instance") then
+					table.insert(targettbl, v)
 				end
 			end
 
@@ -398,19 +401,17 @@ task.spawn(function()
 		if not checkcaller() and compareinstances(self, ContentProvider) and type(tbl) == "table" and (find(tbl,game) or find(tbl,CoreGui)) and safecheck(tbl) then
 			local targettbl = {}
 
-			for i, v in pairs(tbl) do
-				if table.find(tbl, v) == i then
-					if v == game then
-						for _, v2 in pairs(randomizeTable(gametbl)) do
-							table.insert(targettbl,v2)
-						end
-					elseif v == CoreGui then
-						for _, v2 in pairs(randomizeTable(coreguitbl)) do
-							table.insert(targettbl,v2)
-						end
-					elseif (typeof(v) == "string" or typeof(v) == "Instance") then
-						table.insert(targettbl, v)
+			for _, v in ipairs(tbl) do
+				if v == game then
+					for _, v2 in pairs(randomizeTable(gametbl)) do
+						table.insert(targettbl,v2)
 					end
+				elseif v == CoreGui then
+					for _, v2 in pairs(randomizeTable(coreguitbl)) do
+						table.insert(targettbl,v2)
+					end
+				elseif (typeof(v) == "string" or typeof(v) == "Instance") then
+					table.insert(targettbl, v)
 				end
 			end
 
