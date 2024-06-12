@@ -63,9 +63,10 @@ local list = {
 	[4] = "/Editor.lua"
 }
 
+local newversion = game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/TSD-script-storage/main/tsd-version.txt")
+
 for i, Script in pairs(scriptlist) do
 	-- set the scripts found in github to files in TSDex folder, so the script runs faster next time
-	local newversion = game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/TSD-script-storage/main/tsd-version.txt")
 
 	local data;
 	if newversion ~= readfile(versionpath) then
