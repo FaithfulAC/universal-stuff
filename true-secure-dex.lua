@@ -16,11 +16,14 @@ if not isfolder(foldername) then
 	makefolder(foldername)
 end
 
+local newversion = game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/TSD-script-storage/main/tsd-version.txt")
+local notupdated = (newversion ~= readfile(versionpath))
+
 -- variables to send to scripts
 local Api, gets;
 
 -- create lua getproperties file to use from for dex functions next time
-if not isfile(path) then
+if not (isfile(path) and not notupdated) then
 	writefile(path, game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/lua-getproperties.lua"))
 end
 
@@ -62,9 +65,6 @@ local list = {
 	[3] = "/Properties.lua",
 	[4] = "/Editor.lua"
 }
-
-local newversion = game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/TSD-script-storage/main/tsd-version.txt")
-local notupdated = (newversion ~= readfile(versionpath))
 
 for i, Script in pairs(scriptlist) do
 	-- set the scripts found in github to files in TSDex folder, so the script runs faster next time
