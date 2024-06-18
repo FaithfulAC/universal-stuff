@@ -29,13 +29,13 @@ getgenv().getproperties = function(class)
 	if propertiescache[class] then return propertiescache[class] end
 
 	for i, otherclass in ipairs(apiData.Classes) do
-		--[[if otherclass.Name == "Instance" then
+		if otherclass.Name == "Instance" then
 			for _, member in ipairs(otherclass.Members) do
 				if member.MemberType == "Property" then
 					table.insert(properties, member)
 				end
 			end
-		else]]if class == otherclass.Name then
+		elseif class == otherclass.Name then
 			for _, member in ipairs(otherclass.Members) do
 				if member.MemberType == "Property" then
 					table.insert(properties, member)
@@ -43,7 +43,7 @@ getgenv().getproperties = function(class)
 			end
 
 			for _, evenmoreclass in ipairs(apiData.Classes) do
-				if evenmoreclass.Name == otherclass.Superclass then
+				if evenmoreclass.Name == otherclass.Superclass and otherclass.Superclass ~= "Instance" then
 					for _, member in ipairs(evenmoreclass.Members) do
 						if member.MemberType == "Property" then
 							table.insert(properties, member)
