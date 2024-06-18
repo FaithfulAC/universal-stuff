@@ -16,6 +16,8 @@ local function sortAlphabetic(t, property)
 	end)
 end
 
+local propertiescache, functionscache, eventscache, callbackscache = {}, {}, {}, {}
+
 getgenv().getproperties = function(class)
 	local properties = {}
 
@@ -24,18 +26,29 @@ getgenv().getproperties = function(class)
 	elseif typeof(class) ~= "string" then
 		return error("bad argument #1 (string or Instance expected)")
 	end
+	if propertiescache[class] then return propertiescache[class] end
 
 	for i, otherclass in ipairs(apiData.Classes) do
-		if otherclass.Name == "Instance" then
+		--[[if otherclass.Name == "Instance" then
 			for _, member in ipairs(otherclass.Members) do
 				if member.MemberType == "Property" then
 					table.insert(properties, member)
 				end
 			end
-		elseif class == otherclass.Name then
+		else]]if class == otherclass.Name then
 			for _, member in ipairs(otherclass.Members) do
 				if member.MemberType == "Property" then
 					table.insert(properties, member)
+				end
+			end
+
+			for _, evenmoreclass in ipairs(apiData.Classes) do
+				if evenmoreclass.Name == otherclass.Superclass then
+					for _, member in ipairs(evenmoreclass.Members) do
+						if member.MemberType == "Property" then
+							table.insert(properties, member)
+						end
+					end
 				end
 			end
 
@@ -44,6 +57,7 @@ getgenv().getproperties = function(class)
 	end
 
 	sortAlphabetic(properties, "Name")
+	propertiescache[class] = properties
 	return properties
 end
 
