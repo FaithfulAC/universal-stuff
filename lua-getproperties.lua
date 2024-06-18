@@ -26,7 +26,6 @@ local function recursivesuperclassproperties(superclass, membertype, tbl)
 					table.insert(tbl, member)
 				end
 			end
-			
 			if superclass ~= "Instance" then
 				recursivesuperclassproperties(evenmoreclass.Superclass)
 			end
@@ -76,6 +75,7 @@ getgenv().getfunctions = function(class)
 	elseif typeof(class) ~= "string" then
 		return error("bad argument #1 (string or Instance expected)")
 	end
+	if functionscache[class] then return functionscache[class] end
 
 	for i, otherclass in ipairs(apiData.Classes) do
 		if otherclass.Name == "Instance" then
@@ -96,11 +96,13 @@ getgenv().getfunctions = function(class)
 	end
 
 	sortAlphabetic(functions, "Name")
+	functionscache[class] = functions
 	return functions
 end
 
 getgenv().getevents = function(class)
 	local events = {}
+	if eventscache[class] then return eventscache[class] end
 
 	if typeof(class) == "Instance" then
 		class = class.ClassName
@@ -127,6 +129,7 @@ getgenv().getevents = function(class)
 	end
 
 	sortAlphabetic(events, "Name")
+	eventscache[class] = events
 	return events
 end
 
@@ -138,6 +141,7 @@ getgenv().getcallbacks = function(class)
 	elseif typeof(class) ~= "string" then
 		return error("bad argument #1 (string or Instance expected)")
 	end
+	if callbackscache[class] then return callbackscache[class] end
 
 	for i, otherclass in ipairs(apiData.Classes) do
 		if otherclass.Name == "Instance" then
@@ -158,6 +162,7 @@ getgenv().getcallbacks = function(class)
 	end
 
 	sortAlphabetic(callbacks, "Name")
+	callbackscache[class] = callbacks
 	return callbacks
 end
 
