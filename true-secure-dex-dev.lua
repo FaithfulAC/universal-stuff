@@ -9,7 +9,7 @@ local isfolder, makefolder, isfile, writefile, readfile =
 local getgenv, gethui, getrenv, hookmetamethod, hookfunction, identifyexecutor =
 	getgenv, gethui, getrenv, hookmetamethod, hookfunction, identifyexecutor;
 
-local foldername = "TSDex"
+local foldername = "TSDex_Dev"
 local path = foldername .. "/lua-getproperties.lua"
 local versionpath = foldername .. "/tsd-version.txt"
 
