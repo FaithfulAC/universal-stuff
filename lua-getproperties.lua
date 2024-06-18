@@ -26,6 +26,7 @@ local function recursivesuperclassproperties(superclass, membertype, tbl)
 					table.insert(tbl, member)
 				end
 			end
+			
 			if superclass ~= "Instance" then
 				recursivesuperclassproperties(evenmoreclass.Superclass)
 			end
@@ -44,13 +45,13 @@ getgenv().getproperties = function(class)
 	if propertiescache[class] then return propertiescache[class] end
 
 	for i, otherclass in ipairs(apiData.Classes) do
-		--[[if otherclass.Name == "Instance" then
+		if otherclass.Name == "Instance" then
 			for _, member in ipairs(otherclass.Members) do
 				if member.MemberType == "Property" then
 					table.insert(properties, member)
 				end
 			end
-		else]]if class == otherclass.Name then
+		elseif class == otherclass.Name then
 			for _, member in ipairs(otherclass.Members) do
 				if member.MemberType == "Property" then
 					table.insert(properties, member)
