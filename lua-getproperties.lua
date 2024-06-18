@@ -57,7 +57,7 @@ getgenv().getproperties = function(class)
 				end
 			end
 			
-			recursiveclassproperties(otherclass.Superclass, "Property", properties)
+			recursivesuperclassproperties(otherclass.Superclass, "Property", properties)
 			break
 		end
 	end
