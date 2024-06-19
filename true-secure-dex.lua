@@ -1,4 +1,4 @@
--- hey
+-- v4! there are more than likely bugs, but future updates will make dex immune to rbxassetid:// style preloadasync attacks and better-looking ui
 -- loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))()
 -- (quickLoad or quickload)("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua")
 
@@ -29,7 +29,7 @@ end
 
 Api, gets = unpack(loadstring(readfile(path))())
 
-getgenv().Dex = game:GetObjects("rbxassetid://14878398926")[1]
+getgenv().Dex = game:GetObjects("rbxassetid://17769765246")[1]
 Dex.Parent = (gethui and gethui() ~= game:GetService("CoreGui") and gethui()) or game:GetService("CoreGui").RobloxGui
 
 -- prevent solara from making the damn script error
