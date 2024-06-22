@@ -51,6 +51,61 @@ do
 	Dex.Name = name
 end
 
+-- drag begin
+local dragtarget = nil
+local dragstart = nil
+local startpos = nil
+local uis = cloneref(game:GetService("UserInputService"))
+
+local types = {
+	Enum.UserInputType.MouseButton1,
+	Enum.UserInputType.Touch
+}
+
+local types2 = {
+	Enum.UserInputType.MouseMovement,
+	Enum.UserInputType.Touch
+}
+
+local function updateInput(input)
+	local delta = input.Position - dragstart
+	local position = UDim2.new(
+		dragtarget.X.Scale, dragtarget.X.Offset + delta.X,
+		dragtarget.Y.Scale, dragtarget.Y.Offset + delta.Y
+	)
+	dragtarget.Position = position
+end
+
+for i, frame in pairs(Dex:GetChildren()) do
+	if frame:IsA("Frame") and frame:FindFirstChild("Header") then
+		local header = frame.Header
+		if header:FindFirstChild("FrameName") then
+			local label = header.FrameName 
+
+			label.InputBegan:Connect(function(input)
+				if table.find(types, input.UserInputType) then
+					dragtarget = frame
+					dragstart = input.Position
+					startpos = frame.Position
+				end
+			end)
+			label.InputEnded:Connect(function(input)
+				if table.find(types, input.UserInputType) then
+					dragtarget = nil
+					dragstart, startpos = nil, nil
+				end
+			end)
+		end
+	end
+end
+
+uis.InputChanged:Connect(function(input)
+	if table.find(types2, input.UserInputType) and dragtarget then
+		updateInput(input)
+	end
+end)
+-- drag end
+
 local orgfenv = getfenv()
 
 local scriptlist = {
