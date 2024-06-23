@@ -19,7 +19,6 @@ end
 local propertiescache, functionscache, eventscache, callbackscache = {}, {}, {}, {}
 
 local function recursivesuperclassproperties(superclass, membertype, tbl)
-	print(superclass)
 	for _, evenmoreclass in ipairs(apiData.Classes) do
 		if evenmoreclass.Name == superclass then
 			for _, member in ipairs(evenmoreclass.Members) do
