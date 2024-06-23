@@ -70,8 +70,8 @@ local types2 = {
 local function updateInput(input)
 	local delta = input.Position - dragstart
 	local position = UDim2.new(
-		dragtarget.X.Scale, dragtarget.X.Offset + delta.X,
-		dragtarget.Y.Scale, dragtarget.Y.Offset + delta.Y
+		dragtarget.Position.X.Scale, dragtarget.Position.X.Offset + delta.X,
+		dragtarget.Position.Y.Scale, dragtarget.Position.Y.Offset + delta.Y
 	)
 	dragtarget.Position = position
 end
