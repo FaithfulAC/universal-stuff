@@ -83,14 +83,14 @@ for i, frame in pairs(Dex:GetChildren()) do
 			local label = header.FrameName 
 
 			label.InputBegan:Connect(function(input)
-				if table.find(types, input.UserInputType) then
+				if table.find(types, input.UserInputType) and not dragtarget then
 					dragtarget = frame
 					dragstart = input.Position
 					startpos = frame.Position
 				end
 			end)
 			label.InputEnded:Connect(function(input)
-				if table.find(types, input.UserInputType) then
+				if table.find(types, input.UserInputType) and dragtarget == frame then
 					dragtarget = nil
 					dragstart, startpos = nil, nil
 				end
