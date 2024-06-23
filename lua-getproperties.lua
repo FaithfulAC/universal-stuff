@@ -27,7 +27,7 @@ local function recursivesuperclassproperties(superclass, membertype, tbl)
 				end
 			end
 			if superclass ~= "Instance" then
-				recursivesuperclassproperties(evenmoreclass.Superclass)
+				recursivesuperclassproperties(evenmoreclass.Superclass, membertype, tbl)
 			end
 		end
 	end
