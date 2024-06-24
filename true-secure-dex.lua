@@ -1,4 +1,4 @@
--- v4! there are more than likely bugs, but future updates will make dex immune to rbxassetid:// style preloadasync attacks and better-looking ui
+-- v4! there are more than likely bugs, but future updates will fix so dw :)
 
 -- loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))()
 -- (quickLoad or quickload)("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua")
