@@ -306,10 +306,10 @@ end)
 task.spawn(function()
 	if not options.PreloadAsync then return end
 	local badnews = {
-		"rbxassetid://472635937", "rbxassetid://472636337",
-		"rbxassetid://476354004", "rbxassetid://475456048",
-		"rbxassetid://472635774", "rbxassetid://483437370",
-		"rbxassetid://1513966937"
+		"rbxasset://textures/ClassImages.png", "rbxasset://textures/DeveloperFramework/checkbox_checked_light.png",
+		"rbxasset://textures/DeveloperFramework/checkbox_unchecked_light.png", "rbxasset://textures/TagEditor/famfamfam.png",
+		"rbxasset://textures/ManageCollaborators/arrowRight_dark.png", "rbxasset://textures/ManageCollaborators/arrowDown_dark.png",
+		"rbxasset://textures/ui/VR/circleWhite.png", "rbxasset://textures/blackBkg_square.png",
 	}
 
 	local gametbl = {}
