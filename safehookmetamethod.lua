@@ -10,11 +10,12 @@ local hmm = hookmetamethod -- hmmmmmmmmmmmmmmmm
 local cclosure = newcclosure
 
 local KeepOriginalHookMetaMethod = getgenv().KeepHMM or getgenv().KeepOriginalHookMetaMethod or false
-local LoadCStackOverflowBypass = getgenv().LoadCSOBypass or false -- keeping false cuz it is detectable and there are other hookmm detection methods
+
+--[[local LoadCStackOverflowBypass = false
 
 if LoadCStackOverflowBypass then -- checking if c stack overflow bypass was already initiated
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/c-stack-overflow-universal-bypass.lua"))()
-end
+end]]
 
 local __namecall, __index, __newindex
 __namecall, __index, __newindex = hmm(game,"__namecall", function(...) return __namecall(...) end), hmm(game,"__index", function(...) return __index(...) end), hmm(game,"__newindex", function(...) return __newindex(...) end)
