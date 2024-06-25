@@ -4,10 +4,7 @@
 --[[
 	made by @__europa
 
-	big thanks to:
-	kar for indirectly helping make true secure dex as secure as it is
-	ludi for his detectable preloadasync hook lol (removed for this version)
-	babyhamsta for the original secure dex
+	big thanks to kaxr and babyhamsta
 ]]
 
 -- so no invalid arguments for stuff like InstanceCount
