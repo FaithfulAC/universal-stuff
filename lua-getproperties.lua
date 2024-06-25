@@ -16,6 +16,7 @@ local function sortAlphabetic(t, property)
 	end)
 end
 
+-- only used for getproperties as of now
 local propertiescache, functionscache, eventscache, callbackscache = {}, {}, {}, {}
 
 local function recursivesuperclassproperties(superclass, membertype, tbl)
