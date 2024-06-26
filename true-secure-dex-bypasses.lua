@@ -322,7 +322,7 @@ task.spawn(function()
 	end)
 
 	for i, v in pairs(gametbl) do
-		if table.find(badnews, v) then
+		if table.find(badnews, v) and table.find(coreguitbl, v) then
 			table.remove(gametbl, i)
 		end
 	end
