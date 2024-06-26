@@ -16,9 +16,9 @@ local function sortAlphabetic(t, property)
 	end)
 end
 
--- only used for getproperties as of now
 local propertiescache, functionscache, eventscache, callbackscache = {}, {}, {}, {}
 
+-- only used for getproperties as of now
 local function recursivesuperclassproperties(superclass, membertype, tbl)
 	for _, evenmoreclass in ipairs(apiData.Classes) do
 		if evenmoreclass.Name == superclass then
