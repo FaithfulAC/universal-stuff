@@ -358,8 +358,8 @@ task.spawn(function()
 	end
 
 	local safecheck = function(tbl)
-		for i = 1, rawlen(tbl) do
-			if type(rawget(tbl, i)) ~= "string" and typeof(rawget(tbl, i)) ~= "Instance" then
+		for i, v in ipairs(tbl) do
+			if type(v) ~= "string" and typeof(v) ~= "Instance" then
 				return false
 			end
 		end
@@ -374,11 +374,11 @@ task.spawn(function()
 			local targettbl = {}
 
 			for _, v in ipairs(tbl) do
-				if v == game then
+				if compareinstances(v, game) then
 					for _, v2 in pairs(randomizeTable(gametbl)) do
 						table.insert(targettbl,v2)
 					end
-				elseif v == CoreGui then
+				elseif compareinstances(v, CoreGui) then
 					for _, v2 in pairs(randomizeTable(coreguitbl)) do
 						table.insert(targettbl,v2)
 					end
@@ -400,11 +400,11 @@ task.spawn(function()
 			local targettbl = {}
 
 			for _, v in ipairs(tbl) do
-				if v == game then
+				if compareinstances(v, game) then
 					for _, v2 in pairs(randomizeTable(gametbl)) do
 						table.insert(targettbl,v2)
 					end
-				elseif v == CoreGui then
+				elseif compareinstances(v, CoreGui) then
 					for _, v2 in pairs(randomizeTable(coreguitbl)) do
 						table.insert(targettbl,v2)
 					end
