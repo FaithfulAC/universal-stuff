@@ -16,7 +16,7 @@ local __newindex; __newindex = hookmetamethod(game, "__newindex", function(...)
 		prop = split(prop, "\0")[1]
 		local checksub = false
 
-		if pcall(function() return self[gsub(prop, "^%u", lower)] end) and self[gsub(prop, "^%u", lower)] == self[prop] then
+		if pcall(function() return self[gsub(prop, "^%u", lower)] end) and (self[gsub(prop, "^%u", lower)] == self[prop]) then
 			checksub = true
 		end
 
