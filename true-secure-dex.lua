@@ -1,4 +1,5 @@
 -- v4! there are more than likely bugs, but future updates will fix so dw :)
+-- mobile executors do not support this for some reason
 
 -- loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))()
 -- (quickLoad or quickload)("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua")
