@@ -303,14 +303,13 @@ end)
 -- preloadasync spoof
 task.spawn(function()
 	if not options.PreloadAsync then return end
-	getgenv().PreloadAsyncAssets = {
+
+	local badnews = {
 		"rbxasset://textures/ClassImages.png", "rbxasset://textures/DeveloperFramework/checkbox_checked_light.png",
 		"rbxasset://textures/DeveloperFramework/checkbox_unchecked_light.png", "rbxasset://textures/TagEditor/famfamfam.png",
 		"rbxasset://textures/ManageCollaborators/arrowRight_dark.png", "rbxasset://textures/ManageCollaborators/arrowDown_dark.png",
 		"rbxasset://textures/ui/VR/circleWhite.png", "rbxasset://textures/blackBkg_square.png",
 	}
-
-	local badnews = getgenv().PreloadAsyncAssets
 
 	local gametbl = {}
 	local coreguitbl = {}
