@@ -137,6 +137,7 @@ local CloneHook; CloneHook = hookmetamethod(game, "__namecall", function(...)
 end)
 
 local InsCountHook, InsCountHook2;
+local TableCreateHook;
 
 InsCountHook = hookfunction(getrenv().Instance.new, function(...)
 	local result = InsCountHook(...)
@@ -164,6 +165,16 @@ InsCountHook2 = hookfunction(getrenv().Instance.fromExisting, function(...)
 	end
 
 	return result
+end)
+
+TableCreateHook = hookfunction(getrenv().table.create, function(...)
+	local int, var = ...
+
+	if not checkcaller() and typeof(int) == "number" and var then
+		gcinfo_ret += math.ceil(int/1000)
+	end
+
+	return TableCreateHook(...)
 end)
 
 -- gcinfo / collectgarbage spoof
