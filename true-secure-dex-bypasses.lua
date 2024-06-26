@@ -90,15 +90,16 @@ end)
 
 game.DescendantRemoving:Connect(function(ins)
 	if not IsDescendantOf(ins, DexGui) then
+		local GuiReturn = GuiClasses[ins.ClassName]
 		ins = nil
 		task.wait(math.random())
 		
-		if GuiClasses[ins.ClassName] then
-			memtag_ret -= GuiClasses[ins.ClassName]
+		if GuiReturn then
+			memtag_ret -= GuiReturn
 		end
 		inscount_ret -= 1
 		
-		if math.random(2) == 2 then -- just in case
+		if math.random(2) == 2 then -- for fun
 			task.wait(math.random())
 			inscount_ret -= 1
 		end
