@@ -36,7 +36,7 @@ Dex.Parent = (gethui and gethui() ~= game:GetService("CoreGui") and gethui()) or
 
 -- prevent solara from making the damn script error
 if getrenv and hookmetamethod and hookfunction and not identifyexecutor():lower():find("solara") then
-	task.spawn(loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses.lua")))
+	task.spawn(loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses.lua")), Dex)
 end
 
 do
