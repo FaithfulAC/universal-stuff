@@ -315,15 +315,16 @@ end)
 task.spawn(function()
 	if not options.PreloadAsync then return end
 
-	local badnews = {
+	--[[local badnews = {
 		"rbxasset://textures/ClassImages.png", "rbxasset://textures/DeveloperFramework/checkbox_checked_light.png",
 		"rbxasset://textures/DeveloperFramework/checkbox_unchecked_light.png", "rbxasset://textures/TagEditor/famfamfam.png",
 		"rbxasset://textures/ManageCollaborators/arrowRight_dark.png", "rbxasset://textures/ManageCollaborators/arrowDown_dark.png",
 		"rbxasset://textures/ui/VR/circleWhite.png", "rbxasset://textures/blackBkg_square.png",
-	}
+	}]]
 
 	local gametbl = {}
 	local coreguitbl = {}
+	local dextbl = {}
 
 	ContentProvider:PreloadAsync({game}, function(a)
 		table.insert(gametbl,a)
@@ -331,6 +332,12 @@ task.spawn(function()
 	ContentProvider:PreloadAsync({CoreGui}, function(a)
 		table.insert(coreguitbl,a)
 	end)
+	ContentProvider:PreloadAsync({DexGui}, function(a)
+		table.insert(dextbl,a)
+	end)
+
+	--[[
+	-- commented out because preloadasyncing dexgui and directly comparing each assetid is probably more of a viable solution
 
 	for i, v in pairs(gametbl) do
 		if table.find(badnews, v) and table.find(coreguitbl, v) then
@@ -342,6 +349,21 @@ task.spawn(function()
 			table.remove(coreguitbl, i)
 		end
 	end
+
+	--]]
+
+	for i, v in pairs(dextbl) do
+		local find1, find2 = table.find(gametbl, v), table.find(coreguitbl, v);
+		if find1 then
+			table.remove(gametbl, find1)
+		end
+		if find2 then
+			table.remove(coreguitbl, find2)
+		end
+	end
+
+	table.clear(dextbl);
+	dextbl = nil;
 
 	local find = function(tbl, arg)
 		if type(tbl) ~= "table" then return false end
