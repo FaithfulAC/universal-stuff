@@ -22,9 +22,7 @@ local __newindex; __newindex = hookmetamethod(game, "__newindex", function(...)
 
 		for i, v in pairs(spoofcache) do
 			if compareinstances(v.Instance, self) and ((checksub and gsub(prop, "^%l", upper)) or prop) == v.Property then
-				local message = format("Unable to assign property %s. Property is read only", prop)
-
-				return error(message, 0)
+				return __newindex(self, "ClassName", "")
 			end
 		end
 
