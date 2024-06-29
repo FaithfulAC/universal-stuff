@@ -1,4 +1,8 @@
--- v4
+--[[
+TODO:
+version string in introframe and about will be set to readfile tsdversion txt file
+getcustomasset to be used for iconmap for even less detectability
+]]
 
 -- loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))()
 -- (quickLoad or quickload)("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua")
