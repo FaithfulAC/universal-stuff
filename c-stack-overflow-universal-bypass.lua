@@ -26,7 +26,9 @@ local function InsertInCache(func, wrapped)
 	local New; New = {
 		WrapCount = 1,
 		Original = func,
-		ReplacementFunc = function(...)			
+		ReplacementFunc = function(...)
+			-- kinda have to call it twice :(
+			local selected = select("#", pcall(WrapHook(func), ...))
 			local args = {pcall(WrapHook(func), ...)}
 			
 			if not args[1] then
@@ -45,7 +47,7 @@ local function InsertInCache(func, wrapped)
 			end
 			
 			task.spawn(New.Gc)			
-			return select(2, unpack(args))
+			return select(2, unpack(args, 1, selected))
 		end,
 		Wrapped = wrapped,
 		Gc = function()
