@@ -1,5 +1,4 @@
 --[[
-        new script coming, and it wont just target coroutine.wrap ;)
 	thanks to these people for helping with detections:
 
 	unlimited (@unlimited_objects)
