@@ -50,6 +50,8 @@ local function GenerateRandomString(range1, range2)
 		local randint = math.random(#characters)
 		name = name .. string.sub(characters, randint, randint)
 	end
+
+	return name
 end
 
 Dex.Name = GenerateRandomString(10, 15)
