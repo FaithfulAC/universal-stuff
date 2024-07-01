@@ -9,6 +9,8 @@ local isfolder, makefolder, isfile, writefile, readfile =
 local getgenv, gethui, getrenv, hookmetamethod, hookfunction, identifyexecutor =
 	getgenv, gethui, getrenv, hookmetamethod, hookfunction, identifyexecutor;
 
+local LoadBypasses = ((...) ~= nil and (...)) or true
+
 local foldername = "TSDex"
 local path = foldername .. "/lua-getproperties.lua"
 local versionpath = foldername .. "/tsd-version.txt"
@@ -33,23 +35,30 @@ Api, gets = unpack(loadstring(readfile(path))())
 getgenv().Dex = game:GetObjects("rbxassetid://17769765246")[1]
 Dex.Parent = (gethui and gethui() ~= game:GetService("CoreGui") and gethui()) or game:GetService("CoreGui").RobloxGui
 
+-- update textlabel to new version
+for i, v in pairs(Dex:GetDescendants()) do
+	if v:IsA("TextLabel") and v.Name == "Version" then
+		v.Text = "v" .. newversion
+	end
+end
+
 -- prevent solara from making the damn script error
-if (getrenv and hookmetamethod and hookfunction and not identifyexecutor():lower():find("solara")) and (...) ~= false then
+if LoadBypasses and (getrenv and hookmetamethod and hookfunction and not identifyexecutor():lower():find("solara")) then
 	task.spawn(loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses.lua")), Dex)
 end
 
-do
-	local characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+local function GenerateRandomString(range1, range2)
+	local characters = "abcdefghijklmnopABCDEFGHIJKLMNOP" -- qrstuvwxyzQRSTUVWXYZ are excluded
 	local name = ""
 
-	for i = 1, math.random(10, 19) do
+	for i = 1, math.random(range1, range2) do
 		local randint = math.random(#characters)
 		name = name .. string.sub(characters, randint, randint)
 	end
-
-	-- hide dex from plain sight
-	Dex.Name = name
 end
+
+-- semi hide dex
+Dex.Name = GenerateRandomString(7, 15)
 
 -- drag begin
 local dragtarget = nil
@@ -106,7 +115,7 @@ uis.InputChanged:Connect(function(input)
 end)
 -- drag end
 
-local orgfenv = getfenv()
+-- local orgfenv = getfenv()
 
 local scriptlist = {
 	[1] = Dex:FindFirstChild("SCRIPT_Selection"),
@@ -142,7 +151,7 @@ for i, Script in pairs(scriptlist) do
 	end
 
 	local func = loadstring(data, "=" .. Script:GetFullName())
-	setfenv(func, orgfenv) -- just in case
+	-- setfenv(func, orgfenv) -- just in case
 
 	task.spawn(func, Script, Api, gets)
 end
