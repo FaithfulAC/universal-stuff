@@ -34,7 +34,7 @@ getgenv().Dex = game:GetObjects("rbxassetid://17769765246")[1]
 Dex.Parent = (gethui and gethui() ~= game:GetService("CoreGui") and gethui()) or game:GetService("CoreGui").RobloxGui
 
 -- prevent solara from making the damn script error
-if getrenv and hookmetamethod and hookfunction and not identifyexecutor():lower():find("solara") then
+if (getrenv and hookmetamethod and hookfunction and not identifyexecutor():lower():find("solara")) and (...) ~= false then
 	task.spawn(loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses.lua")), Dex)
 end
 
