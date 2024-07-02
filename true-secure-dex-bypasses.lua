@@ -3,7 +3,6 @@
 
 --[[
 	made by @__europa
-
 	big thanks to kaxr and babyhamsta
 ]]
 
