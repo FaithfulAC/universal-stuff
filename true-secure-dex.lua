@@ -22,6 +22,10 @@ end
 local newversion = game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/TSD-script-storage/main/tsd-version.txt")
 local notupdated = (newversion ~= readfile(versionpath))
 
+if notupdated then
+	writefile(versionpath, newversion)
+end
+
 -- variables to send to scripts
 local Api, gets;
 
@@ -138,9 +142,6 @@ for i, Script in pairs(scriptlist) do
 
 	local data;
 	if notupdated then
-		if i == #scriptlist then
-			writefile(versionpath, newversion)
-		end
 		data = game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/TSD-script-storage/main" .. list[i])
 		writefile(foldername .. list[i], data)
 	else
