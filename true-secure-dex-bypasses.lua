@@ -78,104 +78,108 @@ local GuiClasses = { -- instances that can increase memory for gui
 	ImageButton = GetRandomMemoryIncrease()
 }
 
-game.DescendantAdded:Connect(function(ins) -- mark those under datamodel
-	if not IsDescendantOf(ins, DexGui) then
-		if GuiClasses[ins.ClassName] then
-			memtag_ret += GuiClasses[ins.ClassName]
+if options.GetMemoryUsageMbForTag or options.InstanceCount then
+	game.DescendantAdded:Connect(function(ins) -- mark those under datamodel
+		if not IsDescendantOf(ins, DexGui) then
+			if GuiClasses[ins.ClassName] then
+				memtag_ret += GuiClasses[ins.ClassName]
+			end
+			ins = nil
+			inscount_ret += 1
 		end
-		ins = nil
-		inscount_ret += 1
-	end
-end)
+	end)
 
-game.DescendantRemoving:Connect(function(ins)
-	if not IsDescendantOf(ins, DexGui) then
-		local GuiReturn = GuiClasses[ins.ClassName]
-		ins = nil
-		task.wait(math.random())
-		
-		if GuiReturn then
-			memtag_ret -= GuiReturn
-		end
-		inscount_ret -= 1
-		
-		if math.random(2) == 2 then -- for fun
+	game.DescendantRemoving:Connect(function(ins)
+		if not IsDescendantOf(ins, DexGui) then
+			local GuiReturn = GuiClasses[ins.ClassName]
+			ins = nil
 			task.wait(math.random())
+
+			if GuiReturn then
+				memtag_ret -= GuiReturn
+			end
 			inscount_ret -= 1
+		
+			if math.random(2) == 2 then -- for fun
+				task.wait(math.random())
+				inscount_ret -= 1
+			end
 		end
-	end
-end)
+	end)
 
-local OrgClone;
+	local OrgClone;
 
-local markup = function(...)
-	local result = OrgClone(...)
+	local markup = function(...)
+		local result = OrgClone(...)
 
-	if not checkcaller() and typeof(result) == "Instance" and result.Parent == nil then
-		if GuiClasses[result.ClassName] then
-			memtag_ret += GuiClasses[result.ClassName]
+		if not checkcaller() and typeof(result) == "Instance" and result.Parent == nil then
+			if GuiClasses[result.ClassName] then
+				memtag_ret += GuiClasses[result.ClassName]
+			end
+
+			inscount_ret += 1
 		end
 
-		inscount_ret += 1
+		return result
 	end
 
-	return result
+	OrgClone = hookfunction(game.Clone, markup)
+	hookfunction(game.clone, markup)
+
+	local CloneHook; CloneHook = hookmetamethod(game, "__namecall", function(...)
+		local self = ...
+		local method = getnamecallmethod()
+
+		if not checkcaller() and typeof(self) == "Instance" and (method == "Clone" or method == "clone") then
+			return markup(...)
+		end
+
+		return CloneHook(...)
+	end)
+
+	local InsCountHook, InsCountHook2;
+
+	InsCountHook = hookfunction(getrenv().Instance.new, function(...)
+		local result = InsCountHook(...)
+
+		if not checkcaller() and typeof(result) == "Instance" then
+			if GuiClasses[result.ClassName] then
+				memtag_ret += GuiClasses[result.ClassName]
+			end
+
+			inscount_ret += 1
+		end
+
+		return result
+	end)
+
+	InsCountHook2 = hookfunction(getrenv().Instance.fromExisting, function(...)
+		local result = InsCountHook2(...)
+
+		if not checkcaller() and typeof(result) == "Instance" then
+			if GuiClasses[result.ClassName] then
+				memtag_ret += GuiClasses[result.ClassName]
+			end
+
+			inscount_ret += 1
+		end
+
+		return result
+	end)
 end
 
-OrgClone = hookfunction(game.Clone, markup)
-hookfunction(game.clone, markup)
+if options.gcinfo then
+	local TableCreateHook;
+	TableCreateHook = hookfunction(getrenv().table.create, function(...)
+		local int, var = ...
 
-local CloneHook; CloneHook = hookmetamethod(game, "__namecall", function(...)
-	local self = ...
-	local method = getnamecallmethod()
-
-	if not checkcaller() and typeof(self) == "Instance" and (method == "Clone" or method == "clone") then
-		return markup(...)
-	end
-
-	return CloneHook(...)
-end)
-
-local InsCountHook, InsCountHook2;
-local TableCreateHook;
-
-InsCountHook = hookfunction(getrenv().Instance.new, function(...)
-	local result = InsCountHook(...)
-
-	if not checkcaller() and typeof(result) == "Instance" then
-		if GuiClasses[result.ClassName] then
-			memtag_ret += GuiClasses[result.ClassName]
+		if not checkcaller() and typeof(int) == "number" and var then
+			gcinfo_ret += math.ceil(int/1000)
 		end
 
-		inscount_ret += 1
-	end
-
-	return result
-end)
-
-InsCountHook2 = hookfunction(getrenv().Instance.fromExisting, function(...)
-	local result = InsCountHook2(...)
-
-	if not checkcaller() and typeof(result) == "Instance" then
-		if GuiClasses[result.ClassName] then
-			memtag_ret += GuiClasses[result.ClassName]
-		end
-
-		inscount_ret += 1
-	end
-
-	return result
-end)
-
-TableCreateHook = hookfunction(getrenv().table.create, function(...)
-	local int, var = ...
-
-	if not checkcaller() and typeof(int) == "number" and var then
-		gcinfo_ret += math.ceil(int/1000)
-	end
-
-	return TableCreateHook(...)
-end)
+		return TableCreateHook(...)
+	end)
+end
 
 -- gcinfo / collectgarbage spoof
 task.spawn(function()
@@ -338,6 +342,8 @@ task.spawn(function()
 
 	--[[
 	-- commented out because preloadasyncing dexgui and directly comparing each assetid is probably more of a viable solution
+	-- it also does not matter if every dex image id is loaded in, well, the reason why is obvious
+	-- planning to make game.DescendantAdded checks soon
 
 	for i, v in pairs(gametbl) do
 		if table.find(badnews, v) and table.find(coreguitbl, v) then
