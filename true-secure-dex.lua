@@ -20,7 +20,7 @@ if not isfolder(foldername) then
 end
 
 local newversion = game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/TSD-script-storage/main/tsd-version.txt")
-local notupdated = (newversion ~= readfile(versionpath))
+local notupdated = (not isfile(versionpath)) or (newversion ~= readfile(versionpath))
 
 if notupdated then
 	writefile(versionpath, newversion)
