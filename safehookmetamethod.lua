@@ -84,7 +84,7 @@ if options.Newindex then
 	end)
 end
 	
-getgenv().safehookmetamethod = function(...)
+getgenv().safehookmetamethod = newcclosure(function(...)
 	local obj, method, fnc = ...
 	if typeof(obj) ~= "Instance" then return hmm(...) end -- object is not an Instance therefore is not supported
 	
@@ -109,6 +109,6 @@ getgenv().safehookmetamethod = function(...)
 	end
 	
 	return hmm(...)
-end
+end)
 
 if not KeepOriginalHookMetaMethod then getgenv().hookmetamethod = safehookmetamethod end
