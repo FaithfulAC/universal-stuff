@@ -27,7 +27,7 @@ local GetDebugId = clonefunction(game.GetDebugId)
 local IsDescendantOf = clonefunction(game.IsDescendantOf)
 local org = compareinstances
 
-local options = getgenv().DexOptions or getgenv().options or {
+local options = (...) or getgenv().DexOptions or getgenv().options or {
 	gcinfo = true,
 	GetTotalMemoryUsageMb = true,
 	GetMemoryUsageMbForTag = true,
