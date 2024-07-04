@@ -9,7 +9,7 @@ local options = shmmoptions or safehookmetamethodoptions or {
 local hmm = hookmetamethod -- hmmmmmmmmmmmmmmmm
 local cclosure = newcclosure
 
-local KeepOriginalHookMetaMethod = getgenv().KeepHMM or getgenv().KeepOriginalHookMetaMethod or false
+local KeepOriginalHookMetaMethod = getgenv().KeepHMM or getgenv().KeepHookmetamethod or false
 
 --[[local LoadCStackOverflowBypass = false
 
