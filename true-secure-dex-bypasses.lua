@@ -7,7 +7,9 @@
 ]]
 
 -- so no invalid arguments for stuff like InstanceCount
-loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/safehookmetamethod.lua"))()
+if not safehookmetamethod then
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/safehookmetamethod.lua"))()
+end
 
 local clonefunction = clonefunc or clonefunction or function(...) return ... end
 local cloneref = cloneref or function(...) return ... end
