@@ -2,7 +2,8 @@
 -- file exists so i can just loadstring it and get the stuff i need to make a custom dumper
 
 --[[
-local fiutable = loadstring(game:HttpGet(""))()
+
+local fiutable = loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/Fiu.lua"))()
 local luau_deserialize, luau_load = fiutable.luau_deserialize, fiutable.luau_load
 
 -- how to use (thanks unlimited)
@@ -10,6 +11,7 @@ local bytecode = getscriptbytecode(PathOfScript)
 
 print(luau_deserialize(bytecode)) -- instructions
 luau_load(luau_deserialize(bytecode), getfenv())() -- load the luau instructions in the env
+
 ]]
 
 -- // Environment changes in the VM are not supposed to alter the behaviour of the VM so we localise globals beforehand
