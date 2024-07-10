@@ -1,5 +1,5 @@
 -- i did not make this; this is fiu-one
--- file exists so i can just loadstring it and get the stuff i need to make a custom dumper
+-- damn this sucks
 
 --[[
 
