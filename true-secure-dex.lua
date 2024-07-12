@@ -36,7 +36,10 @@ end
 
 Api, gets = unpack(loadstring(readfile(path))())
 
-getgenv().Dex = game:GetObjects("rbxassetid://17769765246")[1]
+local DexAsset = "rbxassetid://17769765246"
+getgenv().AssetList = {DexAsset} -- for GetAssetFetchStatus bypass
+
+getgenv().Dex = game:GetObjects(DexAsset)[1]
 Dex.Parent = (gethui and gethui() ~= game:GetService("CoreGui") and gethui()) or game:GetService("CoreGui").RobloxGui
 
 -- update textlabel to new version
