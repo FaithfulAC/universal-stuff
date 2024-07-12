@@ -22,6 +22,7 @@ local getgc = getgc
 local getreg = getreg
 local checkcaller = checkcaller or function() return false end
 local iscclosure = iscclosure or function(func) return debug.info(func, "s") == "[C]" end
+local isourclosure = isourclosure or isexecutorclosure or function(func) return getfenv(func) == getfenv() end
 
 local GetDebugId = clonefunction(game.GetDebugId)
 local IsDescendantOf = clonefunction(game.IsDescendantOf)
@@ -331,6 +332,9 @@ task.spawn(function()
 	local coreguitbl = {}
 	local dextbl = {}
 
+	-- prevent GetAssetFetchStatus detection vectors on the dex model
+	local AssetList = AssetList or {"rbxassetid://17769765246"}
+
 	ContentProvider:PreloadAsync({game}, function(a)
 		table.insert(gametbl,a)
 	end)
@@ -411,24 +415,35 @@ task.spawn(function()
 		local self, tbl, fnc = ...
 		local method = string.gsub(getnamecallmethod(), "^%u", string.lower)
 
-		if not checkcaller() and compareinstances(self, ContentProvider) and method == "preloadAsync" and type(tbl) == "table" and (find(tbl, game) or find(tbl,CoreGui)) and safecheck(tbl) then
-			local targettbl = {}
+		if not checkcaller() and compareinstances(self, ContentProvider) then
+			if method == "preloadAsync" and type(tbl) == "table" and (find(tbl, game) or find(tbl,CoreGui)) and safecheck(tbl) then
+				local targettbl = {}
 
-			for _, v in ipairs(tbl) do
-				if compareinstances(v, game) then
-					for _, v2 in pairs(randomizeTable(gametbl)) do
-						table.insert(targettbl,v2)
+				for _, v in ipairs(tbl) do
+					if compareinstances(v, game) then
+						for _, v2 in pairs(randomizeTable(gametbl)) do
+							table.insert(targettbl,v2)
+						end
+					elseif compareinstances(v, CoreGui) then
+						for _, v2 in pairs(randomizeTable(coreguitbl)) do
+							table.insert(targettbl,v2)
+						end
+					elseif (typeof(v) == "string" or typeof(v) == "Instance") then
+						table.insert(targettbl, v)
 					end
-				elseif compareinstances(v, CoreGui) then
-					for _, v2 in pairs(randomizeTable(coreguitbl)) do
-						table.insert(targettbl,v2)
-					end
-				elseif (typeof(v) == "string" or typeof(v) == "Instance") then
-					table.insert(targettbl, v)
+				end
+
+				return h1(self, targettbl, fnc)
+			elseif method == "getAssetFetchStatus" and type(tbl) == "string" then
+				local str = string.split(tbl, "\0")[1] -- lol
+				if tonumber(str) then
+					str = "rbxassetid://" .. str
+				end
+
+				if table.find(AssetList, str) then
+					return Enum.AssetFetchStatus.None
 				end
 			end
-
-			return h1(self, targettbl, fnc)
 		end
 
 		return h1(...)
@@ -459,6 +474,45 @@ task.spawn(function()
 
 		return h2(...)
 	end)
+
+	local h3; h3 = hookfunction(ContentProvider.GetAssetFetchStatus, function(...)
+		local self, str = ...
+
+		if not checkcaller() and compareinstances(self, ContentProvider) and type(str) == "string" then
+			str = string.split(str, "\0")[1]
+			if tonumber(str) then
+				str = "rbxassetid://" .. str
+			end
+
+			if table.find(AssetList, str) then
+				return Enum.AssetFetchStatus.None
+			end
+		end
+
+		return h3(...)
+	end)
+
+	local templist = {}
+
+	for _, asset in pairs(AssetList) do
+		for i, v in next, getconnections(ContentProvider:GetAssetFetchStatusChangedSignal(asset)) do
+			v:Disable() -- if your executor is competent then a .Connected check should not detect this
+			-- but we're still going to check for your executor's competency anyways :)
+						
+			if select(2, pcall(function() return v.Connected end)) == false then
+				v:Enable() -- since .Connected checks do detect this we will re-enable it
+				-- now we will resort to hooking the function connected to the signal
+
+				-- lotta hacky checks here but we should never have to come to this if statement in the first place so whatever
+				if (not table.find(templist, v.Function)) and not (iscclosure(v.Function) or isourclosure(v.Function)) then
+					table.insert(templist, v.Function)
+					hookfunction(v.Function, function()end)
+				end
+			end
+		end
+	end
+
+	table.clear(templist)
 end)
 
 -- instancecount bypass
