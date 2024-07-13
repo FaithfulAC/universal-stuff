@@ -22,7 +22,7 @@ local getgc = getgc
 local getreg = getreg
 local checkcaller = checkcaller or function() return false end
 local iscclosure = iscclosure or function(func) return debug.info(func, "s") == "[C]" end
-local isourclosure = isourclosure or isexecutorclosure or function(func) return getfenv(func) == getfenv() end
+local isourclosure = isourclosure or isexecutorclosure or function(func) return rawequal(getfenv(func), getfenv()) end
 
 local GetDebugId = clonefunction(game.GetDebugId)
 local IsDescendantOf = clonefunction(game.IsDescendantOf)
