@@ -1,6 +1,4 @@
--- ...for one variation of an anti yield. not meant to be used universally guys wink wink
--- ofc made by @__europa make issue for any bugs/logical errors
-
+-- ...for one variation of an anti yield
 --[[
 add to the protectedyieldfuncs table any functions you would not like to be waithook checked
 you could also additionally do a check for hookfunction before returning a yield by checking coroutine.isyieldable()
