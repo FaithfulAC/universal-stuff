@@ -2,6 +2,7 @@
 	thanks to these people for helping with detections:
 
 	unlimited (@unlimited_objects)
+	daily (@daily3014)
 	xnx (@xoifail)
 	kar (@kaxr)
 	ludi (@ludi.) -- especially ludi :)
@@ -26,9 +27,8 @@ local function InsertInCache(func, wrapped)
 		WrapCount = 1,
 		Original = func,
 		ReplacementFunc = function(...)
-			-- kinda have to call it twice :(
-			local selected = select("#", pcall(WrapHook(func), ...))
-			local args = {pcall(WrapHook(func), ...)}
+			-- thanks almighty Daily3014 for the unpack correction
+			local args = table.pack(pcall(WrapHook(func), ...))
 			
 			if not args[1] then
 				local err = args[2]
@@ -46,7 +46,7 @@ local function InsertInCache(func, wrapped)
 			end
 			
 			task.spawn(New.Gc)			
-			return select(2, unpack(args, 1, selected))
+			return select(2, table.unpack(args, 1, args.n))
 		end,
 		Wrapped = wrapped,
 		Gc = function()
