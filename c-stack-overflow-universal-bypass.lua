@@ -46,7 +46,7 @@ local function InsertInCache(func, wrapped)
 			end
 			
 			task.spawn(New.Gc)			
-			return select(2, table.unpack(args, 1, args.n))
+			return table.unpack(args, 2, args.n)
 		end,
 		Wrapped = wrapped,
 		Gc = function()
