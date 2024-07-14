@@ -8,6 +8,7 @@
 	ludi (@ludi.) -- especially ludi :)
 ]]
 
+local pack, unpack = table.pack, unpack
 local Cache = {}
 local WrapHook;
 
@@ -28,7 +29,7 @@ local function InsertInCache(func, wrapped)
 		Original = func,
 		ReplacementFunc = function(...)
 			-- thanks almighty Daily3014 for the unpack correction
-			local args = table.pack(pcall(WrapHook(func), ...))
+			local args = pack(pcall(WrapHook(func), ...))
 			
 			if not args[1] then
 				local err = args[2]
@@ -45,8 +46,8 @@ local function InsertInCache(func, wrapped)
 				return error(err, 0)
 			end
 			
-			task.spawn(New.Gc)			
-			return table.unpack(args, 2, args.n)
+			task.spawn(New.Gc)
+			return unpack(args, 2, args.n)
 		end,
 		Wrapped = wrapped,
 		Gc = function()
