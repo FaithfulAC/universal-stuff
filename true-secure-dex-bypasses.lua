@@ -637,10 +637,14 @@ end)
 task.spawn(function()
 	if not options.Weaktable then return end
 
+	local remove = table.remove
+				
+	--[[
 	local list;
-	local folder = Instance.new("Folder") -- if ur doing an instance count check look above ;)
+	local folder = Instance.new("Folder")
 	folder.Name = tostring(math.random())
 
+	-- this was intended to check an actual cache list but because i dont really have a proper executor at my disposal i cant properly test this smh
 	for firstkey, host in pairs(getreg()) do
 		if typeof(firstkey) == "userdata" and typeof(host) == "table" then
 			for key, ins in pairs(host) do
@@ -652,8 +656,14 @@ task.spawn(function()
 	end
 
 	folder:Destroy()
+	]]
 
-	local CanBeCollected = function(obj) return (typeof(obj) == "table" or type(obj) == "userdata") or (typeof(obj) == "function" and iscclosure(obj)) end
+	local CanBeCollected = function(obj)
+		if (typeof(obj) == "function" and iscclosure(obj)) then
+			return not table.find(getrenv(), obj) -- for example inserting something like gcinfo in the weaktable would cause this logic to "gc" it so we bandaid avoid that
+		end
+		return (typeof(obj) == "table" or type(obj) == "userdata")
+	end
 
 	local h; h = hookfunction(getrenv().setmetatable, function(...)
 		local tbl1, tbl2 = ...
@@ -682,24 +692,24 @@ task.spawn(function()
 						for i, v in pairs(res) do
 							if
 								CanBeCollected(i)
-								and
+								or -- i previously had this as (and) which was not accurate smh
 								CanBeCollected(v)
 							then
-								rawset(res, v, nil)
+								rawset(res, i, nil)
 								i, v = nil, nil
 							end
 						end
 					elseif Mode == "v" then
 						for i, v in pairs(res) do
 							if CanBeCollected(v) then
-								rawset(res, v, nil)
+								rawset(res, i, nil)
 								i, v = nil, nil
 							end
 						end
 					elseif Mode == "k" then
 						for i, v in pairs(res) do
 							if CanBeCollected(i) then
-								rawset(res, v, nil)
+								rawset(res, i, nil)
 								i, v = nil, nil
 							end
 						end
