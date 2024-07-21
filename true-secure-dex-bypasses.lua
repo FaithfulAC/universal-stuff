@@ -636,8 +636,19 @@ end)
 -- weaktable bypass
 task.spawn(function()
 	if not options.Weaktable then return end
-
+	local wrap = coroutine.wrap
 	local remove = table.remove
+
+	-- this exists so pcalling (ouch) c functions will not actually succeed (for the most part, stuff like gcinfo will succeed but will realistically not have a datamodel effect)
+	local ReassuranceFunction = function() error("", 0) end
+	local ReassuranceTable = setmetatable({}, {
+		__eq = ReassuranceFunction,
+		__tostring = ReassuranceFunction,
+		__iter = ReassuranceFunction,
+		__index = ReassuranceFunction,
+		__newindex = ReassuranceFunction,
+		__metatable = "The metatable is locked" -- for fun
+	})
 				
 	--[[
 	local list;
@@ -660,7 +671,11 @@ task.spawn(function()
 
 	local CanBeCollected = function(obj)
 		if (typeof(obj) == "function" and iscclosure(obj)) then
-			return not table.find(getrenv(), obj) -- for example inserting something like gcinfo in the weaktable would cause this logic to "gc" it so we bandaid avoid that
+			local FuncName = debug.info(obj, "n")
+			local HasName = (FuncName ~= "")
+
+			-- we can deal with people ACTUALLY referencing instance function members when the commented code above works ;)
+			return (HasName and select(2, pcall(wrap(obj))) == "Expected ':' not '.' calling member function " .. FuncName) or true;
 		end
 		return (typeof(obj) == "table" or type(obj) == "userdata")
 	end
