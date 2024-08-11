@@ -9,7 +9,8 @@ local isfolder, makefolder, isfile, writefile, readfile =
 local getgenv, gethui, getrenv, hookmetamethod, hookfunction, identifyexecutor =
 	getgenv, gethui, getrenv, hookmetamethod, hookfunction, identifyexecutor;
 
-local LoadBypasses = ((...) ~= nil and (...)) or true
+local LoadBypasses = (...)
+if LoadBypasses == nil then LoadBypasses = true end
 
 local foldername = "TSDex"
 local path = foldername .. "/lua-getproperties.lua"
