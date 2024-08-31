@@ -1,4 +1,16 @@
 --[[
+	i am planning to make this script a customizable script soon enough; this script will take in arguments such as:
+
+	the stack limit in which to replace the wrapcount (default is 195)
+	a list of functions to exclude from the hook (to avoid detections) or alternatively a list of specific functions that are the only ones to be hooked
+	a boolean value for the above option of excluding/including functions
+	an option to include only c functions or to also include lua functions (however lua functions could perhaps act as a wrapper for c functions watch out for that)
+	2 custom errors that you can use to replace "C stack overflow" and "cannot resume dead coroutine"
+
+	why? because nothing is detectable if you just bruteforce it enough
+]]
+
+--[[
 	thanks to these people for helping with detections:
 
 	unlimited (@unlimited_objects)
