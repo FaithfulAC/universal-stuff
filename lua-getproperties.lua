@@ -40,7 +40,7 @@ getgenv().getproperties = function(class)
 	if typeof(class) == "Instance" then
 		class = class.ClassName
 	elseif typeof(class) ~= "string" then
-		return error("bad argument #1 (string or Instance expected)")
+		return error("bad argument #1 to 'getproperties' (string or Instance expected)")
 	end
 	if propertiescache[class] then return propertiescache[class] end
 
@@ -74,7 +74,7 @@ getgenv().getfunctions = function(class)
 	if typeof(class) == "Instance" then
 		class = class.ClassName
 	elseif typeof(class) ~= "string" then
-		return error("bad argument #1 (string or Instance expected)")
+		return error("bad argument #1 to 'getfunctions' (string or Instance expected)")
 	end
 	if functionscache[class] then return functionscache[class] end
 
@@ -108,7 +108,7 @@ getgenv().getevents = function(class)
 	if typeof(class) == "Instance" then
 		class = class.ClassName
 	elseif typeof(class) ~= "string" then
-		return error("bad argument #1 (string or Instance expected)")
+		return error("bad argument #1 to 'getevents' (string or Instance expected)")
 	end
 
 	for i, otherclass in ipairs(apiData.Classes) do
@@ -140,7 +140,7 @@ getgenv().getcallbacks = function(class)
 	if typeof(class) == "Instance" then
 		class = class.ClassName
 	elseif typeof(class) ~= "string" then
-		return error("bad argument #1 (string or Instance expected)")
+		return error("bad argument #1 to 'getcallbacks' (string or Instance expected)")
 	end
 	if callbackscache[class] then return callbackscache[class] end
 
@@ -167,7 +167,7 @@ getgenv().getcallbacks = function(class)
 	return callbacks
 end
 
-return {
+return { -- for certain executors sending numerous arguments wont work (which is probably intentional) so lets make a whole damn table for the two things
 	apiData, {
 		getproperties = getproperties,
 		getfunctions = getfunctions,
