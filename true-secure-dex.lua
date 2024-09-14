@@ -1,4 +1,4 @@
--- v4! there are more than likely bugs, but future updates will fix so dw :)
+-- plz have an executor that is decent plzp lz plzp lzpl pzlplz pzl pzlp zlpzl pzlp z plz
 
 -- loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))()
 -- (quickLoad or quickload)("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua")
