@@ -24,7 +24,7 @@ getgenv().getpropertiesbyname = function(class)
     if typeof(class) == "Instance" then
         class = class.ClassName
     elseif typeof(class) ~= "string" then
-        return error("bad argument #1 (string or Instance expected)")
+        return error("bad argument #1 to 'getpropertiesbyname' (string or Instance expected)")
     end
     
     for i, otherclass in ipairs(apiData.Classes) do
@@ -64,7 +64,7 @@ getgenv().getfunctionsbyname = function(class)
     if typeof(class) == "Instance" then
         class = class.ClassName
     elseif typeof(class) ~= "string" then
-        return error("bad argument #1 (string or Instance expected)")
+        return error("bad argument #1 to 'getfunctionsbyname' (string or Instance expected)")
     end
     
     for i, otherclass in ipairs(apiData.Classes) do
@@ -92,7 +92,7 @@ getgenv().geteventsbyname = function(class)
     if typeof(class) == "Instance" then
         class = class.ClassName
     elseif typeof(class) ~= "string" then
-        return error("bad argument #1 (string or Instance expected)")
+        return error("bad argument #1 to 'geteventsbyname' (string or Instance expected)")
     end
     
     for i, otherclass in ipairs(apiData.Classes) do
@@ -115,7 +115,7 @@ getgenv().getcallbacksbyname = function(class)
     if typeof(class) == "Instance" then
         class = class.ClassName
     elseif typeof(class) ~= "string" then
-        return error("bad argument #1 (string or Instance expected)")
+        return error("bad argument #1 to 'getcallbacksbyname' (string or Instance expected)")
     end
     
     for i, otherclass in ipairs(apiData.Classes) do
@@ -132,4 +132,4 @@ getgenv().getcallbacksbyname = function(class)
     return callbacks
 end
 
-return apiData
+return apiData -- no table list of the functions for this because the other one only has them for tsdex
