@@ -1,4 +1,5 @@
 -- this is only for anti-yield methods that run coroutine.resume(coroutine.create(FunctionThatMightBeYielded), ...args)
+
 --[[
 add to the protectedyieldfuncs table any functions you would not like to be waithook checked
 you could also additionally do a check for hookfunction before returning a yield by checking coroutine.isyieldable()
