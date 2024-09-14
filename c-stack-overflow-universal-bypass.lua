@@ -120,11 +120,15 @@ WrapHook = hookfunction(getrenv().coroutine.wrap, function(...)
 		if CacheTbl then
 			local Validity = CheckValidity(Target)
 			if not Validity then
+				local res = h(...)
+				
 				if table.find(luaCacheFunctions, Target) then
-					local res = h(...)
 					luaCacheFunctions[table.find(luaCacheFunctions, Target)] = res
-					return res;
+				else
+					table.insert(luaCacheFunctions, res)
 				end
+				
+				return res;
 			end
 			CacheTbl.WrapCount += 1
 			
