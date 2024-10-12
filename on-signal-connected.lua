@@ -1,3 +1,12 @@
+--[[
+usage case:
+say you have a script that has a connection ScriptContext.Error:Connect(deter) and you disable this connection.
+however, it ends up not working after a short time because every few seconds
+the script reconnects the signal back to the function.
+this script can help immediately disconnect any new instances of a connection
+being made by using ScriptContext.Error.OnSignalConnected:Connect(disconnectFunc).
+]]
+
 local rbxsignal = game.Changed -- RBXScriptSignal, to be used as the example metatable whose metamethods will be hooked (will be turned to nil later)
 local host = {}
 
