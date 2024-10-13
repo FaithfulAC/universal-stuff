@@ -36,7 +36,7 @@ if not (isfile(path) and not notupdated) then
 end
 
 -- prevent solara from making the damn script error
-cloneref = ((not identifyexecutor():lower():find("sol")) and cloneref) or function(...) return ... end
+getgenv().cloneref = ((not identifyexecutor():lower():find("sol")) and cloneref) or function(...) return ... end
 
 Api, gets = unpack(loadstring(readfile(path))())
 
