@@ -35,6 +35,9 @@ if not (isfile(path) and not notupdated) then
 	writefile(path, game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/lua-getproperties.lua"))
 end
 
+-- prevent solara from making the damn script error
+cloneref = ((not identifyexecutor():lower():find("sol")) and cloneref) or function(...) return ... end
+
 Api, gets = unpack(loadstring(readfile(path))())
 
 local DexAsset = "rbxassetid://17769765246"
@@ -50,7 +53,7 @@ for i, v in pairs(Dex:GetDescendants()) do
 	end
 end
 
--- prevent solara from making the damn script error
+-- prevent solara from making the damn script error (again)
 if LoadBypasses and (getrenv and hookmetamethod and hookfunction and not identifyexecutor():lower():find("solara")) then
 	task.spawn(loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses.lua")), Dex)
 end
