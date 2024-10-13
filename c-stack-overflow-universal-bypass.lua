@@ -42,7 +42,11 @@ local firstError = args.error1 or "C stack overflow"
 local secondError = args.error2 or "cannot resume dead coroutine"
 local excludedFunctions = args.ExcludedFunctions or {}
 local includedFunctions = args.IncludedFunctions or {}
-local includeLuaFunctions = args.includeLuaFunctions or true
+local includeLuaFunctions; -- bool values can really screw things up
+
+if (args.includeLuaFunctions ~= nil) then
+	includeLuaFunctions = args.includeLuaFunctions;
+end
 
 local luaCacheFunctions = setmetatable({}, {__mode = "v"}) -- while a weaktable is not completely reliable it helps mitigate most of the cor.wrap detections
 
