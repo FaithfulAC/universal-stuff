@@ -58,7 +58,7 @@ local GuiService = cloneref(game:GetService("GuiService"))
 local ContentProvider = cloneref(game:GetService("ContentProvider"))
 local StarterGui = cloneref(game:GetService("StarterGui"))
 local PlayerGui = cloneref(game:GetService("Players").LocalPlayer:FindFirstChildWhichIsA("PlayerGui"))
-local DexGui = Dex or Bypassed_Dex or (...) or CoreGui:FindFirstChild("RobloxGui") -- for textbox
+local DexGui = Dex or Bypassed_Dex --[[or (...)]] or CoreGui:FindFirstChild("RobloxGui") -- for textbox and mem/inscount increase
 repeat task.wait() until game:IsLoaded()
 
 -- for realism of gcinfo, inscount, and memory spoofs
