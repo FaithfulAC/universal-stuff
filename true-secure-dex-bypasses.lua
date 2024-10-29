@@ -522,7 +522,13 @@ task.spawn(function()
 		local self, arg = ...
 
 		if not checkcaller() and typeof(self) == "Instance" and compareinstances(self, Stats) and type(arg) == "string" and #arg < 256 and string.split(string.gsub(arg, "^%u", string.lower), "\0")[1] == "instanceCount" then
-			return inscount_ret
+			local res = h1(...)
+
+			if typeof(res) == "number" then -- double check just in case
+				return inscount_ret
+			end
+
+			return res
 		end
 
 		return h1(...)
