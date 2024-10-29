@@ -521,7 +521,7 @@ task.spawn(function()
 	local h1; h1 = hookmetamethod(game,"__index", function(...)
 		local self, arg = ...
 
-		if not checkcaller() and typeof(self) == "Instance" and compareinstances(self, Stats) and type(arg) == "string" and string.split(string.gsub(arg, "^%u", string.lower), "\0")[1] == "instanceCount" then
+		if not checkcaller() and typeof(self) == "Instance" and compareinstances(self, Stats) and type(arg) == "string" and #arg < 256 and string.split(string.gsub(arg, "^%u", string.lower), "\0")[1] == "instanceCount" then
 			return inscount_ret
 		end
 
