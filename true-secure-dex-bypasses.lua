@@ -632,6 +632,7 @@ task.spawn(function()
 	if not options.Weaktable then return end
 	local wrap = coroutine.wrap
 	local remove = table.remove
+	local isreadonly = isreadonly or table.isfrozen
 
 	-- this exists so pcalling (ouch) c functions will not actually succeed (for the most part, stuff like gcinfo will succeed but will realistically not have a datamodel effect)
 	local ReassuranceFunction = function() error("", 0) end
@@ -704,21 +705,48 @@ task.spawn(function()
 								or -- i previously had this as (and) which was not accurate smh
 								CanBeCollected(v)
 							then
+								local wasfrozen = isreadonly(res)
+								if wasfrozen and setreadonly then
+									setreadonly(res, false)
+								end
+
 								rawset(res, i, nil)
+
+								if wasfrozen and setreadonly then
+									setreadonly(res, true)
+								end
 								i, v = nil, nil
 							end
 						end
 					elseif Mode == "v" then
 						for i, v in pairs(res) do
 							if CanBeCollected(v) then
+								local wasfrozen = isreadonly(res)
+								if wasfrozen and setreadonly then
+									setreadonly(res, false)
+								end
+
 								rawset(res, i, nil)
+
+								if wasfrozen and setreadonly then
+									setreadonly(res, true)
+								end
 								i, v = nil, nil
 							end
 						end
 					elseif Mode == "k" then
 						for i, v in pairs(res) do
 							if CanBeCollected(i) then
+								local wasfrozen = isreadonly(res)
+								if wasfrozen and setreadonly then
+									setreadonly(res, false)
+								end
+
 								rawset(res, i, nil)
+
+								if wasfrozen and setreadonly then
+									setreadonly(res, true)
+								end
 								i, v = nil, nil
 							end
 						end
