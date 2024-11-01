@@ -1915,7 +1915,11 @@ local function main() -- Script.MainScript
 			local path = start .. "Dump_" .. tostring(game.PlaceId) .. "_"
 
 			for i = 1, 100 do -- max dumps for one place is 100
-				if not isfolder(path .. tostring(i)) then makefolder(path .. tostring(i)) end
+				if not isfolder(path .. tostring(i)) then
+					path = path .. tostring(i)
+					makefolder(path)
+					break
+				end
 			end
 
 			for i, v in pairs(getscripts()) do
