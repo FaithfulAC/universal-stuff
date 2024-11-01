@@ -2000,8 +2000,7 @@ local function main() -- Script.MainScript
 					args = {{[i] = true}, game:GetService("CoreGui").RobloxGui}
 				end
 
-				local s, e = pcall(loadstring,
-					game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/refs/heads/main/true-secure-dex-bypasses.lua"),
+				local s, e = pcall(loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/refs/heads/main/true-secure-dex-bypasses.lua")),
 					unpack(args)
 				)
 
