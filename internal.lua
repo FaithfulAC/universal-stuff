@@ -1762,14 +1762,14 @@ local function main() -- Script.MainScript
 			end
 		end)
 		optionsStorage.OptionsS.Disable.MouseButton1Click:Connect(function()
-			if objval1.Value and objval1.ClassName ~= "ModuleScript" then
+			if objval1.Value and objval1.Value.ClassName ~= "ModuleScript" then
 				objval1.Value.Disabled = true
 				loadviewer()
 				setnotif("Disable", "Operation Successful")
 			end
 		end)
 		optionsStorage.OptionsS.Enable.MouseButton1Click:Connect(function()
-			if objval1.Value and objval1.ClassName ~= "ModuleScript" then
+			if objval1.Value and objval1.Value.ClassName ~= "ModuleScript" then
 				objval1.Value.Enabled = true
 				loadviewer()
 				setnotif("Enable", "Operation Successful")
