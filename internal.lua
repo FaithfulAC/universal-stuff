@@ -1896,10 +1896,9 @@ local function main() -- Script.MainScript
 		end
 
 		local function fullName(scr)
+			if parent == nil or parent == game then return handlespecials(scr.Name) end
 			local name = "['" .. handlespecials(scr.Name) .. "']"
 			local parent = scr.Parent
-
-			if parent == nil or parent == game then return name end
 
 			while parent.Parent ~= game do
 				name = "['" .. handlespecials(parent.Name) .. "']" .. name
@@ -1921,7 +1920,7 @@ local function main() -- Script.MainScript
 				if v:FindFirstAncestorOfClass("CoreGui") then continue end -- for the too many corescripts
 
 				if v.ClassName == "LocalScript" or v.ClassName == "ModuleScript" or (v.ClassName == "Script" and v.RunContext == Enum.RunContext.Client) then
-					writefile(fullName(v), "--[[Dumped with europatech]]\n\n\n" .. decompile(v))
+					writefile(path .. fullName(v) .. ".lua", "--[[Dumped with europatech]]\n\n\n" .. decompile(v))
 				end
 				if i%100 == 0 then task.wait() end
 			end
