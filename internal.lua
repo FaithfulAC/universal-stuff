@@ -1941,7 +1941,12 @@ local function main() -- Script.MainScript
 	coroutine.wrap(function() -- hook gui
 		local _hook = bottom.Hooks
 		local holder = bypasses.Holder
-		if not holder:FindFirstChildWhichIsA("UIListLayout") then Instance.new("UIListLayout", holder) end
+		if not holder:FindFirstChildWhichIsA("UIListLayout") then
+			local uilist = Instance.new("UIListLayout", holder)
+			uilist.FillDirection = Enum.FillDirection.Vertical
+			uilist.SortOrder = Enum.SortOrder.LayoutOrder
+			uilist.VerticalAlignment = Enum.VerticalAlignment.Top
+		end
 
 		coroutine.resume(coroutine.create(function() -- drag
 			local UIS = game:GetService('UserInputService')
