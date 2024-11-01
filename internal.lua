@@ -1913,7 +1913,7 @@ local function main() -- Script.MainScript
 		local dumpscripts = buttons.DumpScripts
 		dumpscripts.MouseButton1Click:Connect(function()
 			local start = "europa/dumps/"
-			local path = start .. "Dump_" .. tostring(game.PlaceId) "_" .. tostring(tick()-(tick()%.001))
+			local path = start .. "Dump_" .. tostring(game.PlaceId) .. "_" .. tostring(tick()-(tick()%.001))
 			makefolder(path)
 
 			for i, v in pairs(getscripts()) do
