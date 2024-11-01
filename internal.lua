@@ -1912,15 +1912,18 @@ local function main() -- Script.MainScript
 		local dumpscripts = buttons.DumpScripts
 		dumpscripts.MouseButton1Click:Connect(function()
 			local start = "europa/dumps/"
-			local path = start .. "Dump_" .. tostring(game.PlaceId) .. "_" .. tostring(tick()-(tick()%.001))
-			makefolder(path)
+			local path = start .. "Dump_" .. tostring(game.PlaceId) .. "_"
+
+			for i = 1, 100 do -- max dumps for one place is 100
+				if not isfolder(path .. tostring(i)) then makefolder(path .. tostring(i)) end
+			end
 
 			for i, v in pairs(getscripts()) do
 				if typeof(v) ~= "Instance" then continue end -- for the dumb dumb exploits
 				if v:FindFirstAncestorOfClass("CoreGui") then continue end -- for the too many corescripts
 
 				if v.ClassName == "LocalScript" or v.ClassName == "ModuleScript" or (v.ClassName == "Script" and v.RunContext == Enum.RunContext.Client) then
-					writefile(path .. fullName(v) .. ".lua", "--[[Dumped with europatech]]\n\n\n" .. decompile(v))
+					writefile(path .. "/" .. fullName(v) .. ".lua", "-- Dumped with europatech: " .. os.date("%x") .. "\n\n" .. decompile(v))
 				end
 				if i%100 == 0 then task.wait() end
 			end
