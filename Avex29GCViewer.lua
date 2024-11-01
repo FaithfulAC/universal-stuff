@@ -37,27 +37,27 @@ local CoreGui           = GServ("CoreGui")
 local Debris            = GServ("Debris")
 local StatsService      = GServ("Stats")
 local Cam               = cloneref(workspace.CurrentCamera)
-local Lplr              = Players.LocalPlayer
-local Mouse             = Lplr:GetMouse()
+local Lplr              = cloneref(Players.LocalPlayer)
+local Mouse             = cloneref(Lplr:GetMouse())
 
 local FGINFO = debug.getinfo
 
 local AllFunctions = {} -- Removed when Avex closes
 
 local num_Abbreviations = {
-	"K", -- 4 digits
+	"k", -- 4 digits
 	"M", -- 7 digits
 	"B", -- 10 digits
 	"T", -- 13 digits
-	"QD", -- 16 digits
-	"QT", -- 19 digits
-	"SXT", -- 22 digits
-	"SEPT", -- 25 digits
-	"OCT", -- 28 digits
-	"NON", -- 31 digits
-	"DEC", -- 34 digits
-	"UDEC", -- 37 digits
-	"DDEC", -- 40 digits
+	"qd", -- 16 digits
+	"Qn", -- 19 digits
+	"sx", -- 22 digits
+	"Sp", -- 25 digits
+	"O", -- 28 digits
+	"N", -- 31 digits
+	"de", -- 34 digits
+	"Ud", -- 37 digits
+	"DD", -- 40 digits
 }
 
 local function Abbreviate(x)
@@ -790,7 +790,7 @@ local function ShowConstants(VItem)
                     MainTextFrame.Text = "Const Item Error: \n  "..tostring(constItemErr)
                 end
             end)
-            task.wait()
+            if upValIndex%10 == 0 then task.wait() end
             if TotalAddup > 20 then
                 MainTextFrame.Size = UDim2.new(0.15, 0, 0.4*(1+(TotalAddup-20)/24), 0)
                 MTextGrid.CellSize = UDim2.new(1,0,0.04/(1+(TotalAddup-20)/24),0)
@@ -905,7 +905,7 @@ local function ShowConstants(VItem)
                 MainTextFrame.Size = OriginalMTXFSize
                 MTextGrid.CellSize = OriginalMTXGSize
             end
-            task.wait()
+            if upValIndex%10 == 0 then task.wait() end
         end
     end)
     if upValErr then
