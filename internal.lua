@@ -1379,6 +1379,7 @@ local function main() -- Script.MainScript
 		for i, str in pairs(tbl) do
 			if i >= 100 then str = "[DELAYED]: " .. str end
 			if i%100 == 0 then task.wait() end
+			if i > 100 and not (scroller and pcall(function() return scroller._Line_ end)) then break end
 			local newline = scroller._Line_:Clone()
 			newline.Parent = scroller
 			newline.Name = "Line"
@@ -2133,7 +2134,7 @@ local function main() -- Script.MainScript
 			if not writefile then setnotif("Error", "Your executor does not have method 'writefile'") return end
 			local str = "-- [europa_console_log]\n"
 			for i, v in pairs(scroller:GetChildren()) do
-				if v:IsA("TextLabel") and v.Name ~= "_Line_" then str = str .. v:GetAttribute("Time") or " - [xx:xx:xx]" .. v.Text .. "\n" end
+				if v:IsA("TextLabel") and v.Name ~= "_Line_" then str = str .. (v:GetAttribute("Time") or " - [xx:xx:xx]") .. v.Text .. "\n" end
 			end
 			writefile("europa/logs/" .. "Log_" .. tostring(game.PlaceId) .. "_" .. randomstr() .. ".txt", str)
 		end)
@@ -2143,7 +2144,7 @@ local function main() -- Script.MainScript
 			hidden = not hidden
 			if hidden == true then
 				hide.Text = "show"
-				for i, v in pairs(modes:GetChildren())do
+				for i, v in pairs(modes:GetChildren()) do
 					if v:IsA("TextButton") then v.Visible = false end
 				end
 			else
