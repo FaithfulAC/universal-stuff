@@ -1441,6 +1441,8 @@ local function main() -- Script.MainScript
 		local exit = f_buttons.Exit
 		local mini = f_buttons.Minimize
 		exit.MouseButton1Click:Connect(function()
+			script.Parent = nil
+			script = nil
 			gui:Destroy()
 		end)
 		mini.MouseButton1Click:Connect(function()
