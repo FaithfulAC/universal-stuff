@@ -1379,7 +1379,7 @@ local function main() -- Script.MainScript
 		for i, str in pairs(tbl) do
 			if i >= 100 then str = "[DELAYED]: " .. str end
 			if i%100 == 0 then task.wait() end
-			if i > 100 and not (scroller and pcall(function() return scroller._Line_ end)) then break end
+			if not (scroller and pcall(function() return scroller._Line_ end)) then break end
 			local newline = scroller._Line_:Clone()
 			newline.Parent = scroller
 			newline.Name = "Line"
