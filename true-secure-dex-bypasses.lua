@@ -6,10 +6,10 @@
 	big thanks to kaxr and babyhamsta
 ]]
 
--- so no invalid arguments for stuff like InstanceCount
-if not safehookmetamethod then
+-- so no invalid arguments for stuff like InstanceCount (not needed anymore i already check the string length)
+--[[if not safehookmetamethod then
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/safehookmetamethod.lua"))()
-end
+end]]
 
 local clonefunction = clonefunc or clonefunction or function(...) return ... end
 local cloneref = cloneref or function(...) return ... end
