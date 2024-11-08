@@ -1589,22 +1589,37 @@ local function main() -- Script.MainScript
 			printEnabled = not printEnabled
 			if printEnabled then
 				getgenv().print = function(...)
+					local identity;
+					if getthreadidentity then identity = getthreadidentity() else identity = 2 end
+					if setthreadidentity then setthreadidentity(8) end
+
 					local args = safetostring(...)
 					local final = table.concat(args, " ")
 
 					MessageOutFunction(final, Enum.MessageType.MessageOutput)
+					if setthreadidentity then setthreadidentity(identity) end
 				end
 				getgenv().warn = function(...)
+					local identity;
+					if getthreadidentity then identity = getthreadidentity() else identity = 2 end
+					if setthreadidentity then setthreadidentity(8) end
+
 					local args = safetostring(...)
 					local final = table.concat(args, " ")
 
 					MessageOutFunction(final, Enum.MessageType.MessageWarning)
+					if setthreadidentity then setthreadidentity(identity) end
 				end
 				getgenv().error = function(...)
+					local identity;
+					if getthreadidentity then identity = getthreadidentity() else identity = 2 end
+					if setthreadidentity then setthreadidentity(8) end
+
 					local args = safetostring(...)
 					local final = table.concat(args, " ")
 
 					MessageOutFunction(final, Enum.MessageType.MessageError)
+					if setthreadidentity then setthreadidentity(identity) end
 					return coroutine.yield()
 				end
 
@@ -1616,22 +1631,37 @@ local function main() -- Script.MainScript
 		end)
 
 		getgenv().print = function(...)
+			local identity;
+			if getthreadidentity then identity = getthreadidentity() else identity = 2 end
+			if setthreadidentity then setthreadidentity(8) end
+
 			local args = safetostring(...)
 			local final = table.concat(args, " ")
 
 			MessageOutFunction(final, Enum.MessageType.MessageOutput)
+			if setthreadidentity then setthreadidentity(identity) end
 		end
 		getgenv().warn = function(...)
+			local identity;
+			if getthreadidentity then identity = getthreadidentity() else identity = 2 end
+			if setthreadidentity then setthreadidentity(8) end
+
 			local args = safetostring(...)
 			local final = table.concat(args, " ")
 
 			MessageOutFunction(final, Enum.MessageType.MessageWarning)
+			if setthreadidentity then setthreadidentity(identity) end
 		end
 		getgenv().error = function(...)
+			local identity;
+			if getthreadidentity then identity = getthreadidentity() else identity = 2 end
+			if setthreadidentity then setthreadidentity(8) end
+
 			local args = safetostring(...)
 			local final = table.concat(args, " ")
 
 			MessageOutFunction(final, Enum.MessageType.MessageError)
+			if setthreadidentity then setthreadidentity(identity) end
 			return coroutine.yield()
 		end
 
