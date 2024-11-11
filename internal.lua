@@ -1315,7 +1315,7 @@ local function main() -- Script.MainScript
 	-- prevent stack overflows in case the functions below are called in hooks
 	local Clone = clonefunction(game.Clone)
 	local SetAttribute = clonefunction(game.SetAttribute)
-	local coroutine_isyieldable = clonefunction(coroutine_isyieldable)
+	local coroutine_isyieldable = clonefunction(coroutine.isyieldable)
 	local task_wait = clonefunction(task.wait)
 	local task_delay = clonefunction(task.delay)
 	local BrickColor_White = clonefunction(BrickColor.White)
