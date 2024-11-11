@@ -106,7 +106,7 @@ local UIListLayout = Instance.new("UIListLayout")
 --Properties:
 
 Exec.Name = "Exec"
-Exec.Parent = game:GetService("CoreGui").RobloxGui
+Exec.Parent = game:GetService("Players").LocalPlayer.PlayerGui
 Exec.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 Main.Name = "Main"
@@ -1352,7 +1352,7 @@ local function main() -- Script.MainScript
 		if #seconds == 1 then seconds = "0" .. seconds end
 		if #minutes == 1 then minutes = "0" .. minutes end
 		if #hours == 1 then hours = "0" .. hours end
-		
+
 		return string_format("[%s:%s:%s]", hours, minutes, seconds)
 	end
 
@@ -1415,8 +1415,8 @@ local function main() -- Script.MainScript
 		for i, str in pairs(tbl) do
 			if i >= 100 then str = "[DELAYED]: " .. str end
 			if i%100 == 0 and coroutine_isyieldable() then task_wait() end
-			if not (scroller and pcall(function() return __index(scroller, _Line_) end)) then break end
-			local newline = Clone(__index(scroller, _Line_))
+			if not (scroller and pcall(function() return __index(scroller, "_Line_") end)) then break end
+			local newline = Clone(__index(scroller, "_Line_"))
 			__newindex(newline, "Parent", scroller)
 			__newindex(newline, "Name", "Line")
 			__newindex(newline, "BackgroundTransparency", 1)
@@ -1631,6 +1631,7 @@ local function main() -- Script.MainScript
 
 					local args = safetostring(...)
 					local final = table.concat(args, " ")
+					print("asdfasdfadfsasdfadfs")
 
 					MessageOutFunction(final, Enum.MessageType.MessageOutput)
 					if setthreadidentity then setthreadidentity(identity) end
@@ -1964,9 +1965,9 @@ local function main() -- Script.MainScript
 		end
 
 		local function fullName(scr)
+			local parent = scr.Parent
 			if parent == nil or parent == game then return handlespecials(scr.Name) end
 			local name = "['" .. handlespecials(scr.Name) .. "']"
-			local parent = scr.Parent
 
 			while parent.Parent ~= game do
 				name = "['" .. handlespecials(parent.Name) .. "']" .. name
