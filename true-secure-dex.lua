@@ -41,7 +41,12 @@ getgenv().cloneref = ((not identifyexecutor():lower():find("sol")) and cloneref)
 Api, gets = unpack(loadstring(readfile(path))())
 
 local DexAsset = "rbxassetid://17769765246"
-getgenv().AssetList = {DexAsset} -- for GetAssetFetchStatus bypass
+ -- for GetAssetFetchStatus bypass
+if typeof(getgenv().AssetList) == "table" then
+	table.insert(getgenv().AssetList, DexAsset)
+else
+	getgenv().AssetList = {DexAsset}
+end
 
 getgenv().Dex = game:GetObjects(DexAsset)[1]
 Dex.Parent = (gethui and gethui() ~= game:GetService("CoreGui") and gethui()) or game:GetService("CoreGui").RobloxGui
