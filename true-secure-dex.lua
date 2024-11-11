@@ -55,7 +55,7 @@ end
 
 -- prevent solara from making the damn script error (again)
 if LoadBypasses and (getrenv and hookmetamethod and hookfunction and not identifyexecutor():lower():find("solara")) then
-	task.spawn(loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses.lua")), Dex)
+	task.spawn(loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses.lua")), nil, Dex)
 end
 
 local function GenerateRandomString(range1, range2)
