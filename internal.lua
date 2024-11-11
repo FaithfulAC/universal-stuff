@@ -106,7 +106,7 @@ local UIListLayout = Instance.new("UIListLayout")
 --Properties:
 
 Exec.Name = "Exec"
-Exec.Parent = game:GetService("Players").LocalPlayer.PlayerGui
+Exec.Parent = game:GetService("CoreGui").RobloxGui
 Exec.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 Main.Name = "Main"
