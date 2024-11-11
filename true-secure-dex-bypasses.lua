@@ -46,7 +46,14 @@ local compareinstances = (org and function(ins1, ins2)
 
 	return false
 end) or function(ins1, ins2)
-	return typeof(ins1) == typeof(ins2) and typeof(ins1) == "Instance" and GetDebugId(ins1) == GetDebugId(ins2)
+	local identity;
+	if getthreadidentity then identity = getthreadidentity() else identity = 2 end
+	if setthreadidentity then setthreadidentity(8) end
+	
+	local bool = typeof(ins1) == typeof(ins2) and typeof(ins1) == "Instance" and GetDebugId(ins1) == GetDebugId(ins2)
+	
+	if setthreadidentity then setthreadidentity(identity) end
+	return bool;
 end
 
 local Player = cloneref(game:GetService("Players").LocalPlayer or game:GetService("Players"):GetPropertyChangedSignal("LocalPlayer"):Wait())
