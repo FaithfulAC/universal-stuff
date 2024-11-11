@@ -1313,6 +1313,12 @@ local function main() -- Script.MainScript
 		local seconds = math.floor(tick % 60)
 		local minutes = math.floor(tick / 60) % 60
 		local hours = math.floor(tick / 3600) % 24
+		seconds, minutes, hours = tostring(seconds), tostring(minutes), tostring(hours)
+
+		if #seconds == 1 then seconds = "0" .. seconds end
+		if #minutes == 1 then minutes = "0" .. minutes end
+		if #hours == 1 then hours = "0" .. hours end
+		
 		return ("[%s:%s:%s]"):format(hours, minutes, seconds)
 	end
 
@@ -2256,6 +2262,17 @@ local function main() -- Script.MainScript
 			end
 		end
 
+		local function determinestring(label)
+			if label.TextColor == BrickColor.Red() then
+				return "[ERROR]: "
+			elseif label.TextColor == BrickColor.Yellow() then
+				return "[WARNING]: "
+			elseif label.TextColor == BrickColor.Blue() then
+				return "[INFO]: "
+			end
+			return ""
+		end
+
 		modes.Info.MouseButton1Click:Connect(function() infoExcluded = not infoExcluded changething(modes.Info, infoExcluded) end)
 		modes.Print.MouseButton1Click:Connect(function() printExcluded = not printExcluded changething(modes.Print, printExcluded) end)
 		modes.Warn.MouseButton1Click:Connect(function() warnExcluded = not warnExcluded changething(modes.Warn, warnExcluded) end)
@@ -2282,7 +2299,7 @@ local function main() -- Script.MainScript
 			if not writefile then setnotif("Error", "Your executor does not have method 'writefile'") return end
 			local str = "-- [europa_console_log]\n"
 			for i, v in pairs(scroller:GetChildren()) do
-				if v:IsA("TextLabel") and v.Name ~= "_Line_" then str = str .. (v:GetAttribute("Time") or " - [xx:xx:xx]") .. v.Text .. "\n" end
+				if v:IsA("TextLabel") and v.Name ~= "_Line_" then str = str .. (v:GetAttribute("Time") or " - [xx:xx:xx] -- ") .. determinestring(v) .. v.Text .. "\n" end
 			end
 			writefile("europa/logs/" .. "Log_" .. tostring(game.PlaceId) .. "_" .. randomstr() .. ".txt", str)
 		end)
