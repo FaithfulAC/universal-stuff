@@ -1231,6 +1231,9 @@ local function main() -- Script.MainScript
 	local cloneref = cloneref or function(a)
 		return a
 	end
+	local clonefunction = clonefunction or function(a)
+		return a
+	end
 	local hookmetamethod = hookmetamethod or (getrawmetatable and setreadonly and function(...)
 		local object, metamethod, func = ...
 		local meta = getrawmetatable(object)
@@ -1309,17 +1312,48 @@ local function main() -- Script.MainScript
 		setnotif("Library", "Europa Library Loaded")
 	end
 
+	-- prevent stack overflows in case the functions below are called in hooks
+	local Clone = clonefunction(game.Clone)
+	local SetAttribute = clonefunction(game.SetAttribute)
+	local coroutine_isyieldable = clonefunction(coroutine_isyieldable)
+	local task_wait = clonefunction(task.wait)
+	local task_delay = clonefunction(task.delay)
+	local BrickColor_White = clonefunction(BrickColor.White)
+	local BrickColor_Red = clonefunction(BrickColor.Red)
+	local BrickColor_Blue = clonefunction(BrickColor.Blue)
+	local BrickColor_Yellow = clonefunction(BrickColor.Yellow)
+	local string_split = clonefunction(string.split)
+	local string_find = clonefunction(string.find)
+	local string_format = clonefunction(string.format)
+	local math_floor = clonefunction(math.floor)
+	local typeof = clonefunction(typeof)
+	local pcall = clonefunction(pcall)
+	local pairs = clonefunction(pairs)
+	local tick = clonefunction(tick)
+	local UDim2_new = clonefunction(UDim2.new)
+	local tostring = clonefunction(tostring)
+
+	local __index = (getrawmetatable and clonefunction(getrawmetatable(game).__index)) or function(a,b) return a[b] end
+	local __newindex = (getrawmetatable and clonefunction(getrawmetatable(game).__newindex)) or function(a,b,c) a[b] = c end
+	local __Fontnewindex = (getrawmetatable and clonefunction(getrawmetatable(Instance.new("TextLabel").FontFace).__newindex)) or __newindex
+
+	local Enum_TextXAlignment_Left = Enum.TextXAlignment.Left
+	local Enum_FontWeight_Bold = Enum.FontWeight.Bold
+	local Enum_MessageType_MessageWarning = Enum.MessageType.MessageWarning
+	local Enum_MessageType_MessageInfo = Enum.MessageType.MessageInfo
+	local Enum_MessageType_MessageError = Enum.MessageType.MessageError
+
 	local function toTime(tick)
-		local seconds = math.floor(tick % 60)
-		local minutes = math.floor(tick / 60) % 60
-		local hours = math.floor(tick / 3600) % 24
+		local seconds = math_floor(tick % 60)
+		local minutes = math_floor(tick / 60) % 60
+		local hours = math_floor(tick / 3600) % 24
 		seconds, minutes, hours = tostring(seconds), tostring(minutes), tostring(hours)
 
 		if #seconds == 1 then seconds = "0" .. seconds end
 		if #minutes == 1 then minutes = "0" .. minutes end
 		if #hours == 1 then hours = "0" .. hours end
 		
-		return ("[%s:%s:%s]"):format(hours, minutes, seconds)
+		return string_format("[%s:%s:%s]", hours, minutes, seconds)
 	end
 
 	local tempe = select(2, pcall(loadeuropaglobals))
@@ -1335,7 +1369,7 @@ local function main() -- Script.MainScript
 		msgDelay += 1
 
 		if msgDelay > 1000 then
-			task.delay(1, function()
+			task_delay(1, function()
 				if msgDelay > 1000 then
 					msgDelay = 0
 				end
@@ -1345,38 +1379,34 @@ local function main() -- Script.MainScript
 
 		local offset = 0
 		local bolden = false
-		local color = BrickColor.White()
-		if str:len() > 26 then
-			offset += (1/25)*(str:len()-26)
+		local color = BrickColor_White()
+		if #str > 26 then
+			offset += (1/25)*(#str-26)
 		end
 
-		if str:find("\n") then
-			str = string.split(str, "\n")
+		if string_find(str, "\n") then
+			str = string_split(str, "\n")
 			if str[#str] == "" or str[#str] == "\0" then
 				str[#str] = nil
 			end
 		end
 
-		if type == Enum.MessageType.MessageWarning then -- funny statement
+		if type == Enum_MessageType_MessageWarning then -- funny statements
 
 			if warnExcluded then return end
-			color = BrickColor.Yellow()
+			color = BrickColor_Yellow()
 			bolden = true
 
-		elseif type == Enum.MessageType.MessageInfo then
+		elseif type == Enum_MessageType_MessageInfo then
 
 			if infoExcluded then return end
-			color = BrickColor.Blue()
+			color = BrickColor_Blue()
 
-		elseif type == Enum.MessageType.MessageError then
+		elseif type == Enum_MessageType_MessageError then
 
 			if errorExcluded then return end
-			color = BrickColor.Red()
+			color = BrickColor_Red()
 			bolden = true
-
-			--[[if str:find("\n") then
-				str = string.split(str, "\n")[1]
-			end]]
 
 		elseif printExcluded then return end
 
@@ -1384,20 +1414,20 @@ local function main() -- Script.MainScript
 
 		for i, str in pairs(tbl) do
 			if i >= 100 then str = "[DELAYED]: " .. str end
-			if i%100 == 0 then task.wait() end
-			if not (scroller and pcall(function() return scroller._Line_ end)) then break end
-			local newline = scroller._Line_:Clone()
-			newline.Parent = scroller
-			newline.Name = "Line"
-			newline.BackgroundTransparency = 1
-			newline.TextXAlignment = Enum.TextXAlignment.Left
-			newline.Size = UDim2.new(1+offset, 0, 0.075, 0)
-			newline.TextColor = color
-			newline.Text = "  --  " .. str
+			if i%100 == 0 and coroutine_isyieldable() then task_wait() end
+			if not (scroller and pcall(function() return __index(scroller, _Line_) end)) then break end
+			local newline = Clone(__index(scroller, _Line_))
+			__newindex(newline, "Parent", scroller)
+			__newindex(newline, "Name", "Line")
+			__newindex(newline, "BackgroundTransparency", 1)
+			__newindex(newline, "TextXAlignment", Enum_TextXAlignment_Left)
+			__newindex(newline, "Size", UDim2_new(1+offset, 0, 0.075, 0))
+			__newindex(newline, "TextColor", color)
+			__newindex(newline, "Text", "  --  " .. str)
 			if bolden == true then
-				newline.FontFace.Weight = Enum.FontWeight.Bold
+				__Fontnewindex(__index(newline, "FontFace"), "Weight", Enum_FontWeight_Bold)
 			end
-			newline:SetAttribute("Time", toTime(tick()))
+			SetAttribute(newline, "Time", toTime(tick()))
 		end
 	end
 
