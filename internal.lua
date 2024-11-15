@@ -1413,8 +1413,8 @@ local function main() -- Script.MainScript
 		local tbl = typeof(str) == "table" and str or {str}
 
 		for i, str in pairs(tbl) do
-			if i >= 100 then str = "[DELAYED]: " .. str end
-			if i%100 == 0 and coroutine_isyieldable() then task_wait() end
+			--if i >= 100 then str = "[DELAYED]: " .. str end
+			--if i%100 == 0 and coroutine_isyieldable() then task_wait() end
 			if not (scroller and pcall(function() return __index(scroller, "_Line_") end)) then break end
 			local newline = Clone(__index(scroller, "_Line_"))
 			__newindex(newline, "Parent", scroller)
