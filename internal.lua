@@ -1333,10 +1333,6 @@ local function main() -- Script.MainScript
 	local UDim2_new = clonefunction(UDim2.new)
 	local tostring = clonefunction(tostring)
 
-	local __index = (getrawmetatable and clonefunction(getrawmetatable(game).__index)) or function(a,b) return a[b] end
-	local __newindex = (getrawmetatable and clonefunction(getrawmetatable(game).__newindex)) or function(a,b,c) a[b] = c end
-	local __Fontnewindex = (getrawmetatable and clonefunction(getrawmetatable(Instance.new("TextLabel").FontFace).__newindex)) or __newindex
-
 	local Enum_TextXAlignment_Left = Enum.TextXAlignment.Left
 	local Enum_FontWeight_Bold = Enum.FontWeight.Bold
 	local Enum_MessageType_MessageWarning = Enum.MessageType.MessageWarning
@@ -1363,19 +1359,19 @@ local function main() -- Script.MainScript
 	end
 
 	local warnExcluded, infoExcluded, errorExcluded, printExcluded, scroller = false,false,false,false,nil;
-	local msgDelay = 0
+	--local msgDelay = 0
 
 	local function MessageOutFunction(str, type)
-		msgDelay += 1
+		--msgDelay += 1
 
-		if msgDelay > 1000 then
-			task_delay(1, function()
-				if msgDelay > 1000 then
-					msgDelay = 0
-				end
-			end)
-			return
-		end
+		--if msgDelay > 1000 then
+		--	task_delay(1, function()
+		--		if msgDelay > 1000 then
+		--			msgDelay = 0
+		--		end
+		--	end)
+		--	return
+		--end
 
 		local offset = 0
 		local bolden = false
@@ -1415,17 +1411,17 @@ local function main() -- Script.MainScript
 		for i, str in pairs(tbl) do
 			--if i >= 100 then str = "[DELAYED]: " .. str end
 			--if i%100 == 0 and coroutine_isyieldable() then task_wait() end
-			if not (scroller and pcall(function() return __index(scroller, "_Line_") end)) then break end
-			local newline = Clone(__index(scroller, "_Line_"))
-			__newindex(newline, "Parent", scroller)
-			__newindex(newline, "Name", "Line")
-			__newindex(newline, "BackgroundTransparency", 1)
-			__newindex(newline, "TextXAlignment", Enum_TextXAlignment_Left)
-			__newindex(newline, "Size", UDim2_new(1+offset, 0, 0.075, 0))
-			__newindex(newline, "TextColor", color)
-			__newindex(newline, "Text", "  --  " .. str)
+			if not (scroller and pcall(function() return scroller._Line_ end)) then break end
+			local newline = Clone(scroller._Line_)
+			newline["Parent"] = scroller
+			newline["Name"] = "Line"
+			newline["BackgroundTransparency"] = 1
+			newline["TextXAlignment"] = Enum_TextXAlignment_Left
+			newline["Size"] = UDim2_new(1+offset, 0, 0.075, 0)
+			newline["TextColor"] = color
+			newline["Text"] = "  --  " .. str
 			if bolden == true then
-				__Fontnewindex(__index(newline, "FontFace"), "Weight", Enum_FontWeight_Bold)
+				newline["FontFace"]["Weight"] = Enum_FontWeight_Bold
 			end
 			SetAttribute(newline, "Time", toTime(tick()))
 		end
