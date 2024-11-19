@@ -118,7 +118,7 @@ if options.GetMemoryUsageMbForTag or options.InstanceCount then
 
 	local OrgClone;
 
-	local markup = function(...)
+	local markup = newcclosure(function(...)
 		local result = OrgClone(...)
 
 		if not checkcaller() and typeof(result) == "Instance" and result.Parent == nil then
@@ -130,7 +130,7 @@ if options.GetMemoryUsageMbForTag or options.InstanceCount then
 		end
 
 		return result
-	end
+	end)
 
 	OrgClone = hookfunction(game.Clone, markup)
 	hookfunction(game.clone, markup)
