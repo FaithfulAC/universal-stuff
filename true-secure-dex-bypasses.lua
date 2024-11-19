@@ -182,7 +182,7 @@ if options.gcinfo then
 	TableCreateHook = hookfunction(getrenv().table.create, function(...)
 		local int, var = ...
 
-		if not checkcaller() and typeof(int) == "number" and var then
+		if not checkcaller() and typeof(int) == "number" and int > 0 and int < 67108865 and var then
 			gcinfo_ret += math.ceil(int/1000)
 		end
 
