@@ -285,8 +285,8 @@ task.spawn(function()
 
 	local function isGui(item)
 		return
-			typeof(item) == "EnumItem" and item == enum or
-			typeof(item) == "string" and string.split(item, "\0")[1] == "Gui"
+			(typeof(item) == "EnumItem" and item == enum) or
+			(typeof(item) == "string" and string.split(item, "\0")[1] == "Gui")
 	end
 
 	task.spawn(function()
@@ -513,6 +513,7 @@ task.spawn(function()
 				-- lotta hacky checks here but we should never have to come to this if statement in the first place so whatever
 				if (not table.find(templist, v.Function)) and not (iscclosure(v.Function) or isourclosure(v.Function)) then
 					table.insert(templist, v.Function)
+					-- yeah go ahead and detect this
 					hookfunction(v.Function, function()end)
 				end
 			end
