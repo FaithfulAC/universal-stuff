@@ -6,6 +6,8 @@
 	big thanks to kaxr and babyhamsta
 ]]
 
+--[[TODO: add Stats.UI2DDrawcallCount, Stats.UI2DTriangleCount spoofs]]
+
 -- so no invalid arguments for stuff like InstanceCount (not needed anymore i already check the string length)
 --[[if not safehookmetamethod then
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/safehookmetamethod.lua"))()
