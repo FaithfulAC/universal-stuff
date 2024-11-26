@@ -55,7 +55,7 @@ if #includedFunctions > 0 then
 	table.clear(excludedFunctions)
 end
 
-local pack, unpack, info, find = table.pack, unpack, debug.info, table.find;
+local pack, unpack, info, find, error = table.pack, unpack, debug.info, table.find, getrenv().error;
 local Cache = {}
 local WrapHook;
 
