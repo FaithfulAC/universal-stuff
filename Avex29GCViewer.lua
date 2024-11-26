@@ -1039,10 +1039,6 @@ local function DisplayGarbageCollection(gotGC)
                     if typeof(fnvCscript) == "Instance" then
 			CheckVEK = fnvCscript.Parent
 		    end
-                    if type(fnvCscript) == "nil" or type(fnvCscript) == "userdata" then
-                    else
-                        error(constIndex)
-                    end
                 end)
 
                 local PinFound = false
