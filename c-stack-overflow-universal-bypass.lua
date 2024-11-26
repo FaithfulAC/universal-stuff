@@ -48,7 +48,7 @@ if (args.includeLuaFunctions ~= nil) then
 	includeLuaFunctions = args.includeLuaFunctions;
 end
 
-local luaCacheFunctions = setmetatable({}, {__mode = "v"}) -- while a weaktable is not completely reliable it helps mitigate most of the cor.wrap detections
+local luaCacheFunctions = --[[setmetatable(]]{}--[[, {__mode = "v"}) -- while a weaktable is not completely reliable it helps mitigate most of the cor.wrap detections]]
 
 if #includedFunctions > 0 then
 	includeLuaFunctions = false
