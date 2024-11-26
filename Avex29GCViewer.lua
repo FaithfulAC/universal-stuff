@@ -1036,8 +1036,9 @@ local function DisplayGarbageCollection(gotGC)
                 local CheckVEK = nil
                 local fnvCscript = rawget(FenvConst,"script")
                 local _,rCheclErr = pcall(function()
-                    CheckVEK = fnvCscript.Parent
-                    local r = fnvCscript:GetFullName()
+                    if typeof(fnvCscript) == "Instance" then
+			CheckVEK = fnvCscript.Parent
+		    end
                     if type(fnvCscript) == "nil" or type(fnvCscript) == "userdata" then
                     else
                         error(constIndex)
