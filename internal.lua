@@ -1627,7 +1627,6 @@ local function main() -- Script.MainScript
 
 					local args = safetostring(...)
 					local final = table.concat(args, " ")
-					print("asdfasdfadfsasdfadfs")
 
 					MessageOutFunction(final, Enum.MessageType.MessageOutput)
 					if setthreadidentity then setthreadidentity(identity) end
