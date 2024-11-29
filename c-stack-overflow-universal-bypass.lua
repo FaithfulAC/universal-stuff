@@ -7,6 +7,8 @@
 		StackThresholdMax = 198,
 		error1 = "C stack overflow",
 		error2 = "cannot resume dead coroutine",
+		custom_error = nil, -- for this you can put in any error and if a function results in that error then it will return...
+		custom_error_return = "lol", -- what you put for this
 		ExcludedFunctions = {},
 		IncludedFunctions = {}, -- if there are any functions in this table then ExcludedFunctions will simply be disregarded
 		IncludeLuaFunctions = true -- if there are any functions in IncludedFunctions then this will automatically be false
@@ -31,6 +33,8 @@ local args = (...) or { -- args should be a table
 	StackThresholdMax = 198,
 	error1 = "C stack overflow",
 	error2 = "cannot resume dead coroutine",
+	custom_error = nil, -- for this you can put in any error and if a function results in that error then it will return...
+	custom_error_return = nil, -- what you put for this
 	ExcludedFunctions = {},
 	IncludedFunctions = {}, -- if there are any functions in this table then ExcludedFunctions will simply be disregarded
 	IncludeLuaFunctions = true -- if there are any functions in IncludedFunctions then this will automatically be false
@@ -40,6 +44,8 @@ local stackThreshold = args.StackThreshold or 195
 local stackThresholdMax = args.StackThresholdMax or 198
 local firstError = args.error1 or "C stack overflow"
 local secondError = args.error2 or "cannot resume dead coroutine"
+local customError = args.custom_error
+local customErrorReturn = args.custom_error_return or ""
 local excludedFunctions = args.ExcludedFunctions or {}
 local includedFunctions = args.IncludedFunctions or {}
 local includeLuaFunctions = true; -- bool values can really screw things up
@@ -101,6 +107,9 @@ local function InsertInCache(func, wrapped)
 				elseif err == "cannot resume dead coroutine" or select(2, pcall(WrapHook(wrapped))) == "cannot resume dead coroutine" then
 					task.spawn(New.Gc)
 					return error(secondError, 2)
+				elseif customError and err == customError then
+					task.spawn(New.Gc)
+					return error(customErrorReturn, 2)
 				end
 				
 				task.spawn(New.Gc)
