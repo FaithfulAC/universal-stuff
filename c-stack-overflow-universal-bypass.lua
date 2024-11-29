@@ -104,15 +104,12 @@ local function InsertInCache(func, wrapped)
 				end
 				
 				task.spawn(New.Gc)
-				return error(err, 0)
+				return error(err, 2)
 			end
 			
 			task.spawn(New.Gc)
-			if #args <= 8000 then
-				return unpack(args, 2, args.n)
-			else
-				return unpack(args, 2, 8000) -- this wont prevent select "#" detections but atleast it wont error
-			end
+			
+			return unpack(args, 2, args.n)
 		end,
 		Wrapped = wrapped,
 		Gc = function()
