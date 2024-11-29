@@ -86,6 +86,10 @@ local function InsertInCache(func, wrapped)
 		WrapCount = 1,
 		Original = func,
 		ReplacementFunc = function(...)
+			if select("#", ...) >= 8000 then
+				return error("too many arguments to resume", 2)
+			end
+			
 			local args = pack(pcall(WrapHook(func), ...))
 			
 			if not args[1] then
@@ -93,10 +97,10 @@ local function InsertInCache(func, wrapped)
 				
 				if err ~= "cannot resume dead coroutine" and New.WrapCount > stackThresholdMax then
 					task.spawn(New.Gc)
-					return error(firstError, 0)
+					return error(firstError, 2)
 				elseif err == "cannot resume dead coroutine" or select(2, pcall(WrapHook(wrapped))) == "cannot resume dead coroutine" then
 					task.spawn(New.Gc)
-					return error(secondError, 0)
+					return error(secondError, 2)
 				end
 				
 				task.spawn(New.Gc)
