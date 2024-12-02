@@ -1231,6 +1231,9 @@ local function main() -- Script.MainScript
 	local cloneref = cloneref or function(a)
 		return a
 	end
+	if tostring(cloneref(Instance.new("Part"))) ~= "Part" then -- fuck u synz
+		cloneref = function(a) return a end
+	end
 	local clonefunction = clonefunction or function(a)
 		return a
 	end
