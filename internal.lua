@@ -1311,7 +1311,7 @@ local function main() -- Script.MainScript
 		task.wait()
 		if getgenv().europa then return end
 		loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/Megaprojects/main/europa_library_wip.lua"))()
-		getgenv().europa.gui = Exec
+		getgenv().europa.gui, getgenv().europa.internal = Exec, Exec
 		setnotif("Library", "Europa Library Loaded")
 	end
 
