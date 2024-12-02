@@ -1309,7 +1309,10 @@ local function main() -- Script.MainScript
 
 	local function loadeuropaglobals()
 		task.wait()
-		if getgenv().europa then return end
+		if getgenv().europa then
+			getgenv().europa.gui, getgenv().europa.internal = Exec, Exec
+			return
+		end
 		loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/Megaprojects/main/europa_library_wip.lua"))()
 		getgenv().europa.gui, getgenv().europa.internal = Exec, Exec
 		setnotif("Library", "Europa Library Loaded")
