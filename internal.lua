@@ -1258,7 +1258,7 @@ local function main() -- Script.MainScript
 	local getscripts = getscripts or nil
 	local europa = europa or nil
 	local Players = cloneref(game:GetService("Players"))
-	local LocalPlayer = cloneref(Players.LocalPlayer)
+	local LocalPlayer = cloneref(Players.LocalPlayer or Players:GetPropertyChangedSignal("LocalPlayer"):Wait())
 	local sgui = cloneref(game:GetService("StarterGui"))
 	local Exec = Exec or (script and script.Parent.Parent)
 
