@@ -2,7 +2,7 @@
 
 -- loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))()
 -- (quickLoad or quickload)("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua")
--- run_on_actor(Instance.new("Actor"), game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))
+-- run_on_actor(Instance.new("Actor"), "local in_actor = true;\n\n" .. game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))
 
 local isfolder, makefolder, isfile, writefile, readfile =
 	isfolder, makefolder, isfile, writefile, readfile;
@@ -10,8 +10,12 @@ local isfolder, makefolder, isfile, writefile, readfile =
 local getgenv, gethui, getrenv, hookmetamethod, hookfunction, identifyexecutor =
 	getgenv, gethui, getrenv, hookmetamethod, hookfunction, identifyexecutor;
 
+--if (not in_actor) and run_on_actor then
+--	return run_on_actor(Instance.new("Actor"), "local in_actor = true;\n\n" .. game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))
+--end
+
 local LoadBypasses = (...)
-if LoadBypasses == nil then LoadBypasses = true end
+if LoadBypasses == nil --[[and not in_actor]] then LoadBypasses = true end
 
 local foldername = "TSDex"
 local path = foldername .. "/lua-getproperties.lua"
