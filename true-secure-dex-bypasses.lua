@@ -716,7 +716,7 @@ task.spawn(function()
 				local res = h(...)
 
 				task.spawn(function()
-					task.wait(math.random()/10)
+					task.wait(20/gcinfo())
 
 					if Mode == "kv" then
 						for i, v in pairs(res) do
