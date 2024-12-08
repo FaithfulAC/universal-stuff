@@ -1629,7 +1629,7 @@ local function main() -- Script.MainScript
 			printEnabled = not printEnabled
 			if printEnabled then
 				getgenv().print = newcclosure(function(...)
-					if not checkcaller() or (getthreadidentity and getthreadidentity() < 4 or true) then
+					if not checkcaller() or (getthreadidentity and getthreadidentity() < 4) then
 						return defPrint(...)
 					end
 
@@ -1639,7 +1639,7 @@ local function main() -- Script.MainScript
 					MessageOutFunction(final, Enum.MessageType.MessageOutput)
 				end, "print")
 				getgenv().warn = newcclosure(function(...)
-					if not checkcaller() or (getthreadidentity and getthreadidentity() < 4 or true) then
+					if not checkcaller() or (getthreadidentity and getthreadidentity() < 4) then
 						return defWarn(...)
 					end
 
@@ -1649,7 +1649,7 @@ local function main() -- Script.MainScript
 					MessageOutFunction(final, Enum.MessageType.MessageWarning)
 				end, "warn")
 				getgenv().error = newcclosure(function(...)
-					if not checkcaller() or (getthreadidentity and getthreadidentity() < 4 or true) then
+					if not checkcaller() or (getthreadidentity and getthreadidentity() < 4) then
 						return defError(...)
 					end
 
@@ -1667,7 +1667,7 @@ local function main() -- Script.MainScript
 		end)
 
 		getgenv().print = newcclosure(function(...)
-			if not checkcaller() or (getthreadidentity and getthreadidentity() < 4 or true) then
+			if not checkcaller() or (getthreadidentity and getthreadidentity() < 4) then
 				return defPrint(...)
 			end
 
@@ -1677,7 +1677,7 @@ local function main() -- Script.MainScript
 			MessageOutFunction(final, Enum.MessageType.MessageOutput)
 		end, "print")
 		getgenv().warn = newcclosure(function(...)
-			if not checkcaller() or (getthreadidentity and getthreadidentity() < 4 or true) then
+			if not checkcaller() or (getthreadidentity and getthreadidentity() < 4) then
 				return defWarn(...)
 			end
 
@@ -1687,7 +1687,7 @@ local function main() -- Script.MainScript
 			MessageOutFunction(final, Enum.MessageType.MessageWarning)
 		end, "warn")
 		getgenv().error = newcclosure(function(...)
-			if not checkcaller() or (getthreadidentity and getthreadidentity() < 4 or true) then
+			if not checkcaller() or (getthreadidentity and getthreadidentity() < 4) then
 				return defError(...)
 			end
 
