@@ -1228,7 +1228,7 @@ local function main() -- Script.MainScript
 	local cloneref = cloneref or function(a)
 		return a
 	end
-	if tostring(cloneref(Instance.new("Part"))) ~= "Part" then -- fuck u synz
+	if select(2, pcall(function() return cloneref(Instance.new("Part")).Name end)) ~= "Part" then -- fuck u synz
 		cloneref = function(a) return a end
 	end
 	local clonefunction = clonefunction or function(a)
@@ -1256,15 +1256,15 @@ local function main() -- Script.MainScript
 	local europa = europa or nil
 	local Players = cloneref(game:GetService("Players"))
 	local UIS = cloneref(game:GetService('UserInputService'))
-	local LocalPlayer = cloneref(Players.LocalPlayer or Players:GetPropertyChangedSignal("LocalPlayer"):Wait())
 	local sgui = cloneref(game:GetService("StarterGui"))
 	local Exec = Exec or (script and script.Parent.Parent)
+	local LocalPlayer = cloneref(Players.LocalPlayer or Players:GetPropertyChangedSignal("LocalPlayer"):Wait())
 
-	for i, v in pairs(Exec:GetDescendants()) do
+	--[[for i, v in pairs(Exec:GetDescendants()) do
 		pcall(function()
 			v.AutoLocalize = false
 		end)
-	end
+	end]]
 
 	getgenv().EUROPA_INTERNAL_LOADED = true
 	getgenv().print, getgenv().warn, getgenv().error = print, warn, error
