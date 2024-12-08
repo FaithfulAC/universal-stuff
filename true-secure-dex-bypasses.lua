@@ -70,6 +70,10 @@ local PlayerGui = cloneref(game:GetService("Players").LocalPlayer:FindFirstChild
 local DexGui = Dex or Bypassed_Dex or select(2, ...) or CoreGui:FindFirstChild("RobloxGui") -- for textbox and mem/inscount increase
 repeat task.wait() until game:IsLoaded()
 
+if select(3, ...) == true then -- means script is under an actor
+	options.Weaktable = false -- it is under an actor, therefore it is under a different lua state; no weaktable spoofs are necessary
+end
+
 -- for realism of gcinfo, inscount, and memory spoofs
 local gcinfo_ret, inscount_ret, memtag_ret, totalmem_ret
 	= gcinfo(), Stats.InstanceCount, Stats:GetMemoryUsageMbForTag("Gui"), Stats:GetTotalMemoryUsageMb();
