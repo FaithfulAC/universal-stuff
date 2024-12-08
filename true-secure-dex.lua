@@ -82,6 +82,8 @@ if LoadBypasses and (getrenv and hookmetamethod and hookfunction and not identif
 	task.spawn(loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses.lua")), nil, parent, in_actor)
 end
 
+task.wait(.05)
+
 getgenv().Dex = game:GetObjects(DexAsset)[1]
 Dex.Parent = parent
 
