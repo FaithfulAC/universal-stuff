@@ -334,19 +334,19 @@ end)
 task.spawn(function()
 	if not options.PreloadAsync then return end
 
-	--[[local badnews = {
-		"rbxasset://textures/ClassImages.png", "rbxasset://textures/DeveloperFramework/checkbox_checked_light.png",
-		"rbxasset://textures/DeveloperFramework/checkbox_unchecked_light.png", "rbxasset://textures/TagEditor/famfamfam.png",
-		"rbxasset://textures/ManageCollaborators/arrowRight_dark.png", "rbxasset://textures/ManageCollaborators/arrowDown_dark.png",
-		"rbxasset://textures/ui/VR/circleWhite.png", "rbxasset://textures/blackBkg_square.png",
-	}]]
-
 	local gametbl = {}
 	local coreguitbl = {}
 	local dextbl = {}
 
 	-- prevent GetAssetFetchStatus detection vectors on the dex model
 	local AssetList = AssetList or {"rbxassetid://17769765246"}
+	local AssetReturns = {}
+
+	for i, v in pairs(AssetList) do
+		AssetReturns[v] = ContentProvider:GetAssetFetchStatus(v)
+	end
+
+	setmetatable(AssetList, {__newindex = function(a, b, c) rawset(AssetList, b, c) rawset(AssetReturns, c, ContentProvider:GetAssetFetchStatus(c)) end})
 
 	ContentProvider:PreloadAsync({game}, function(a)
 		table.insert(gametbl,a)
@@ -454,7 +454,7 @@ task.spawn(function()
 				end
 
 				if table.find(AssetList, str) then
-					return Enum.AssetFetchStatus.None
+					return AssetReturns[str] or Enum.AssetFetchStatus.None
 				end
 			end
 		end
