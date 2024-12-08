@@ -1,8 +1,18 @@
--- plz have an executor that is decent plzp lz plzp lzpl pzlplz pzl pzlp zlpzl pzlp z plz
+--[[
+	how to load true secure dex (3 ways)
+	first is normal way
+	-- loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))()
 
--- loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))()
--- (quickLoad or quickload)("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua")
--- run_on_actor(Instance.new("Actor"), "local in_actor = true;\n\n" .. game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))
+	second is with shortener (only for certain executors with expanded functions like macsploit)
+	-- (quickLoad or quickload)("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua")
+
+	third is with run_on_actor for max security against weaktables (it is imperative you run certain tsd bypasses before running this in an actor)
+	-- local f = Instance.new("Folder", game:GetService("CoreGui").RobloxGui)
+	-- f.Name = "DexHost"
+	-- loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses.lua"))(nil, f, true)
+	-- run_on_actor(Instance.new("Actor"), "local in_actor = true;\n\n" .. game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))
+
+]]
 
 local isfolder, makefolder, isfile, writefile, readfile =
 	isfolder, makefolder, isfile, writefile, readfile;
@@ -10,12 +20,16 @@ local isfolder, makefolder, isfile, writefile, readfile =
 local getgenv, gethui, getrenv, hookmetamethod, hookfunction, identifyexecutor =
 	getgenv, gethui, getrenv, hookmetamethod, hookfunction, identifyexecutor;
 
---if (not in_actor) and run_on_actor then
---	return run_on_actor(Instance.new("Actor"), "local in_actor = true;\n\n" .. game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))
---end
+--[[
+-- will not automatically run the script in an actor
+if (not in_actor) and run_on_actor then
+	return run_on_actor(Instance.new("Actor"), "local in_actor = true;\n\n" .. game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))
+end
+]]
 
+-- bypasses will not load when the script is under an actor because the bypasses should have been loaded before running under an actor (otherwise hooks wont work)
 local LoadBypasses = (...)
-if LoadBypasses == nil --[[and not in_actor]] then LoadBypasses = true end
+if LoadBypasses == nil and not in_actor then LoadBypasses = true end
 
 local foldername = "TSDex"
 local path = foldername .. "/lua-getproperties.lua"
@@ -53,8 +67,22 @@ else
 	getgenv().AssetList = {DexAsset}
 end
 
+local RobloxGui = game:GetService("CoreGui").RobloxGui -- yeah good luck weaktable checking a restricted instance BOZO!
+local parent;
+if not RobloxGui:FindFirstChild("DexHost") then
+	parent = Instance.new("Folder", RobloxGui)
+	parent.Name = "DexHost"
+else
+	parent = RobloxGui:FindFirstChild("DexHost")
+end
+
+-- prevent solara from making the damn script error (again)
+if LoadBypasses and (getrenv and hookmetamethod and hookfunction and not identifyexecutor():lower():find("solara")) then
+	task.spawn(loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses.lua")), nil, parent, in_actor)
+end
+
 getgenv().Dex = game:GetObjects(DexAsset)[1]
-Dex.Parent = (gethui and gethui() ~= game:GetService("CoreGui") and gethui()) or game:GetService("CoreGui").RobloxGui
+Dex.Parent = parent
 
 -- update textlabel to new version
 for i, v in pairs(Dex:GetDescendants()) do
@@ -63,13 +91,8 @@ for i, v in pairs(Dex:GetDescendants()) do
 	end
 end
 
--- prevent solara from making the damn script error (again)
-if LoadBypasses and (getrenv and hookmetamethod and hookfunction and not identifyexecutor():lower():find("solara")) then
-	task.spawn(loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses.lua")), nil, Dex)
-end
-
 local function GenerateRandomString(range1, range2)
-	local characters = "abcdefghijklmnopABCDEFGHIJKLMNOP" -- qrstuvwxyzQRSTUVWXYZ are excluded
+	local characters = "abcdefghijklmnopABCDEFGHIJKLMNOP" -- qrstuvwxyzQRSTUVWXYZ are excluded cuz less common lmao
 	local name = ""
 
 	for i = 1, math.random(range1, range2) do
@@ -156,7 +179,6 @@ local list = {
 
 for i, Script in pairs(scriptlist) do
 	-- set the scripts found in github to files in TSDex folder, so the script runs faster next time
-
 	local data;
 	if notupdated then
 		data = game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/TSD-script-storage/main" .. list[i])
@@ -170,8 +192,6 @@ for i, Script in pairs(scriptlist) do
 		end
 	end
 
-	local func = loadstring(data, "=" .. Script:GetFullName())
-	-- setfenv(func, orgfenv) -- just in case
-
-	task.spawn(func, Script, Api, gets)
+	local func = loadstring(data, "=" .. Script.Name)
+	task.spawn(func, Script, Api, gets, in_actor) -- sending data
 end
