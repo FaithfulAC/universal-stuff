@@ -26,7 +26,7 @@ local Percentage = 0; -- max is 100, obviously
 
 -- check 1: is there a function with a script global in nil or not equivalent to an instance
 for i, v in getgc() do
-        if typeof(v) == "function" and islclosure(v) then
+        if typeof(v) == "function" and islclosure(v) and not isourclosure(v) then
                 local fenv = getfenv(v)
                 local src = debug.info(v, "s")
                 
@@ -57,7 +57,7 @@ local __index = getrawmetatable(game).__index
 local __newindex = getrawmetatable(game).__newindex
 
 for i, v in getgc() do
-        if typeof(v) == "function" and islclosure(v) then
+        if typeof(v) == "function" and islclosure(v) and not isourclosure(v) then
                 local upperbreak = false
                 for _, v2 in getupvalues(v) do
                         if typeof(v2) == "function" and (v2 == __namecall or v2 == __index or v2 == __newindex) then
@@ -74,7 +74,7 @@ end
 
 -- check 3: is there a function that appears to be in an obfuscated script/has a potential handshake involving bit32
 for i, v in getgc() do
-        if typeof(v) == "function" and islclosure(v) then
+        if typeof(v) == "function" and islclosure(v) and not isourclosure(v) then
                 if table.find(getupvalues(v), bit32.bxor) and #getconstants(v) > 30 then
                         local notnumber = false
                         for _, v2 in getconstants(v) do
@@ -93,7 +93,7 @@ end
 
 -- check 4: is there a function with getfenv as an upvalue or its function env as an upvalue
 for i, v in getgc() do
-        if typeof(v) == "function" and islclosure(v) then
+        if typeof(v) == "function" and islclosure(v) and not isourclosure(v) then
                 local upperbreak = false
                 for i2, v2 in getupvalues(v) do
                         if (typeof(v2) == "table" and rawequal(v2, getfenv(v))) or (typeof(v2) == "function" and v2 == getfenv) then
@@ -110,7 +110,7 @@ end
 
 -- check 5: is there a function that has itself as an upvalue (recursive function, typically used for stack overflow checks)
 for i, v in getgc() do
-        if typeof(v) == "function" and islclosure(v) and not debug.info(v, "s"):find("PlayerScripts.") then
+        if typeof(v) == "function" and islclosure(v) and not isourclosure(v) and not debug.info(v, "s"):find("PlayerScripts.") then
                 if table.find(getupvalues(v), v) then
                         Percentage += 7.5
                         break
@@ -157,7 +157,8 @@ for i, v in getscripts() do
         if upperbreak then
                 break
         end
-        if string.gsub(v.Name, "[%a %.]", "") ~= "" then -- special character detection (does not necessarily equate to an anticheat)
+        if string.gsub(v.Name, "[%a%d%.()_ ]", "") ~= "" then -- special character detection (does not necessarily equate to an anticheat)
+                warn(v)
                 Percentage += 5
                 break
         end
@@ -165,7 +166,7 @@ end
 
 -- check 8: table with restricted metatable exists
 for i, v in getgc(true) do
-        if (typeof(v) == "table" or typeof(v) == "userdata") and getmetatable(v) and typeof(getmetatable(v)) ~= "table" then
+        if (typeof(v) == "table" or typeof(v) == "userdata") and getmetatable(v) and typeof(getmetatable(v)) ~= "table" and rawget(getrawmetatable(v), "__tostring") then
                 Percentage += 10
                 break
         end
@@ -173,7 +174,7 @@ end
 
 -- check 9: game has adonis
 for i, v in getgc() do
-        if typeof(v) == "function" and islclosure(v) then
+        if typeof(v) == "function" and islclosure(v) and not isourclosure(v) then
                 local upperbreak = false
                 for _, v2 in getconstants(v) do
                         if typeof(v2) == "string" and v2:find("Adonis_") then
