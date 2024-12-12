@@ -339,6 +339,7 @@ task.spawn(function()
 	local dextbl = {}
 
 	-- prevent GetAssetFetchStatus detection vectors on the dex model
+	-- in order to have fully-undetected status you MUST do AssetList[#AssetList + 1] = ContentIdYouWantToHide
 	local AssetList = AssetList or {"rbxassetid://17769765246"}
 	local AssetReturns = {}
 
