@@ -31,7 +31,7 @@ for i, v in getgc() do
                 local src = debug.info(v, "s")
                 
                 if typeof(rawget(fenv, "script")) ~= "Instance" or rawget(fenv, "script").Parent == nil then
-                        Percentage += 20
+                        Percentage += 30
                         break
                 end
                 if src:find("ReplicatedFirst.") or src:find("Core") then
@@ -44,7 +44,7 @@ for i, v in getgc() do
                         end
 
                         if not found then
-                                Percentage += 12.5
+                                Percentage += 15
                                 break
                         end
                 end
@@ -61,7 +61,7 @@ for i, v in getgc() do
                 local upperbreak = false
                 for _, v2 in getupvalues(v) do
                         if typeof(v2) == "function" and (v2 == __namecall or v2 == __index or v2 == __newindex) then
-                                Percentage += 20
+                                Percentage += 25
                                 upperbreak = true
                                 break
                         end
