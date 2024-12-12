@@ -1,5 +1,6 @@
 --[[
-detects whether a roblox game likely has an anticheat based off a couple of factors
+        detects whether a roblox game likely has an anticheat based off a couple of factors
+        only really meant for advanced anticheats not the ones you see that are like .WalkSpeed ~= 16 or something like that
 ]]
 
 if not (
