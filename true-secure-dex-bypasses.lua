@@ -28,7 +28,6 @@ local isourclosure = isourclosure or isexecutorclosure or function(func) return 
 
 local GetDebugId = clonefunction(game.GetDebugId)
 local IsDescendantOf = clonefunction(game.IsDescendantOf)
-local org = compareinstances
 
 local options = (...) or getgenv().DexOptions or getgenv().options or {
 	gcinfo = true,
@@ -41,13 +40,7 @@ local options = (...) or getgenv().DexOptions or getgenv().options or {
 	Weaktable = true
 }
 
-local compareinstances = (org and function(ins1, ins2)
-	if typeof(ins1) == typeof(ins2) and typeof(ins1) == "Instance" then
-		return org(ins1, ins2)
-	end
-
-	return false
-end) or function(ins1, ins2)
+local compareinstances = compareinstances or function(ins1, ins2)
 	local identity;
 	if getthreadidentity then identity = getthreadidentity() else identity = 2 end
 	if setthreadidentity then setthreadidentity(8) end
@@ -266,7 +259,7 @@ task.spawn(function()
 		local self = ...
 		local method = string.gsub(getnamecallmethod(), "^%u", string.lower)
 
-		if not checkcaller() and compareinstances(self, Stats) and method == "getTotalMemoryUsageMb" then
+		if not checkcaller() and typeof(self) == "Instance" and compareinstances(self, Stats) and method == "getTotalMemoryUsageMb" then
 			return totalmem_ret
 		end
 
@@ -276,7 +269,7 @@ task.spawn(function()
 	local h2; h2 = hookfunction(Stats.GetTotalMemoryUsageMb, function(...)
 		local self = ...
 
-		if not checkcaller() and compareinstances(self, Stats) then
+		if not checkcaller() and typeof(self) == "Instance" and compareinstances(self, Stats) then
 			return totalmem_ret
 		end
 
@@ -312,7 +305,7 @@ task.spawn(function()
 		local self, newenum = ...
 		local method = string.gsub(getnamecallmethod(), "^%u", string.lower)
 
-		if not checkcaller() and compareinstances(self, Stats) and method == "getMemoryUsageMbForTag" and isGui(newenum) then
+		if not checkcaller() and typeof(self) == "Instance" and compareinstances(self, Stats) and method == "getMemoryUsageMbForTag" and isGui(newenum) then
 			return memtag_ret
 		end
 
@@ -322,7 +315,7 @@ task.spawn(function()
 	local h2; h2 = hookfunction(Stats.GetMemoryUsageMbForTag, function(...)
 		local self, arg = ...
 
-		if not checkcaller() and compareinstances(self, Stats) and isGui(arg) then
+		if not checkcaller() and typeof(self) == "Instance" and compareinstances(self, Stats) and isGui(arg) then
 			return memtag_ret
 		end
 
@@ -398,7 +391,7 @@ task.spawn(function()
 				return true
 			end
 
-			if compareinstances(v, arg) then
+			if typeof(v) == "Instance" and compareinstances(v, arg) then
 				return true
 			end
 		end
@@ -429,20 +422,24 @@ task.spawn(function()
 		local self, tbl, fnc = ...
 		local method = string.gsub(getnamecallmethod(), "^%u", string.lower)
 
-		if not checkcaller() and compareinstances(self, ContentProvider) then
+		if not checkcaller() and typeof(self) == "Instance" and compareinstances(self, ContentProvider) then
 			if method == "preloadAsync" and type(tbl) == "table" and (find(tbl, game) or find(tbl,CoreGui)) and safecheck(tbl) then
 				local targettbl = {}
 
 				for _, v in ipairs(tbl) do
-					if compareinstances(v, game) then
-						for _, v2 in pairs(randomizeTable(gametbl)) do
-							table.insert(targettbl,v2)
+					if typeof(v) == "Instance" then
+						if compareinstances(v, game) then
+							for _, v2 in pairs(randomizeTable(gametbl)) do
+								table.insert(targettbl,v2)
+							end
+						elseif compareinstances(v, CoreGui) then
+							for _, v2 in pairs(randomizeTable(coreguitbl)) do
+								table.insert(targettbl,v2)
+							end
+						else
+							table.insert(targettbl, v)
 						end
-					elseif compareinstances(v, CoreGui) then
-						for _, v2 in pairs(randomizeTable(coreguitbl)) do
-							table.insert(targettbl,v2)
-						end
-					elseif (typeof(v) == "string" or typeof(v) == "Instance") then
+					elseif typeof(v) == "string" then
 						table.insert(targettbl, v)
 					end
 				end
@@ -466,19 +463,23 @@ task.spawn(function()
 	local h2; h2 = hookfunction(ContentProvider.PreloadAsync, function(...)
 		local self, tbl, fnc = ...
 
-		if not checkcaller() and compareinstances(self, ContentProvider) and type(tbl) == "table" and (find(tbl,game) or find(tbl,CoreGui)) and safecheck(tbl) then
+		if not checkcaller() and typeof(self) == "Instance" and compareinstances(self, ContentProvider) and type(tbl) == "table" and (find(tbl,game) or find(tbl,CoreGui)) and safecheck(tbl) then
 			local targettbl = {}
 
 			for _, v in ipairs(tbl) do
-				if compareinstances(v, game) then
-					for _, v2 in pairs(randomizeTable(gametbl)) do
-						table.insert(targettbl,v2)
+				if typeof(v) == "Instance" then
+					if compareinstances(v, game) then
+						for _, v2 in pairs(randomizeTable(gametbl)) do
+							table.insert(targettbl,v2)
+						end
+					elseif compareinstances(v, CoreGui) then
+						for _, v2 in pairs(randomizeTable(coreguitbl)) do
+							table.insert(targettbl,v2)
+						end
+					else
+						table.insert(targettbl, v)
 					end
-				elseif compareinstances(v, CoreGui) then
-					for _, v2 in pairs(randomizeTable(coreguitbl)) do
-						table.insert(targettbl,v2)
-					end
-				elseif (typeof(v) == "string" or typeof(v) == "Instance") then
+				elseif typeof(v) == "string" then
 					table.insert(targettbl, v)
 				end
 			end
@@ -492,7 +493,7 @@ task.spawn(function()
 	local h3; h3 = hookfunction(ContentProvider.GetAssetFetchStatus, function(...)
 		local self, str = ...
 
-		if not checkcaller() and compareinstances(self, ContentProvider) and type(str) == "string" then
+		if not checkcaller() and typeof(self) == "Instance" and compareinstances(self, ContentProvider) and type(str) == "string" then
 			str = string.split(str, "\0")[1]
 			if tonumber(str) then
 				str = "rbxassetid://" .. str
@@ -558,7 +559,7 @@ task.spawn(function()
 		local self = ...
 
 		if not checkcaller() then
-			if compareinstances(self, UserInputService) and method == "getFocusedTextBox" then
+			if typeof(self) == "Instance" and compareinstances(self, UserInputService) and method == "getFocusedTextBox" then
 				local Textbox = h1(...)
 
 				if typeof(Textbox) == "Instance" then
@@ -581,7 +582,7 @@ task.spawn(function()
 		local self = ...
 
 		if not checkcaller() then
-			if compareinstances(self, UserInputService) then
+			if typeof(self) == "Instance" and compareinstances(self, UserInputService) then
 				local Textbox = h2(...)
 
 				if typeof(Textbox) == "Instance" then
@@ -616,7 +617,7 @@ task.spawn(function()
 		local self, arg1, arg2 = ...
 		local method = string.gsub(getnamecallmethod(), "^%u", string.lower)
 
-		if not checkcaller() and compareinstances(self, StarterGui) and rawequal(arg1, "DevConsoleVisible") then
+		if not checkcaller() and typeof(self) == "Instance" and compareinstances(self, StarterGui) and rawequal(arg1, "DevConsoleVisible") then
 			if method == "getCore" then
 				return doobityVisible
 			elseif method == "setCore" and rawequal(arg2, false) then
@@ -630,7 +631,7 @@ task.spawn(function()
 	local h2; h2 = hookfunction(StarterGui.GetCore, function(...)
 		local self, arg = ...
 
-		if not checkcaller() and compareinstances(self, StarterGui) and rawequal(arg, "DevConsoleVisible") then
+		if not checkcaller() and typeof(self) == "Instance" and compareinstances(self, StarterGui) and rawequal(arg, "DevConsoleVisible") then
 			return doobityVisible
 		end
 
@@ -640,7 +641,7 @@ task.spawn(function()
 	local h3; h3 = hookfunction(StarterGui.SetCore, function(...)
 		local self, arg1, arg2 = ...
 
-		if not checkcaller() and compareinstances(self, StarterGui) and rawequal(arg1, "DevConsoleVisible") and rawequal(arg2, false) then
+		if not checkcaller() and typeof(self) == "Instance" and compareinstances(self, StarterGui) and rawequal(arg1, "DevConsoleVisible") and rawequal(arg2, false) then
 			doobityVisible = false
 		end
 
