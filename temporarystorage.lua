@@ -81,27 +81,37 @@ local h; h = hookfunction(getrenv().debug.info, function(...)
 
 	if not checkcaller() and (typeof(func) == "number" or tfind(func, tospoof)) and typeof(str) == "string" then
 		local orgargs = {pcall(h, func, "nf")}
+		str = split(str, "\0")[1]
 
-		if orgargs[1] and ((typeof(func) == "number" and tfind(tospoof, orgargs[3])) or true) then
-			str = split(str, "\0")[1]
+		if orgargs[1] and ((typeof(func) == "number" and tfind(tospoof, orgargs[3])) or true) and #str <= 5 then
 			local args = {}
+			local s,l,n,_a,f = 0,0,0,0,0
 
 			gsub(str, ".", function(a)
-				if a == "s" then
+				if a == "s" and s == 0 then
 					insert(args, "[C]")
-				elseif a == "l" then
+					s += 1
+				elseif a == "l" and l == 0 then
 					insert(args, -1)
-				elseif a == "n" then
+					l += 1
+				elseif a == "n" and n == 0 then
 					insert(args, orgargs[2])
-				elseif a == "a" then
+					n += 1
+				elseif a == "a" and _a == 0 then
 					insert(args, 0)
 					insert(args, true)
-				elseif a == "f" then
+					_a += 1
+				elseif a == "f" and f == 0 then
 					insert(args, orgargs[3])
+					f += 1
+				else
+					args["_"] = true
 				end
 			end)
 
-			return unpack(args)
+			if not args["_"] then
+				return unpack(args)
+			end
 		end
 	end
 
