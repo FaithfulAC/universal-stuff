@@ -28,7 +28,7 @@ end
 ]]
 
 -- bypasses will not load when the script is under an actor because the bypasses should have been loaded before running under an actor (otherwise hooks wont work)
-local in_actor = in_actor or false
+local in_actor = in_actor or (inparallel and inparallel()) or false
 local LoadBypasses = (...)
 if LoadBypasses == nil and not in_actor then LoadBypasses = true end
 
