@@ -17,12 +17,10 @@ if LoadCStackOverflowBypass then -- checking if c stack overflow bypass was alre
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/c-stack-overflow-universal-bypass.lua"))()
 end]]
 
-local __namecall, __index, __newindex
-__namecall, __index, __newindex = hmm(game,"__namecall", function(...) return __namecall(...) end), hmm(game,"__index", function(...) return __index(...) end), hmm(game,"__newindex", function(...) return __newindex(...) end)
-
-hmm(game,"__namecall",__namecall)
-hmm(game,"__index",__index)
-hmm(game,"__newindex",__newindex)
+local __namecall, __index, __newindex =
+	clonefunction(getrawmetatable(game).__namecall),
+	clonefunction(getrawmetatable(game).__index),
+	clonefunction(getrawmetatable(game).__newindex)
 
 local isSafeIndex = function(arg)
 	return (typeof(arg) == "string" and #arg < 256) -- run safehookmetamethod if you want to hook index a property, not an instance!!!
@@ -34,7 +32,7 @@ local sNamecall, sIndex, sNewindex =
 		local args = {...}
 		local self = args[1]
 		
-		if typeof(self) == "Instance" and select("#", ...) > 0 then return true end
+		if typeof(self) == "Instance" and select("#", ...) > 0 and select("#", ...) < 8000 then return true end
 		return false
 		
 	end, function(...)
@@ -42,7 +40,7 @@ local sNamecall, sIndex, sNewindex =
 	local args = {...}
 	local self = args[1]
 	
-	if typeof(self) == "Instance" and (isSafeIndex(args[2]) or typeof(args[2]) == "number") and select("#", ...) >= 2 then return true end
+	if typeof(self) == "Instance" and (isSafeIndex(args[2]) or typeof(args[2]) == "number") and select("#", ...) >= 2 and select("#", ...) < 8000 then return true end
 	return false
 	
 end, function(...)
@@ -50,7 +48,7 @@ end, function(...)
 	local args = {...}
 	local self = args[1]
 	
-	if typeof(self) == "Instance" and isSafeIndex(args[2]) and select("#", ...) >= 3 then return true end
+	if typeof(self) == "Instance" and isSafeIndex(args[2]) and select("#", ...) >= 3 and select("#", ...) < 8000 then return true end
 	return false
 	
 end
