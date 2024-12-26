@@ -507,7 +507,7 @@ task.spawn(function()
 		return h3(...)
 	end)
 
-	local templist = {}
+	--[[local templist = {} -- commented out cuz it SUCKS!!!
 
 	for _, asset in pairs(AssetList) do
 		for i, v in next, getconnections(ContentProvider:GetAssetFetchStatusChangedSignal(asset)) do
@@ -528,7 +528,7 @@ task.spawn(function()
 		end
 	end
 
-	table.clear(templist)
+	table.clear(templist)]]
 end)
 
 -- instancecount bypass
