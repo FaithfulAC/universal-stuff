@@ -33,11 +33,11 @@ local options = (...) or getgenv().DexOptions or getgenv().options or {
 	GetMemoryUsageMbForTag = true,
 	PreloadAsync = true,
 	InstanceCount = true,
+	UI2DDrawcallCount = true,
+	UI2DTriangleCount = true,
 	GetFocusedTextBox = true,
 	GuiObjects = true,
-	Weaktable = true,
-	UI2DDrawcallCount = true,
-	UI2DTriangleCount = true
+	Weaktable = true
 }
 
 local compareinstances = compareinstances or function(ins1, ins2)
