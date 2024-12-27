@@ -183,10 +183,15 @@ end
 
 if options.UI2DDrawcallCount or options.UI2DTriangleCount then
 	task.delay(math.random()*1.5, function() -- wait a little bit after dex loads in
-		local DrawcallDiff, TriangleDiff = Stats.UI2DDrawcallCount - drawcall_ret, Stats.UI2DTriangleCount - triangle_ret
-		while task.wait(math.random()) do -- change it periodically
-			drawcall_ret = Stats.UI2DDrawcallCount - DrawcallDiff
-			triangle_ret = Stats.UI2DTriangleCount - DrawcallDiff
+		local OldDrawcall, OldTriangle = drawcall_ret, triangle_ret
+		while task.wait(math.random()*1.5) do -- change it periodically
+			drawcall_ret += math.random(-4, 4)
+			triangle_ret += math.random(-4, 4)
+
+			if math.random(10) == 10 then -- change it back to somewhere around the default
+				drawcall_ret = math.abs(OldDrawcall + math.random(-8, 8))
+				triangle_ret = math.abs(OldTriangle + math.random(-8, 8))
+			end
 		end
 	end)
 end
