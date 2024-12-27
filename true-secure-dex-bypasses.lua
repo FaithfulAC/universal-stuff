@@ -6,8 +6,6 @@
 	big thanks to kaxr and babyhamsta
 ]]
 
---[[TODO: add Stats.UI2DDrawcallCount, Stats.UI2DTriangleCount spoofs]]
-
 -- so no invalid arguments for stuff like InstanceCount (not needed anymore i already check the string length)
 --[[if not safehookmetamethod then
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/safehookmetamethod.lua"))()
@@ -37,7 +35,9 @@ local options = (...) or getgenv().DexOptions or getgenv().options or {
 	InstanceCount = true,
 	GetFocusedTextBox = true,
 	GuiObjects = true,
-	Weaktable = true
+	Weaktable = true,
+	UI2DDrawcallCount = true,
+	UI2DTriangleCount = true
 }
 
 local compareinstances = compareinstances or function(ins1, ins2)
@@ -73,8 +73,8 @@ if select(3, ...) == true and cloneref(game) ~= game then -- means script is und
 end
 
 -- for realism of gcinfo, inscount, and memory spoofs
-local gcinfo_ret, inscount_ret, memtag_ret, totalmem_ret
-	= gcinfo(), Stats.InstanceCount, Stats:GetMemoryUsageMbForTag("Gui"), Stats:GetTotalMemoryUsageMb();
+local gcinfo_ret, inscount_ret, memtag_ret, totalmem_ret, drawcall_ret, triangle_ret
+	= gcinfo(), Stats.InstanceCount, Stats:GetMemoryUsageMbForTag("Gui"), Stats:GetTotalMemoryUsageMb(), Stats.UI2DDrawcallCount, Stats.UI2DTriangleCount;
 
 local GetRandomMemoryIncrease = function()
 	return ((math.random(1e7, 1e9)*1005)+.5)/1e14
@@ -178,6 +178,16 @@ if options.GetMemoryUsageMbForTag or options.InstanceCount then
 		end
 
 		return result
+	end)
+end
+
+if options.UI2DDrawcallCount or options.UI2DTriangleCount then
+	task.delay(math.random()*1.5, function() -- wait a little bit after dex loads in
+		local DrawcallDiff, TriangleDiff = Stats.UI2DDrawcallCount - drawcall_ret, Stats.UI2DTriangleCount - triangle_ret
+		while task.wait(math.random()) do -- change it periodically
+			drawcall_ret = Stats.UI2DDrawcallCount - DrawcallDiff
+			triangle_ret = Stats.UI2DTriangleCount - DrawcallDiff
+		end
 	end)
 end
 
@@ -538,15 +548,18 @@ end)
 
 -- instancecount bypass
 task.spawn(function()
-	if not options.InstanceCount then return end
+	if not (options.InstanceCount or options.UI2DDrawcallCount or options.UI2DTriangleCount) then return end
 	local h1; h1 = hookmetamethod(game,"__index", function(...)
 		local self, arg = ...
 
-		if not checkcaller() and typeof(self) == "Instance" and compareinstances(self, Stats) and type(arg) == "string" and #arg < 256 and string.split(string.gsub(arg, "^%u", string.lower), "\0")[1] == "instanceCount" then
+		if not checkcaller() and typeof(self) == "Instance" and compareinstances(self, Stats) and type(arg) == "string" and #arg < 256 then
+			arg = string.split(string.gsub(arg, "^%l", string.upper), "\0")[1]
 			local res = h1(...)
 
 			if typeof(res) == "number" then -- double check just in case
-				return inscount_ret
+				if options.InstanceCount and arg == "InstanceCount" then return inscount_ret end
+				if options.UI2DDrawcallCount and arg == "UI2DDrawcallCount" then return drawcall_ret end
+				if options.UI2DTriangleCount and arg == "UI2DTriangleCount" then return triangle_ret end
 			end
 
 			return res
