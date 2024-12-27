@@ -87,20 +87,20 @@ end
 
 local function InsertInCache(func, wrapped)
 	if typeof(func) ~= "function" or typeof(wrapped) ~= "function" then return end
-	
+
 	local New; New = {
 		WrapCount = 1,
 		Original = func,
 		ReplacementFunc = function(...)
-			if select("#", ...) >= 8000 then
+			--[[if select("#", ...) >= 8000 then
 				return error("too many arguments to resume", 2)
-			end
-			
+			end]]
+
 			local args = pack(pcall(WrapHook(func), ...))
-			
+
 			if not args[1] then
 				local err = args[2]
-				
+
 				if err ~= "cannot resume dead coroutine" and New.WrapCount > stackThresholdMax then
 					task.spawn(New.Gc)
 					return error(firstError, 2)
@@ -111,13 +111,13 @@ local function InsertInCache(func, wrapped)
 					task.spawn(New.Gc)
 					return error(customErrorReturn, 2)
 				end
-				
+
 				task.spawn(New.Gc)
 				return error(err, 2)
 			end
-			
+
 			task.spawn(New.Gc)
-			
+
 			return unpack(args, 2, args.n)
 		end,
 		Wrapped = wrapped,
@@ -125,56 +125,56 @@ local function InsertInCache(func, wrapped)
 			table.remove(Cache, table.find(Cache, New))
 		end,
 	}
-	
+
 	table.insert(Cache, New)
 end
 
 WrapHook = hookfunction(getrenv().coroutine.wrap, function(...)
 	local Target = ...
-	
+
 	if not checkcaller() and typeof(Target) == "function" then
 		local CacheTbl = IsInCache(Target)
-		
+
 		if CacheTbl then
 			local Validity = CheckValidity(Target)
 			if not Validity then
-				local res = h(...)
-				
+				local res = WrapHook(...)
+
 				if table.find(luaCacheFunctions, Target) then
 					luaCacheFunctions[table.find(luaCacheFunctions, Target)] = res
 				else
 					table.insert(luaCacheFunctions, res)
 				end
-				
+
 				return res;
 			end
 			CacheTbl.WrapCount += 1
-			
+
 			if CacheTbl.WrapCount == stackThreshold then
 				local NewFunc = WrapHook(CacheTbl.ReplacementFunc)
 				CacheTbl.Original, CacheTbl.ReplacementFunc = NewFunc, NewFunc
 				CacheTbl.Wrapped = WrapHook(CacheTbl.Wrapped)
-				
+
 				return NewFunc
 			elseif CacheTbl.WrapCount < stackThreshold or CacheTbl.WrapCount > stackThresholdMax then
 				local NewFunc = WrapHook(CacheTbl.Wrapped)
 				CacheTbl.Wrapped = NewFunc
-				
+
 				return NewFunc
 			end
-			
+
 			local NewFunc = WrapHook(CacheTbl.ReplacementFunc)
 			CacheTbl.Original, CacheTbl.ReplacementFunc = NewFunc, NewFunc
 			CacheTbl.Wrapped = WrapHook(WrapHook(CacheTbl.Wrapped))
-			
+
 			return NewFunc
 		else
 			local arg = WrapHook(...)
 			InsertInCache(Target, arg)
-			
+
 			return arg
 		end
 	end
-	
+
 	return WrapHook(...)
 end)
