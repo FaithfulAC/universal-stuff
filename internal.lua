@@ -226,8 +226,8 @@ Code.PlaceholderText = "print(\"Hello, world!\")"
 Code.Text = ""
 Code.TextColor3 = Color3.fromRGB(255, 255, 255)
 Code.TextSize = 18.000
-Code.TextWrapped = true
 Code.TextXAlignment = Enum.TextXAlignment.Left
+Code.TextYAlignment = Enum.TextYAlignment.Top
 
 Side.Name = "Side"
 Side.Parent = Main
@@ -1357,7 +1357,7 @@ local function main() -- Script.MainScript
 	local run_on_actor = run_on_actor or nil
 	local getgc = getgc or nil
 	local getconnections = getconnections or nil
-	local isalive = isalive or nil -- to be set via europa library
+	local isalive = isalive or nil
 	local islclosure = islclosure or function(a) return debug.info(a, "s") ~= "[C]" end
 	local isourclosure = isourclosure or nil
 	local getconstants = getconstants or nil
@@ -1394,9 +1394,11 @@ local function main() -- Script.MainScript
 	local decompile = decompile or disassemble or getscriptbytecode or nil
 	local getscripts = getscripts or nil
 	local europa = europa or nil
+	
 	local Players = cloneref(game:GetService("Players"))
 	local UserInputService = cloneref(game:GetService('UserInputService'))
 	local StarterGui = cloneref(game:GetService("StarterGui"))
+	local Stats = cloneref(game:GetService("Stats"))
 	local LocalPlayer = cloneref(Players.LocalPlayer or Players:GetPropertyChangedSignal("LocalPlayer"):Wait())
 	local Exec = Exec or (script and script.Parent.Parent)
 	
@@ -1587,7 +1589,7 @@ local function main() -- Script.MainScript
 			msgDelay += 1
 	
 			if msgDelay > 1000 then
-				task_delay(1, function()
+				task_delay(.2, function()
 					if msgDelay > 1000 then
 						msgDelay = 0
 					end
@@ -1743,6 +1745,7 @@ local function main() -- Script.MainScript
 	
 			code.Size = UDim2.new(0.9+(maxofoneline*factor+offset), 0, 0.15*numoflines, 0)
 			code.TextSize = math.round(code.AbsoluteSize.Y/numoflines)
+			code.TextWrapped = false
 			local ch = assigns:GetChildren()
 	
 			local function getmaxl()
@@ -2136,7 +2139,7 @@ local function main() -- Script.MainScript
 			updateScale()
 		end
 	
-		local mouse = (LocalPlayer and LocalPlayer:GetMouse()) or game:GetService("Players"):GetPropertyChangedSignal("LocalPlayer"):Wait():GetMouse()
+		local mouse = LocalPlayer and LocalPlayer:GetMouse()
 		mouse.Button1Up:Connect(assign)
 	
 		optswitch.MouseButton1Click:Connect(function()
@@ -2240,25 +2243,27 @@ local function main() -- Script.MainScript
 		
 		local dumpgc = buttons.DumpGC
 		dumpgc.MouseButton1Click:Connect(function()
-			if not (getgc or writefile) then return setnotif("Error", "Your executor does not support one of the following methods: 'getgc', 'writefile'") end
+			if not (getgc or writefile) then return setnotif("Error", "Your executor does not support 'getgc' and/or 'writefile'") end
 			
 			local start = "europa/dumps/"
-			local path = start .. "GCDump_" .. tostring(game.PlaceId) .. "_"
+			local path = start .. "GCDump_" .. tostring(game.PlaceId)
 			local valuetostring = loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/Megaprojects/refs/heads/main/valuetostring.lua"))()
 			
+			local temp = nil;
+			
 			for i = 1, 100 do -- max dumps for one place is 100
-				if not isfolder(path .. tostring(i)) then
-					path = path .. tostring(i)
-					makefolder(path)
+				if not isfile(path .. "/Dump" .. tostring(i) .. ".txt") then
+					temp = tostring(i)
 					break
 				end
 			end
 			
-			local filepath = path .. "/Dump.txt"
+			local filepath = path .. "/Dump" .. temp .. ".txt"
 			local dump = ""
 			local debounce = 0
 			
 			setnotif("Dump GC", "Dump has started; this may take a while...")
+			temp = nil
 			
 			for i, v in getgc() do
 				if typeof(v) == "function" and islclosure(v) and not isourclosure(v) then
@@ -2363,25 +2368,36 @@ local function main() -- Script.MainScript
 			deterredprintyields.Text = "deterred print yields" .. new
 		end)
 		
+		local disablecodesaving = buttons.DisableCodeSaving
+		disablecodesaving.MouseButton1Click:Connect(function()
+			codeSavingEnabled = not codeSavingEnabled
+			local new = ": OFF"
+			if not codeSavingEnabled then -- remember that it's disablecodesaving and if it's on then code saving is off
+				new = ": ON"
+			end
+			
+			disablecodesaving.Text = "disable code saving" .. new
+		end)
+		
 		local savechanges = buttons.SaveEuropatechChanges
 		savechanges.MouseButton1Click:Connect(function()
 			if not (readfile and writefile) then return setnotif("Error", "Your executor does not support file functions") end
 			
-			
+			setnotif("Error", "This button is not functional yet!")
 		end)
 		
 		local savecode = buttons.SaveCode
 		savecode.MouseButton1Click:Connect(function()
 			if not (readfile and writefile) then return setnotif("Error", "Your executor does not support file functions") end
 			
-			
+			setnotif("Error", "This button is not functional yet!")
 		end)
 		
 		local loadcode = buttons.LoadCode
 		loadcode.MouseButton1Click:Connect(function()
 			if not (readfile and writefile) then return setnotif("Error", "Your executor does not support file functions") end
 			
-			
+			setnotif("Error", "This button is not functional yet!")
 		end)
 	end)()
 	
@@ -2755,10 +2771,10 @@ local function main() -- Script.MainScript
 	end)()
 	
 	coroutine.wrap(function()
-		if not (writefile and isfile and delfile) then return end
+		if not (isfile and delfile and writefile) then return end
 		
 		local savedCode = ""
-		while isalive() and gui.Parent ~= nil and task.wait(3) do pcall(function() savedCode = code.Text end) end
+		while isalive() and gui.Parent ~= nil and task.wait(1) do print(pcall(function() savedCode = code.Text end)) end
 		
 		if savedCode ~= "" and codeSavingEnabled then
 			if isfile("europa/backup/saved.lua") then
@@ -2766,9 +2782,9 @@ local function main() -- Script.MainScript
 			end
 			
 			writefile("europa/backup/saved.lua", savedCode)
-			setnotif("Code Notification", "Disconnect from game detected; your code has been saved for the next time europatech runs")
+			setnotif("Code Notification", "Disconnect from game detected; your code has been saved.")
 		end
-	end)
+	end)()
 end
 
 main()
