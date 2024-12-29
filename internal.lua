@@ -2297,7 +2297,7 @@ local function main() -- Script.MainScript
 		local disableindexhooks = buttons.DisableIndexHooks
 		local disablenewindexhooks = buttons.DisableNewIndexHooks
 		
-		local list; list = {
+		local list = {
 			__namecall = not namecallEnabled,
 			__index = not indexEnabled,
 			__newindex = not newindexEnabled
@@ -2314,7 +2314,7 @@ local function main() -- Script.MainScript
 					return mt[method]
 				end
 				return _hookmetamethod(mt, method, deter)
-			end, "hookmetamethod"))
+			end, "hookmetamethod")
 		end
 		
 		disablenamecallhooks.MouseButton1Click:Connect(function()
