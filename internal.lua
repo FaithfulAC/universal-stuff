@@ -2774,7 +2774,7 @@ local function main() -- Script.MainScript
 		if not (isfile and delfile and writefile) then return end
 		
 		local savedCode = ""
-		while isalive() and gui.Parent ~= nil and task.wait(1) do print(pcall(function() savedCode = code.Text end)) end
+		while isalive() and gui.Parent ~= nil and task.wait(1) do pcall(function() savedCode = code.Text end) end
 		
 		if savedCode ~= "" and codeSavingEnabled then
 			if isfile("europa/backup/saved.lua") then
