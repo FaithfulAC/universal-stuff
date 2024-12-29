@@ -2376,6 +2376,9 @@ local function main() -- Script.MainScript
 			if not codeSavingEnabled then -- remember that it's disablecodesaving and if it's on then code saving is off
 				new = ": ON"
 			end
+			if (isfile and delfile) and isfile("europa/backup/saved.lua") then
+				delfile("europa/backup/saved.lua")
+			end
 			
 			disablecodesaving.Text = "disable code saving" .. new
 		end)
