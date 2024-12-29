@@ -2311,7 +2311,7 @@ local function main() -- Script.MainScript
 			getgenv().hookmetamethod = newcclosure(function(mt, method, deter)
 				warn(method)
 				if list[method] then
-					return mt[method]
+					return clonefunction(getrawmetatable(mt)[method])
 				end
 				return _hookmetamethod(mt, method, deter)
 			end, "hookmetamethod")
