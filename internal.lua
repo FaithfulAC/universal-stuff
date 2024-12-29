@@ -2207,6 +2207,7 @@ local function main() -- Script.MainScript
 			while parent.Parent ~= game do
 				name = "['" .. handlespecials(parent.Name) .. "']" .. name
 				parent = parent.Parent
+				if parent == nil then return handlespecials(scr.Name) end -- should never be able to happen, but it might
 			end
 	
 			name = parent.ClassName .. name
