@@ -2276,13 +2276,13 @@ local function main() -- Script.MainScript
 						.. tostring((debug.info(v, "a"))) .. "\nVararg: " .. tostring(select(2, debug.info(v, "a"))) .. "\n\nConstants:\n";
 					
 					for i, v in getconstants(v) do
-						dump ..= "\t" .. tostring(i) .. " - " .. valuetostring(v) .. " (of type: " .. typeof(v) .. ")\n"
+						dump ..= "\t" .. tostring(i) .. " - " .. (valuetostring(v) or "nil") .. " (of type: " .. typeof(v) .. ")\n"
 					end
 					
 					dump ..= "\nUpvals:\n"
 					
 					for i, v in getupvalues(v) do
-						dump ..= "\t" .. tostring(i) .. " - " .. valuetostring(v) .. " (of type: " .. typeof(v) .. ")\n"
+						dump ..= "\t" .. tostring(i) .. " - " .. (valuetostring(v) or "nil") .. " (of type: " .. typeof(v) .. ")\n"
 					end
 				end
 			end
