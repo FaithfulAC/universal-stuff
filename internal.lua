@@ -2302,8 +2302,10 @@ local function main() -- Script.MainScript
 			__index = not indexEnabled,
 			__newindex = not newindexEnabled
 		}, {__newindex = function(a,b,c)
+			print(c)
 			if c == true then
 				hookfunction(getgenv().hookmetamethod, newcclosure(function(mt, method, deter)
+					warn(method)
 					if list[method] then
 						return mt[method]
 					end
@@ -2325,6 +2327,7 @@ local function main() -- Script.MainScript
 		
 		local function metamethodHandler(metamethod, boolean)
 			list[metamethod] = boolean
+			print(boolean)
 		end
 		
 		disablenamecallhooks.MouseButton1Click:Connect(function()
