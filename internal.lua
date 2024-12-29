@@ -2297,37 +2297,24 @@ local function main() -- Script.MainScript
 		local disableindexhooks = buttons.DisableIndexHooks
 		local disablenewindexhooks = buttons.DisableNewIndexHooks
 		
-		local list; list = setmetatable({
+		local list; list = {
 			__namecall = not namecallEnabled,
 			__index = not indexEnabled,
 			__newindex = not newindexEnabled
-		}, {__newindex = function(a,b,c)
-			print(c)
-			if c == true then
-				hookfunction(getgenv().hookmetamethod, newcclosure(function(mt, method, deter)
-					warn(method)
-					if list[method] then
-						return mt[method]
-					end
-					return _hookmetamethod(mt, method, deter)
-				end, "hookmetamethod"))
-			else
-				local anydisabled = false
-				for i, v in pairs(list) do
-					if v == true then
-						anydisabled = true
-					end
-				end
-				
-				if not anydisabled then
-					hookfunction(getgenv().hookmetamethod, _hookmetamethod)
-				end
-			end
-		end})
+		}
 		
 		local function metamethodHandler(metamethod, boolean)
 			list[metamethod] = boolean
-			print(boolean)
+		end
+
+		if hookmetamethod then
+			getgenv().hookmetamethod = newcclosure(function(mt, method, deter)
+				warn(method)
+				if list[method] then
+					return mt[method]
+				end
+				return _hookmetamethod(mt, method, deter)
+			end, "hookmetamethod"))
 		end
 		
 		disablenamecallhooks.MouseButton1Click:Connect(function()
