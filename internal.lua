@@ -1885,7 +1885,7 @@ local function main() -- Script.MainScript
 					MessageOutFunction(final, Enum.MessageType.MessageWarning)
 				end, "warn")
 				getgenv().error = newcclosure(function(...)
-					if not checkcaller() or (getthreadidentity and getthreadidentity() < 4 or true) then
+					if not checkcaller() or (getthreadidentity and getthreadidentity() < 4) then
 						return defError(...)
 					end
 	
