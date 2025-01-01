@@ -739,10 +739,15 @@ task.spawn(function()
 
 			if Mode then
 				local res = h(...)
+				local waitAmount = 30/gcinfo()
+
+				if gcinfo() > 30000 then -- screw it
+					waitAmount = 0
+				end
 
 				task.spawn(function()
-					task.wait(20/gcinfo())
-
+					if waitAmount ~= 0 then task.wait(waitAmount) end
+					
 					if Mode == "kv" then
 						for i, v in pairs(res) do
 							if
