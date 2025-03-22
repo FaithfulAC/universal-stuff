@@ -558,7 +558,7 @@ task.spawn(function()
 		local self, arg = ...
 
 		if not checkcaller() and typeof(self) == "Instance" and compareinstances(self, Stats) and type(arg) == "string" and #arg < 256 then
-			arg = string.split(string.gsub(arg, "^%l", string.upper), "\0")[1]
+			arg = --[[string.split(]]string.gsub(arg, "^%l", string.upper)--, "\0")[1]
 			local res = h1(...)
 
 			if typeof(res) == "number" then -- double check just in case
