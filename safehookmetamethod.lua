@@ -23,7 +23,7 @@ local __namecall, __index, __newindex =
 	clonefunction(getrawmetatable(game).__newindex)
 
 local isSafeIndex = function(arg)
-	return (typeof(arg) == "string" and #arg < 256) -- run safehookmetamethod if you want to hook index a property, not an instance!!!
+	return (typeof(arg) == "string" and string.split(arg, "\0")[2] == nil) -- run safehookmetamethod if you want to hook index a property, not an instance!!!
 end
 
 local sNamecall, sIndex, sNewindex = 
