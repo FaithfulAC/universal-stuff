@@ -92,6 +92,8 @@ local GuiClasses = { -- instances that can increase memory for gui
 }
 
 if options.GetMemoryUsageMbForTag or options.InstanceCount then
+	local GetDescendants = clonefunction(game.GetDescendants)
+	
 	game.DescendantAdded:Connect(function(ins) -- mark those under datamodel
 		if not IsDescendantOf(ins, DexGui) then
 			if GuiClasses[ins.ClassName] then
@@ -130,7 +132,7 @@ if options.GetMemoryUsageMbForTag or options.InstanceCount then
 				memtag_ret += GuiClasses[result.ClassName]
 			end
 
-			inscount_ret += 1
+			inscount_ret += #GetDescendants(result) + 1
 		end
 
 		return result
