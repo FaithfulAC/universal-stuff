@@ -221,8 +221,10 @@ task.spawn(function()
 	gcinfo_ret = gcinfo()
 
 	local function decrease()
-		for i = 1, 4 do
-			gcinfo_ret = max - math.floor(((max - mini*1.25)*(i/4))+math.random(-20,20))
+		local maxfor = math.random(3, 7)
+			
+		for i = 1, maxfor do
+			gcinfo_ret = max - math.floor(((max - mini*1.25)*(i/maxfor))+math.random(-20,20))
 			task.wait(math.random(25,45)/1000)
 		end
 	end
