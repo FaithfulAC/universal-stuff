@@ -231,14 +231,16 @@ task.spawn(function()
 	local range2 = range1 + math.random(1000, 5000)
 
 	task.spawn(function()
-		while task.wait() do
+		while true do
+			local delta = task.wait()
+			local prev = tick()
 			if gcinfo_ret > max + math.random(-50,50) then decrease() end
 
 			gcinfo_ret += math.floor(math.random(range1,range2)/10000)
-			game.ItemChanged:Wait()
+			repeat until tick()-prev > delta/5 -- wont freeze if the delta wait time is based on ur fps
 
 			gcinfo_ret += math.random(2)
-			game.ItemChanged:Wait()
+			task.wait()
 
 			gcinfo_ret += 1
 		end
