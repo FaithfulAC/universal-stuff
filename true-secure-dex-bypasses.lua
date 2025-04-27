@@ -221,7 +221,7 @@ task.spawn(function()
 	gcinfo_ret = gcinfo()
 
 	local function decrease()
-		local maxfor = math.random(5, 9)
+		local maxfor = math.random(15, 22)
 			
 		for i = 1, maxfor do
 			gcinfo_ret = max - math.floor(((max - mini*1.25)*(i/maxfor))+math.random(-30,30))
@@ -236,7 +236,7 @@ task.spawn(function()
 		while true do
 			local delta = task.wait()
 			local prev = tick()
-			if gcinfo_ret > max + math.random(-50,50) then decrease() end
+			if gcinfo_ret > max + math.random(-75,75) then decrease() end
 
 			gcinfo_ret += math.floor(math.random(range1,range2)/15000)
 			repeat until tick()-prev > delta/2 -- wont freeze if the delta wait time is based on ur fps
