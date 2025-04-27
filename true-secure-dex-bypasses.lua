@@ -216,15 +216,15 @@ task.spawn(function()
 	if not options.gcinfo then return end
 	local max, mini;
 
-	max = gcinfo() + math.random(math.floor(gcinfo()/6), math.floor(gcinfo()/4))
-	mini = gcinfo() - math.random(math.floor(gcinfo()/6), math.floor(gcinfo()/4))
+	max = gcinfo() + math.random(math.floor(gcinfo()/5), math.floor(gcinfo()/2))
+	mini = gcinfo() - math.random(math.floor(gcinfo()/5), math.floor(gcinfo()/2))
 	gcinfo_ret = gcinfo()
 
 	local function decrease()
-		local maxfor = math.random(3, 7)
+		local maxfor = math.random(5, 9)
 			
 		for i = 1, maxfor do
-			gcinfo_ret = max - math.floor(((max - mini*1.25)*(i/maxfor))+math.random(-20,20))
+			gcinfo_ret = max - math.floor(((max - mini*1.25)*(i/maxfor))+math.random(-30,30))
 			task.wait(math.random(25,45)/1000)
 		end
 	end
