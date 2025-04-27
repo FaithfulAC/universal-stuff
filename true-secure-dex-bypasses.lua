@@ -228,10 +228,10 @@ task.spawn(function()
 	end
 
 	local range1 = Stats.InstanceCount
-	local range2 = range1 + math.random(1000, 3000)
+	local range2 = range1 + math.random(1000, 5000)
 
 	task.spawn(function()
-		while RunService.Heartbeat:Wait() do
+		while task.wait() do
 			if gcinfo_ret > max + math.random(-50,50) then decrease() end
 
 			gcinfo_ret += math.floor(math.random(range1,range2)/10000)
