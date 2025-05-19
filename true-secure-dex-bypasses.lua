@@ -185,6 +185,9 @@ if options.UI2DDrawcallCount or options.UI2DTriangleCount then
 			drawcall_ret += math.random(-4, 4)
 			triangle_ret += math.random(-4, 4)
 
+			-- make sure return values arent accidentally negative
+			drawcall_ret, triangle_ret = math.abs(drawcall_ret), math.abs(triangle_ret);
+
 			if math.random(10) == 10 then -- change it back to somewhere around the default
 				drawcall_ret = math.abs(OldDrawcall + math.random(-8, 8))
 				triangle_ret = math.abs(OldTriangle + math.random(-8, 8))
