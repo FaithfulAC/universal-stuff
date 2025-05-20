@@ -58,6 +58,7 @@ end
 -- prevent solara from making the damn script error
 getgenv().cloneref = ((not identifyexecutor():lower():find("sol")) and cloneref) or function(...) return ... end
 
+repeat task.wait() until readfile(path) -- macsploit silly macsploit
 Api, gets = unpack(loadstring(readfile(path))())
 
 local DexAsset = "rbxassetid://17769765246"
