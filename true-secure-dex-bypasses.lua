@@ -239,10 +239,10 @@ task.spawn(function()
 			gcinfo_ret += math.floor(math.random(range1,range2)/15000)
 			repeat until tick()-prev > delta/2 -- wont freeze if the delta wait time is based on ur fps
 
-			gcinfo_ret += math.random(0, math.floor(math.random(range1,range2)/15000))
+			gcinfo_ret += math.random(0, math.floor(math.random(range1,range2)/10000))
 			task.wait()
 
-			gcinfo_ret += math.floor(math.random(range1,range2)/20000)
+			gcinfo_ret += math.floor(math.random(range1,range2)/15000)
 		end
 	end)
 
@@ -314,6 +314,7 @@ task.spawn(function()
 
 	task.spawn(function()
 		local switchoff = false
+		local old = memtag_ret
 
 		while RunService.Heartbeat:Wait() do
 			if math.random(1, 10) < 3 then
@@ -321,6 +322,9 @@ task.spawn(function()
 				memtag_ret += math.random(-2,2)/(if switchoff then 64 else 128) + (math.random(-1,1)/20)
 
 				task.wait(math.random(1,3)/90)
+			end
+			if math.random(20) == 20 then
+				memtag_ret = old + math.random(-2,2)/(if switchoff then 64 else 128) + (math.random(-1,1)/20)
 			end
 		end
 	end)
