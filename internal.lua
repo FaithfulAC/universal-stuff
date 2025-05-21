@@ -1814,9 +1814,10 @@ local function main() -- Script.MainScript
 				dragToggle = true
 				dragStart = input.Position
 				startPos = frame.Position
-				input.Changed:Connect(function()
+				local changed; changed = input.Changed:Connect(function()
 					if input.UserInputState == Enum.UserInputState.End then
 						dragToggle = false
+						changed:Disconnect(); changed = nil
 					end
 				end)
 			end
@@ -1968,9 +1969,10 @@ local function main() -- Script.MainScript
 					dragToggle = true
 					dragStart = input.Position
 					startPos = frame.Position
-					input.Changed:Connect(function()
+					local changed; changed = input.Changed:Connect(function()
 						if input.UserInputState == Enum.UserInputState.End then
 							dragToggle = false
+							changed:Disconnect(); changed = nil
 						end
 					end)
 				end
@@ -2016,9 +2018,10 @@ local function main() -- Script.MainScript
 					dragToggle = true
 					dragStart = input.Position
 					startPos = frame.Position
-					input.Changed:Connect(function()
+					local changed; changed = input.Changed:Connect(function()
 						if input.UserInputState == Enum.UserInputState.End then
 							dragToggle = false
+							changed:Disconnect(); changed = nil
 						end
 					end)
 				end
@@ -2424,9 +2427,10 @@ local function main() -- Script.MainScript
 					dragToggle = true
 					dragStart = input.Position
 					startPos = frame.Position
-					input.Changed:Connect(function()
+					local changed; changed = input.Changed:Connect(function()
 						if input.UserInputState == Enum.UserInputState.End then
 							dragToggle = false
+							changed:Disconnect(); changed = nil
 						end
 					end)
 				end
@@ -2509,9 +2513,10 @@ local function main() -- Script.MainScript
 					dragToggle = true
 					dragStart = input.Position
 					startPos = frame.Position
-					input.Changed:Connect(function()
+					local changed; changed = input.Changed:Connect(function()
 						if input.UserInputState == Enum.UserInputState.End then
 							dragToggle = false
+							changed:Disconnect(); changed = nil
 						end
 					end)
 				end
@@ -2673,9 +2678,10 @@ local function main() -- Script.MainScript
 					dragToggle = true
 					dragStart = input.Position
 					startPos = frame.Position
-					input.Changed:Connect(function()
+					local changed; changed = input.Changed:Connect(function()
 						if input.UserInputState == Enum.UserInputState.End then
 							dragToggle = false
+							changed:Disconnect(); changed = nil
 						end
 					end)
 				end
