@@ -55,6 +55,15 @@ if not (isfile(path) and not notupdated) then
 	writefile(path, game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/lua-getproperties.lua"))
 end
 
+-- create ClassImages.png file for getcustomasset if the executor supports it
+if not readfile("TSDex/ClassImages.png") then
+	writefile("TSDex/ClassImages.png", game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/TSD-script-storage/refs/heads/main/DexAssets/ClassImages.png"))
+end
+-- and famfamfam.png
+if not readfile("TSDex/famfamfam.png") then
+	writefile("TSDex/famfamfam.png", game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/TSD-script-storage/refs/heads/main/DexAssets/famfamfam.png"))
+end
+
 -- prevent solara from making the damn script error
 getgenv().cloneref = ((not identifyexecutor():lower():find("sol")) and cloneref) or function(...) return ... end
 
