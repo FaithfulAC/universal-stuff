@@ -55,13 +55,24 @@ if not (isfile(path) and not notupdated) then
 	writefile(path, game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/lua-getproperties.lua"))
 end
 
--- create ClassImages.png file for getcustomasset if the executor supports it
-if not isfile("TSDex/ClassImages.png") then
-	writefile("TSDex/ClassImages.png", game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/TSD-script-storage/refs/heads/main/DexAssets/ClassImages.png"))
-end
--- and famfamfam.png
-if not isfile("TSDex/famfamfam.png") then
-	writefile("TSDex/famfamfam.png", game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/TSD-script-storage/refs/heads/main/DexAssets/famfamfam.png"))
+local dexAssets = {
+	"ClassImages.png",
+	"arrowDown_dark.png",
+	"arrowRight_dark.png",
+	"blackBkg_square.png",
+	"checkbox_checked_light.png",
+	"checkbox_unchecked_disabled_light.png",
+	"checkbox_unchecked_hover_light.png",
+	"checkbox_unchecked_light.png",
+	"famfamfam.png",
+	"scroll-middle.png",
+}
+
+-- create asset files for getcustomasset if executor supports it
+for _, dexAsset in pairs(dexAssets) do
+	if not isfile("TSDex/"..dexAsset) then
+		writefile("TSDex/"..dexAsset, game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/TSD-script-storage/refs/heads/main/DexAssets/"..dexAsset))
+	end
 end
 
 -- prevent solara from making the damn script error
