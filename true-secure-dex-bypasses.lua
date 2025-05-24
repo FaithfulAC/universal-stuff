@@ -687,36 +687,6 @@ task.spawn(function()
 	local remove = table.remove
 	local isreadonly = isreadonly or table.isfrozen
 
-	-- this exists so pcalling (ouch) c functions will not actually succeed (for the most part, stuff like gcinfo will succeed but will realistically not have a datamodel effect)
-	local ReassuranceFunction = function() error("", 0) end
-	local ReassuranceTable = setmetatable({}, {
-		__eq = ReassuranceFunction,
-		__tostring = ReassuranceFunction,
-		__iter = ReassuranceFunction,
-		__index = ReassuranceFunction,
-		__newindex = ReassuranceFunction,
-		__metatable = "The metatable is locked" -- for fun
-	})
-				
-	--[[
-	local list;
-	local folder = Instance.new("Folder")
-	folder.Name = tostring(math.random())
-
-	-- this was intended to check an actual cache list but because i dont really have a proper executor at my disposal i cant properly test this smh
-	for firstkey, host in pairs(getreg()) do
-		if typeof(firstkey) == "userdata" and typeof(host) == "table" then
-			for key, ins in pairs(host) do
-				if (typeof(key) == "userdata" and typeof(ins) == "Instance") or ins == folder then
-					list = host
-				end
-			end
-		end
-	end
-
-	folder:Destroy()
-	]]
-
 	local CanBeCollected = function(obj)
 		if (typeof(obj) == "function" and iscclosure(obj)) then
 			local FuncName = debug.info(obj, "n")
