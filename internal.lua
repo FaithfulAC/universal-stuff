@@ -2142,7 +2142,7 @@ local function main() -- Script.MainScript
 			updateScale()
 		end
 	
-		local mouse = LocalPlayer and LocalPlayer:GetMouse()
+		local mouse = LocalPlayer and cloneref(LocalPlayer:GetMouse())
 		mouse.Button1Up:Connect(assign)
 	
 		optswitch.MouseButton1Click:Connect(function()
