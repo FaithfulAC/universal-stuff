@@ -65,6 +65,7 @@ end
 
 if select(3, ...) == true and cloneref(game) ~= game then -- means script is under an actor and cloneref works as intended
 	options.Weaktable = false -- it is under an actor, therefore it is under a different lua state; no weaktable spoofs are necessary
+	options.gcinfo = false -- same thing for gcinfo
 end
 
 -- for realism of gcinfo, inscount, and memory spoofs
