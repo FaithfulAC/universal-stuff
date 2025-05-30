@@ -1425,7 +1425,7 @@ local function main() -- Script.MainScript
 		temp.Value = 1
 		temp = nil
 	end
-	local code = codeholder.Scroller.Code
+	local code = cloneref(codeholder.Scroller.Code)
 	
 	local pcallEnabled = false
 	local deterEnabled = true
