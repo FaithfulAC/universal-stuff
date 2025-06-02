@@ -95,9 +95,11 @@ local oldcompareinstances = compareinstances
 getgenv().compareinstances = newcclosure(function(...)
 	local a, b = ...
 
-	if type(a) == "userdata" and type(a) == type(b) then
+	if typeof(a) == "Instance" and typeof(a) == typeof(b) then
 		return oldcompareinstances(a, b)
 	end
+
+	return false
 end, "compareinstances")
 
 local RobloxGui = game:GetService("CoreGui").RobloxGui
