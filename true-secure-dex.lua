@@ -89,6 +89,17 @@ else
 	getgenv().AssetList = {DexAsset}
 end
 
+-- global set compareinstances
+local oldcompareinstances = compareinstances
+
+getgenv().compareinstances = newcclosure(function(...)
+	local a, b = ...
+
+	if type(a) == "userdata" and type(a) == type(b) then
+		return oldcompareinstances(a, b)
+	end
+end, "compareinstances")
+
 local RobloxGui = game:GetService("CoreGui").RobloxGui
 local parent;
 if not RobloxGui:FindFirstChild("DexHost") then
