@@ -205,7 +205,7 @@ Hooking.SetStackHidden = sethiddenstack
 				return OldFenv(ToInspect)
 			end
 
-			if ToInspect == nil or not Success or typeof(ToInspect) == "function" then
+			if ToInspect == nil or typeof(ToInspect) == "function" then
 				return ResultingEnv
 			end
 
