@@ -1,4 +1,5 @@
 local cloneref = cloneref or function(...) return ... end
+local gsub = string.gsub
 local HttpService = cloneref(game:GetService("HttpService"))
 local url = "https://raw.githubusercontent.com/MaximumADHD/Roblox-Client-Tracker/roblox/API-Dump.json"
 
@@ -45,15 +46,15 @@ getgenv().getproperties = function(class)
 	if propertiescache[class] then return propertiescache[class] end
 
 	for i, otherclass in ipairs(apiData.Classes) do
-		if otherclass.Name == "Instance" then
+		if otherclass.Name == "Instance" or otherclass.Name == "Object" then
 			for _, member in ipairs(otherclass.Members) do
-				if member.MemberType == "Property" then
+				if member.MemberType == "Property" and select(2, gsub(member.Name, "^%l", string.upper)) == 0 then
 					table.insert(properties, member)
 				end
 			end
 		elseif class == otherclass.Name then
 			for _, member in ipairs(otherclass.Members) do
-				if member.MemberType == "Property" then
+				if member.MemberType == "Property" and select(2, gsub(member.Name, "^%l", string.upper)) == 0 then
 					table.insert(properties, member)
 				end
 			end
@@ -79,15 +80,15 @@ getgenv().getfunctions = function(class)
 	if functionscache[class] then return functionscache[class] end
 
 	for i, otherclass in ipairs(apiData.Classes) do
-		if otherclass.Name == "Instance" then
+		if otherclass.Name == "Instance" or otherclass.Name == "Object" then
 			for _, member in ipairs(otherclass.Members) do
-				if member.MemberType == "Function" then
+				if member.MemberType == "Function" and select(2, gsub(member.Name, "^%l", string.upper)) == 0 then
 					table.insert(functions, member)
 				end
 			end
 		elseif class == otherclass.Name then
 			for _, member in ipairs(otherclass.Members) do
-				if member.MemberType == "Function" then
+				if member.MemberType == "Function" and select(2, gsub(member.Name, "^%l", string.upper)) == 0 then
 					table.insert(functions, member)
 				end
 			end
@@ -112,15 +113,15 @@ getgenv().getevents = function(class)
 	end
 
 	for i, otherclass in ipairs(apiData.Classes) do
-		if otherclass.Name == "Instance" then
+		if otherclass.Name == "Instance" or otherclass.Name == "Object" then
 			for _, member in ipairs(otherclass.Members) do
-				if member.MemberType == "Event" then
+				if member.MemberType == "Event" and select(2, gsub(member.Name, "^%l", string.upper)) == 0 then
 					table.insert(events, member)
 				end
 			end
 		elseif class == otherclass.Name then
 			for _, member in ipairs(otherclass.Members) do
-				if member.MemberType == "Event" then
+				if member.MemberType == "Event" and select(2, gsub(member.Name, "^%l", string.upper)) == 0 then
 					table.insert(events, member)
 				end
 			end
@@ -145,15 +146,15 @@ getgenv().getcallbacks = function(class)
 	if callbackscache[class] then return callbackscache[class] end
 
 	for i, otherclass in ipairs(apiData.Classes) do
-		if otherclass.Name == "Instance" then
+		if otherclass.Name == "Instance" --[[or otherclass.Name == "Object"]] then
 			for _, member in ipairs(otherclass.Members) do
-				if member.MemberType == "Callback" then
+				if member.MemberType == "Callback" and select(2, gsub(member.Name, "^%l", string.upper)) == 0 then
 					table.insert(callbacks, member)
 				end
 			end
 		elseif class == otherclass.Name then
 			for _, member in ipairs(otherclass.Members) do
-				if member.MemberType == "Callback" then
+				if member.MemberType == "Callback" and select(2, gsub(member.Name, "^%l", string.upper)) == 0 then
 					table.insert(callbacks, member)
 				end
 			end
