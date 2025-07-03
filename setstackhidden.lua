@@ -8,14 +8,14 @@ local wax = getfenv()
 
 local AlternativeEnabled = false
 wax.shared.AlternativeEnabled = AlternativeEnabled
-wax.shared.CobaltLuaSetStackHidden = false
+wax.shared.LuaSetStackHidden = false
 
 local BypassEnabled = true
 
 Hooking.SetStackHidden = sethiddenstack
 	or setstackhidden
 	or (function()
-		wax.shared.CobaltLuaSetStackHidden = true
+		wax.shared.LuaSetStackHidden = true
 
 		local OldDebugTraceback, OldDebugInfo = debug.traceback, debug.info
 
@@ -50,11 +50,11 @@ Hooking.SetStackHidden = sethiddenstack
 
 				pcall(restorefunction, callback)
 			end
-		elseif shared.CobaltSetStackHiddenLuau then
+		elseif shared.SetStackHiddenLuau then
 			return setstackhidden
 		end
 
-		shared.CobaltSetStackHiddenLuau = true
+		shared.SetStackHiddenLuau = true
 		shared.Hooking = Hooking
 
 		local function ValidTraceback(s)
@@ -261,7 +261,7 @@ Hooking.HookFunction = function(Original, Replacement)
 	return hookfunction(Original, Replacement)
 end
 Hooking.HookMetaMethod = function(object, method, hook)
-	local Metatable = wax.shared.getrawmetatable(object)
+	local Metatable = getrawmetatable(object)
 	local originalMethod = rawget(Metatable, method)
 
 	if BypassEnabled then
