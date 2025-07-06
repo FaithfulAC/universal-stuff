@@ -21,6 +21,7 @@ local isourclosure = isourclosure or isexecutorclosure or function(func) return 
 
 local GetDebugId = clonefunction(game.GetDebugId)
 local IsDescendantOf = clonefunction(game.IsDescendantOf)
+local IsA = clonefunction(game.IsA)
 
 local options = (...) or getgenv().DexOptions or getgenv().options or {
 	gcinfo = true,
@@ -54,7 +55,7 @@ local UserInputService = cloneref(game:GetService("UserInputService"))
 local GuiService = cloneref(game:GetService("GuiService"))
 local ContentProvider = cloneref(game:GetService("ContentProvider"))
 local StarterGui = cloneref(game:GetService("StarterGui"))
-local PlayerGui = cloneref(game:GetService("Players").LocalPlayer:FindFirstChildWhichIsA("PlayerGui"))
+--local PlayerGui = cloneref(game:GetService("Players").LocalPlayer:FindFirstChildWhichIsA("PlayerGui")) -- unused
 local DexGui = Dex or Bypassed_Dex or select(2, ...) or CoreGui:FindFirstChild("RobloxGui") -- for textbox and mem/inscount increase
 repeat task.wait() until game:IsLoaded()
 
@@ -284,7 +285,7 @@ task.spawn(function()
 		local self = ...
 		local method = string.gsub(getnamecallmethod(), "^%u", string.lower)
 
-		if not checkcaller() and typeof(self) == "Instance" and compareinstances(self, Stats) and method == "getTotalMemoryUsageMb" then
+		if not checkcaller() and typeof(self) == "Instance" and IsA(self, "Stats") and method == "getTotalMemoryUsageMb" then
 			return totalmem_ret
 		end
 
@@ -294,7 +295,7 @@ task.spawn(function()
 	local h2; h2 = hookfunction(Stats.GetTotalMemoryUsageMb, function(...)
 		local self = ...
 
-		if not checkcaller() and typeof(self) == "Instance" and compareinstances(self, Stats) then
+		if not checkcaller() and typeof(self) == "Instance" and IsA(self, "Stats") then
 			return totalmem_ret
 		end
 
@@ -334,7 +335,7 @@ task.spawn(function()
 		local self, newenum = ...
 		local method = string.gsub(getnamecallmethod(), "^%u", string.lower)
 
-		if not checkcaller() and typeof(self) == "Instance" and compareinstances(self, Stats) and method == "getMemoryUsageMbForTag" and isGui(newenum) then
+		if not checkcaller() and typeof(self) == "Instance" and IsA(self, "Stats") and method == "getMemoryUsageMbForTag" and isGui(newenum) then
 			return memtag_ret
 		end
 
@@ -344,7 +345,7 @@ task.spawn(function()
 	local h2; h2 = hookfunction(Stats.GetMemoryUsageMbForTag, function(...)
 		local self, arg = ...
 
-		if not checkcaller() and typeof(self) == "Instance" and compareinstances(self, Stats) and isGui(arg) then
+		if not checkcaller() and typeof(self) == "Instance" and IsA(self, "Stats") and isGui(arg) then
 			return memtag_ret
 		end
 
@@ -566,14 +567,14 @@ task.spawn(function()
 	local h1; h1 = hookmetamethod(game,"__index", function(...)
 		local self, arg = ...
 
-		if not checkcaller() and typeof(self) == "Instance" and compareinstances(self, Stats) and type(arg) == "string" and #arg < 256 then
+		if not checkcaller() and typeof(self) == "Instance" and IsA(self, "Stats") and type(arg) == "string" and #arg < 256 then
 			arg = --[[string.split(]]string.gsub(arg, "^%l", string.upper)--, "\0")[1]
 			local res = h1(...)
 
 			if typeof(res) == "number" then -- double check just in case
 				if options.InstanceCount and arg == "InstanceCount" then return inscount_ret end
-				if options.UI2DDrawcallCount and arg == "UI2DDrawcallCount" then return drawcall_ret end
-				if options.UI2DTriangleCount and arg == "UI2DTriangleCount" then return triangle_ret end
+				if options.UI2DDrawcallCount and arg == "UI2DDrawcallCount" and compareinstances(self, Stats) then return drawcall_ret end
+				if options.UI2DTriangleCount and arg == "UI2DTriangleCount" and compareinstances(self, Stats) then return triangle_ret end
 			end
 
 			return res
@@ -591,7 +592,7 @@ task.spawn(function()
 		local self = ...
 
 		if not checkcaller() then
-			if typeof(self) == "Instance" and compareinstances(self, UserInputService) and method == "getFocusedTextBox" then
+			if typeof(self) == "Instance" and IsA(self, "UserInputService") and method == "getFocusedTextBox" then
 				local Textbox = h1(...)
 
 				if typeof(Textbox) == "Instance" then
@@ -614,7 +615,7 @@ task.spawn(function()
 		local self = ...
 
 		if not checkcaller() then
-			if typeof(self) == "Instance" and compareinstances(self, UserInputService) then
+			if typeof(self) == "Instance" and IsA(self, "UserInputService") then
 				local Textbox = h2(...)
 
 				if typeof(Textbox) == "Instance" then
