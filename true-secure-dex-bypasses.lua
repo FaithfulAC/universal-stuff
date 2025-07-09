@@ -587,6 +587,11 @@ end)
 -- forked textbox bypass
 task.spawn(function()
 	if not options.GetFocusedTextBox then return end
+
+	-- bait textbox to return
+	local TargetTextBox = cloneref(CoreGui:WaitForChild("RobloxGui"):WaitForChild("Backpack"):FindFirstChildWhichIsA("TextBox", true):Clone())
+	TargetTextBox.Parent = CoreGui -- make sure the textbox is still identity restricted
+					
 	local h1; h1 = hookmetamethod(game, "__namecall", function(...)
 		local method = string.gsub(getnamecallmethod(), "^%u", string.lower);
 		local self = ...
@@ -599,7 +604,7 @@ task.spawn(function()
 					local _,err = pcall(IsDescendantOf, Textbox, DexGui)
 
 					if err and (type(err) == "boolean" and err == true) or (type(err) == "string" and err:lower():match("the current")) then
-						return nil
+						return TargetTextBox
 					end
 				end
 
@@ -622,7 +627,7 @@ task.spawn(function()
 					local _,err = pcall(IsDescendantOf, Textbox, DexGui)
 
 					if err and (type(err) == "boolean" and err == true) or (type(err) == "string" and err:lower():match("the current")) then
-						return nil
+						return TargetTextBox
 					end
 				end
 
