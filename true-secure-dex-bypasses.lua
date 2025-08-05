@@ -21,6 +21,7 @@ local isourclosure = isourclosure or isexecutorclosure or function(func) return 
 
 local GetDebugId = clonefunction(game.GetDebugId)
 local IsDescendantOf = clonefunction(game.IsDescendantOf)
+local FindFirstAncestorOfClass = clonefunction(game.FindFirstAncestorOfClass)
 local IsA = clonefunction(game.IsA)
 
 local options = (...) or getgenv().DexOptions or getgenv().options or {
@@ -55,7 +56,7 @@ local UserInputService = cloneref(game:GetService("UserInputService"))
 local GuiService = cloneref(game:GetService("GuiService"))
 local ContentProvider = cloneref(game:GetService("ContentProvider"))
 local StarterGui = cloneref(game:GetService("StarterGui"))
---local PlayerGui = cloneref(game:GetService("Players").LocalPlayer:FindFirstChildWhichIsA("PlayerGui")) -- unused
+local PlayerGui = cloneref(game:GetService("Players").LocalPlayer:FindFirstChildWhichIsA("PlayerGui") or game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"))
 local DexGui = Dex or Bypassed_Dex or select(2, ...) or CoreGui:FindFirstChild("RobloxGui") -- for textbox and mem/inscount increase
 repeat task.wait() until game:IsLoaded()
 
@@ -88,13 +89,17 @@ local GuiClasses = { -- instances that can increase memory for gui
 	ImageButton = GetRandomMemoryIncrease()
 }
 
-if options.GetMemoryUsageMbForTag or options.InstanceCount then
+if options.GetMemoryUsageMbForTag or options.InstanceCount or (options.UI2DDrawcallCount or options.UI2DTriangleCount) then
 	local GetDescendants = clonefunction(game.GetDescendants)
 	
 	game.DescendantAdded:Connect(function(ins) -- mark those under datamodel
 		if not IsDescendantOf(ins, DexGui) then
 			if GuiClasses[ins.ClassName] then
 				memtag_ret += GuiClasses[ins.ClassName]
+				if FindFirstAncestorOfClass(ins, "CoreGui") or FindFirstAncestorOfClass(ins, "PlayerGui") then
+					-- ui2d changes dont happen within a millisecond they wait until the next frame renders
+					task.delay(0, function() drawcall_ret += math.random(1, 3) triangle_ret += math.random(1, 3) end)
+				end
 			end
 			ins = nil
 			inscount_ret += 1
@@ -530,14 +535,14 @@ task.spawn(function()
 			end
 
 			if table.find(AssetList, str) then
-				return Enum.AssetFetchStatus.None
+				return AssetReturns[str] or Enum.AssetFetchStatus.None
 			end
 		end
 
 		return h3(...)
 	end)
 
-	--[[local templist = {} -- commented out cuz it SUCKS!!!
+	local templist = {} -- commented out cuz it SUCKS!!!
 
 	for _, asset in pairs(AssetList) do
 		for i, v in next, getconnections(ContentProvider:GetAssetFetchStatusChangedSignal(asset)) do
@@ -549,16 +554,27 @@ task.spawn(function()
 				-- now we will resort to hooking the function connected to the signal
 
 				-- lotta hacky checks here but we should never have to come to this if statement in the first place so whatever
-				if (not table.find(templist, v.Function)) and not (iscclosure(v.Function) or isourclosure(v.Function)) then
+				if (not table.find(templist, v.Function)) and not ((iscclosure(v.Function) and debug.info(v, "n") ~= "") or isourclosure(v.Function)) then
 					table.insert(templist, v.Function)
 					-- yeah go ahead and detect this
 					hookfunction(v.Function, function()end)
 				end
 			end
 		end
+		ContentProvider:GetAssetFetchStatusChangedSignal(asset):Connect(function()
+			task.wait()
+			for i, v in next, getconnections(ContentProvider:GetAssetFetchStatusChangedSignal(asset)) do
+				if select(2, pcall(function() return v.Enabled end)) == true then -- means we hookfunction'd the connected function
+					pcall(restorefunction, v.Function)
+					pcall(table.remove, table.find(templist, v.Function))
+				else
+					v:Enable()
+				end
+			end
+		end)
 	end
 
-	table.clear(templist)]]
+	table.clear(templist)
 end)
 
 -- instancecount bypass
@@ -658,8 +674,8 @@ task.spawn(function()
 		if not checkcaller() and typeof(self) == "Instance" and compareinstances(self, StarterGui) and rawequal(arg1, "DevConsoleVisible") then
 			if method == "getCore" then
 				return doobityVisible
-			elseif method == "setCore" and rawequal(arg2, false) then
-				doobityVisible = false
+			elseif method == "setCore" and typeof(arg2) == "boolean" then
+				doobityVisible = arg2
 			end
 		end
 
