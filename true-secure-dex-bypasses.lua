@@ -695,8 +695,8 @@ task.spawn(function()
 	local h3; h3 = hookfunction(StarterGui.SetCore, function(...)
 		local self, arg1, arg2 = ...
 
-		if not checkcaller() and typeof(self) == "Instance" and compareinstances(self, StarterGui) and rawequal(arg1, "DevConsoleVisible") and rawequal(arg2, false) then
-			doobityVisible = false
+		if not checkcaller() and typeof(self) == "Instance" and compareinstances(self, StarterGui) and rawequal(arg1, "DevConsoleVisible") and typeof(arg2) == "boolean" then
+			doobityVisible = arg2
 		end
 
 		return h3(...)
