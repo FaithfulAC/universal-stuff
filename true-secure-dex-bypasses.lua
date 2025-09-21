@@ -8,7 +8,7 @@
 
 local clonefunction = clonefunc or clonefunction or function(...) return ... end
 local cloneref = cloneref or function(...) return ... end
-local hookmetamethod, hookfunction = hookmetamethod, oth and oth.hook or hookfunction
+local hookmetamethod, hookfunction = hookmetamethod, --[[oth and oth.hook or]] hookfunction
 local getrenv = getrenv or getfenv
 local getgenv = getgenv or getfenv
 local getnamecallmethod = getnamecallmethod
