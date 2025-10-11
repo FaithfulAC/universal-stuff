@@ -56,7 +56,7 @@ local UserInputService = cloneref(game:GetService("UserInputService"))
 local GuiService = cloneref(game:GetService("GuiService"))
 local ContentProvider = cloneref(game:GetService("ContentProvider"))
 local StarterGui = cloneref(game:GetService("StarterGui"))
-local PlayerGui = cloneref(game:GetService("Players").LocalPlayer:FindFirstChildWhichIsA("PlayerGui") or game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"))
+local PlayerGui = cloneref(game:GetService("Players").LocalPlayer:FindFirstChildWhichIsA("PlayerGui") or game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui", 1))
 local DexGui = Dex or Bypassed_Dex or select(2, ...) or CoreGui:FindFirstChild("RobloxGui") -- for textbox and mem/inscount increase
 repeat task.wait() until game:IsLoaded()
 
