@@ -7,10 +7,11 @@
 	-- (quickLoad or quickload)("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua")
 
 	third is with run_on_actor for max security against weaktables (it is imperative you run certain tsd bypasses before running this in an actor)
+	make sure you check the comment below this one because these lines of code won't work if your executor sucks and cant init an actor
 	-- local f = Instance.new("Folder", game:GetService("CoreGui").RobloxGui)
 	-- f.Name = "DexHost"
 	-- loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses.lua"))(nil, f, true)
-	-- run_on_actor(Instance.new("Actor"), "local in_actor = true;\n\n" .. game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))
+	-- run_on_actor(Instance.new("Actor"), game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))
 
 ]]
 
@@ -20,15 +21,27 @@ local isfolder, makefolder, isfile, writefile, readfile =
 local getgenv, gethui, getrenv, hookmetamethod, hookfunction, identifyexecutor =
 	getgenv, gethui, getrenv, hookmetamethod, hookfunction, identifyexecutor;
 
+-- will automatically run the script in an actor (commented because people can detect a random ass actor being inserted in replicatedfirst)
+
 --[[
--- will automatically run the script in an actor
-if (not in_actor) and run_on_actor then
-	return run_on_actor(Instance.new("Actor"), "local in_actor = true;\n\n" .. game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))
+if (not (inparallel and inparallel())) and run_on_actor then
+	local actor = Instance.new("Actor", game:GetService("ReplicatedFirst")) -- SOME executors require an actor be initialized before running. Wonder who that could be
+	Instance.new("LocalScript", actor)
+	task.wait()
+	actor:FindFirstChildOfClass("LocalScript"):Destroy() -- absolutely undetected
+	return run_on_actor(actor, game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))
+end
+
+
+-- alternatively if your executor does not require the actor be intialized before running, you can simply do
+
+if (not (inparallel and inparallel())) and run_on_actor then
+	return run_on_actor(Instance.new("Actor"), game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))
 end
 ]]
 
 -- bypasses will not load when the script is under an actor because the bypasses should have been loaded before running under an actor (otherwise hooks wont work)
-local in_actor = in_actor or (inparallel and inparallel()) or false
+local in_actor = inparallel and inparallel()
 local LoadBypasses = LoadBypasses or (...)
 if LoadBypasses == nil and not in_actor then LoadBypasses = true end
 
