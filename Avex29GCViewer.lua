@@ -1037,9 +1037,11 @@ local function DisplayGarbageCollection(gotGC)
                 local fnvCscript = rawget(FenvConst,"script")
                 local _,rCheclErr = pcall(function()
                     if typeof(fnvCscript) == "Instance" then
-			CheckVEK = fnvCscript.Parent
-		    end
+						CheckVEK = fnvCscript.Parent
+		    		end
                 end)
+
+				if typeof(fnvCscript) ~= "Instance" then fnvCscript = nil end
 
                 local PinFound = false
                 local PinILocation = 0
