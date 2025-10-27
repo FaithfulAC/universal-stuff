@@ -15,6 +15,8 @@ local Scroller = Instance.new("ScrollingFrame")
 local Assignments = Instance.new("Folder")
 local Assigner = Instance.new("TextLabel")
 local Code = Instance.new("TextBox")
+local Alternative = Instance.new("Folder")
+local Code_2 = Instance.new("TextLabel")
 local Side = Instance.new("Frame")
 local Execute = Instance.new("TextButton")
 local Clear = Instance.new("TextButton")
@@ -40,6 +42,7 @@ local Warn = Instance.new("TextButton")
 local Print_2 = Instance.new("TextButton")
 local Error = Instance.new("TextButton")
 local Info = Instance.new("TextButton")
+local Autoscroll = Instance.new("TextButton")
 local BottomConsole = Instance.new("Folder")
 local Clear_2 = Instance.new("TextButton")
 local Copy_2 = Instance.new("TextButton")
@@ -107,7 +110,7 @@ local UI2DTriangleCount = Instance.new("TextButton")
 --Properties:
 
 Exec.Name = "Exec"
-Exec.Parent = game:GetService("CoreGui").RobloxGui
+Exec.Parent = game:GetService("CoreGui")
 Exec.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 Main.Name = "Main"
@@ -228,6 +231,25 @@ Code.TextColor3 = Color3.fromRGB(255, 255, 255)
 Code.TextSize = 18.000
 Code.TextXAlignment = Enum.TextXAlignment.Left
 Code.TextYAlignment = Enum.TextYAlignment.Top
+
+Alternative.Name = "Alternative"
+Alternative.Parent = Scroller
+
+Code_2.Name = "Code"
+Code_2.Parent = Alternative
+Code_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Code_2.BackgroundTransparency = 1.000
+Code_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Code_2.BorderSizePixel = 0
+Code_2.Position = UDim2.new(0.100000001, 0, 0, 0)
+Code_2.Size = UDim2.new(0.899999976, 0, 0.150000006, 0)
+Code_2.Visible = false
+Code_2.Font = Enum.Font.Sarpanch
+Code_2.Text = "print(\"TextLabel Placeholder Text\")"
+Code_2.TextColor3 = Color3.fromRGB(255, 255, 255)
+Code_2.TextSize = 18.000
+Code_2.TextXAlignment = Enum.TextXAlignment.Left
+Code_2.TextYAlignment = Enum.TextYAlignment.Top
 
 Side.Name = "Side"
 Side.Parent = Main
@@ -454,9 +476,7 @@ _Line_.Size = UDim2.new(1, 0, 0.075000003, 0)
 _Line_.Font = Enum.Font.Arial
 _Line_.Text = "  --  yo guys i think this is the console"
 _Line_.TextColor3 = Color3.fromRGB(255, 255, 255)
-_Line_.TextScaled = true
-_Line_.TextSize = 14.000
-_Line_.TextWrapped = true
+_Line_.TextSize = 9.000
 _Line_.TextXAlignment = Enum.TextXAlignment.Left
 
 Buttons_2.Name = "Buttons"
@@ -520,6 +540,20 @@ Info.TextColor3 = Color3.fromRGB(255, 255, 255)
 Info.TextScaled = true
 Info.TextSize = 14.000
 Info.TextWrapped = true
+
+Autoscroll.Name = "Autoscroll"
+Autoscroll.Parent = Modes
+Autoscroll.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
+Autoscroll.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Autoscroll.BorderSizePixel = 0
+Autoscroll.Position = UDim2.new(-0.209999993, 0, 0.726000011, 0)
+Autoscroll.Size = UDim2.new(0.20991075, 0, 0.143999994, 0)
+Autoscroll.Font = Enum.Font.Unknown
+Autoscroll.Text = "autoscroll: on"
+Autoscroll.TextColor3 = Color3.fromRGB(255, 255, 255)
+Autoscroll.TextScaled = true
+Autoscroll.TextSize = 14.000
+Autoscroll.TextWrapped = true
 
 BottomConsole.Name = "BottomConsole"
 BottomConsole.Parent = Buttons_2
@@ -1052,7 +1086,7 @@ GCView.BorderSizePixel = 0
 GCView.Position = UDim2.new(0, 0, 0.75, 0)
 GCView.Size = UDim2.new(1, 0, 0.125, 0)
 GCView.Font = Enum.Font.Unknown
-GCView.Text = "Airzy's GC Viewer"
+GCView.Text = "GC Viewer v2"
 GCView.TextColor3 = Color3.fromRGB(255, 255, 255)
 GCView.TextScaled = true
 GCView.TextSize = 14.000
@@ -1362,15 +1396,15 @@ local function main() -- Script.MainScript
 	local isourclosure = isourclosure or nil
 	local getconstants = getconstants or nil
 	local getupvalues = getupvalues or nil
+	
 	local cloneref = cloneref or function(a)
 		return a
 	end
-	if tostring(cloneref(Instance.new("Part"))) ~= "Part" then -- fuck u synz
-		cloneref = function(a) return a end
-	end
+	
 	local clonefunction = clonefunction or function(a)
 		return a
 	end
+	
 	local hookmetamethod = hookmetamethod or (getrawmetatable and setreadonly and function(...)
 		local object, metamethod, func = ...
 		local meta = getrawmetatable(object)
@@ -1382,6 +1416,7 @@ local function main() -- Script.MainScript
 		setreadonly(meta, true)
 		return orgmetamethod
 	end) or nil
+	
 	local newcclosure = newcclosure or function(f) return f end
 	local saveinstance = saveinstance or nil
 	local setclipboard = setclipboard or nil
@@ -1400,6 +1435,8 @@ local function main() -- Script.MainScript
 	local StarterGui = cloneref(game:GetService("StarterGui"))
 	local Stats = cloneref(game:GetService("Stats"))
 	local LocalPlayer = cloneref(Players.LocalPlayer or Players:GetPropertyChangedSignal("LocalPlayer"):Wait())
+	local LogService = cloneref(game:GetService("LogService"))
+	
 	local Exec = Exec or (script and script.Parent.Parent)
 	
 	getgenv().EUROPA_INTERNAL_LOADED = true
@@ -1452,24 +1489,7 @@ local function main() -- Script.MainScript
 		end
 	end)
 	
-	if run_on_actor then
-		-- run_on_actor validity check; if it's faked then make it nil
-		local rnd = math.random()
-		local CoreGui = cloneref(game:GetService("CoreGui"))
-	
-		Instance.new("Folder", CoreGui.RobloxGui).Name = rnd
-		run_on_actor(Instance.new("Actor"), 'pcall(function() game:GetService("CoreGui").RobloxGui[' .. tostring(rnd) .. ']:Destroy() end)')
-	
-		task.delay(.1, function()
-			if CoreGui.RobloxGui:FindFirstChild(tostring(rnd)) then
-				run_on_actor = nil
-				getgenv().run_on_actor = nil
-			end
-			CoreGui = nil
-		end)
-	end
-	
-	local function setnotif(title, info)
+	local function SetNotification(title, info)
 		for i = 1, math.random(1, 3) do -- prevent gui memory checks
 			Instance.new("Frame")
 		end
@@ -1486,24 +1506,25 @@ local function main() -- Script.MainScript
 			getgenv().europa.gui, getgenv().europa.internal = Exec, Exec
 			return
 		end
+		
 		loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/Megaprojects/main/europa_library_wip.lua"))()
 		getgenv().europa.gui, getgenv().europa.internal = Exec, Exec
-		setnotif("Library", "Europa Library Loaded")
-		
+		SetNotification("Library", "Europa Library Loaded")
+	
 		task.delay(.105, function() -- hijack europa.loaddex and europa.loadtsdex if run_on_actor exists
 			local newloaddex = function()
 				if run_on_actor then
-					setnotif("Dex Notification", "The script you have just loaded has been run under an actor, as your executor supports it")
+					SetNotification("Dex Notification", "The script you have just loaded has been run under an actor, as your executor supports it")
 	
-					run_on_actor(Instance.new("Actor"), "local in_actor = true;\n\n" .. game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))
+					run_on_actor(Instance.new("Actor"), game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))
 				else
 					loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/refs/heads/main/true-secure-dex.lua"))(false)
 				end
 			end
-			
+	
 			local newloadtsdex = function(a)
 				if run_on_actor then
-					setnotif("Dex Notification", "The script you have just loaded has been run under an actor, as your executor supports it")
+					SetNotification("Dex Notification", "The script you have just loaded has been run under an actor, as your executor supports it")
 	
 					run_on_actor(Instance.new("Actor"), "local in_actor = true;" .. ((a == nil or a == true) and "local LoadBypasses = true;" or "") .. "\n\n" .. game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))
 				else
@@ -1512,7 +1533,7 @@ local function main() -- Script.MainScript
 			end
 			getgenv().europa.loaddex = newloaddex
 			getgenv().loaddex = newloaddex
-			
+	
 			getgenv().europa.loadtsdex = newloadtsdex
 			getgenv().loadtsdex = newloadtsdex
 		end)
@@ -1538,6 +1559,8 @@ local function main() -- Script.MainScript
 	local rawequal = clonefunction(rawequal)
 	local UDim2_new = clonefunction(UDim2.new)
 	local tostring = clonefunction(tostring)
+	local Vector2_new = clonefunction(Vector2.new)
+	local math_round = clonefunction(math.round)
 	
 	local FontFaceMt = Instance.new("TextLabel").FontFace
 	local Font__newindex, __index, __newindex;
@@ -1580,8 +1603,56 @@ local function main() -- Script.MainScript
 	end
 	
 	local warnExcluded, infoExcluded, errorExcluded, printExcluded, printfunctionsyield, scroller =
-		false, false, false, false, false, nil;
+		false, false, false, false, false, gui.Console.Scroller; -- unpack(table.create(5, false), 1, 6)
+	
 	local msgDelay = 0
+	local canAutoScroll = true
+	
+	-- handle _Line_
+	
+	local _Line_ = scroller._Line_
+	_Line_.TextScaled = false
+	_Line_.TextSize = math_floor(_Line_.AbsoluteSize.Y)
+	_Line_.TextWrapped = false
+	
+	local sizeUpdater = function()
+		-- change console lines text size
+		for _, line in scroller:GetChildren() do
+			if line:IsA("TextLabel") then
+				line.TextSize = math_floor(line.AbsoluteSize.Y)
+			end
+		end
+	
+		-- change code text size
+		local codeText = code.Text
+		local numLines = select(2, codeText:gsub("\n", "")) + 1
+	
+		local maxofoneline, offset = 0, 0
+		local newTextBoundsX = code.TextBounds.X
+		local orgAbsSizeX = code.AbsoluteSize.X
+		local factor = 0.9/orgAbsSizeX
+	
+		if newTextBoundsX > (orgAbsSizeX-20) then
+			maxofoneline = newTextBoundsX - (orgAbsSizeX-20)
+			offset = 0.15
+		end
+	
+		code.Size = UDim2.new(0.9 + (maxofoneline * factor + offset), 0, 0.15 * numLines, 0)
+		code.TextSize = math.round(code.AbsoluteSize.Y/numLines)
+	end
+	
+	(workspace.CurrentCamera or workspace:FindFirstChildWhichIsA("Camera")):GetPropertyChangedSignal("ViewportSize"):Connect(sizeUpdater)
+	
+	task.spawn(function()
+		local oldSizeY = _Line_.AbsoluteSize.Y
+		
+		while task.wait(.1) do
+			if _Line_.AbsoluteSize.Y ~= oldSizeY then
+				sizeUpdater()
+				oldSizeY = _Line_.AbsoluteSize.Y
+			end
+		end
+	end)
 	
 	local function MessageOutFunction(str, type)
 		-- everything inside this function calls cloned functions to prevent stack overflows in hooks where this may be called
@@ -1598,12 +1669,8 @@ local function main() -- Script.MainScript
 			end
 		end
 	
-		local offset = 0
 		local bolden = false
 		local color = BrickColor_White()
-		if #str > 26 then
-			offset += (1/25) * (#str - 26)
-		end
 	
 		if string_find(str, "\n") then
 			str = string_split(str, "\n")
@@ -1633,23 +1700,52 @@ local function main() -- Script.MainScript
 	
 		local tbl = typeof(str) == "table" and str or {str}
 	
+		local shouldGoToBottom = -- we can index a vector2 with .Y because we invoke no metamethods ;)
+			__index(scroller, "AbsoluteCanvasSize").Y - (__index(scroller, "AbsoluteWindowSize").Y + __index(scroller, "CanvasPosition").Y)
+			<
+			__index(scroller, "AbsoluteWindowSize").Y/5
+		
+		local numPrints = 0
+		
 		for i, str in pairs(tbl) do
 			if printfunctionsyield and i >= 100 then str = "[DELAYED]: " .. str end
 			if printfunctionsyield and i%100 == 0 and coroutine_isyieldable() then task_wait() end
-			
+	
 			if not (scroller and pcall(function() return __index(scroller, "_Line_") end)) then break end
 			local newline = Clone(__index(scroller, "_Line_"))
+			
 			__newindex(newline, "Parent", scroller)
 			__newindex(newline, "Name", "Line")
 			__newindex(newline, "BackgroundTransparency", 1)
 			__newindex(newline, "TextXAlignment", Enum_TextXAlignment_Left)
-			__newindex(newline, "Size", UDim2_new(1+offset, 0, 0.075, 0))
 			__newindex(newline, "TextColor", color)
 			__newindex(newline, "Text", "  --  " .. str)
+			__newindex(newline, "TextSize", math_floor(__index(newline, "AbsoluteSize").Y))
+			__newindex(newline, "TextWrapped", false)
+			__newindex(newline, "Size", UDim2_new(__index(newline, "TextBounds").X/__index(scroller, "AbsoluteSize").X, 0, 0.075, 0))
+			
 			if rawequal(bolden, true) then
 				Font__newindex(__index(newline, "FontFace"), "Weight", Enum_FontWeight_Bold)
 			end
+			
 			SetAttribute(newline, "Time", toTime(tick()))
+	
+			numPrints = i
+		end
+	
+		if shouldGoToBottom and numPrints <= 5 and canAutoScroll then
+			local offset = 0
+			
+			if __index(scroller, "AbsoluteCanvasSize").Y - (__index(scroller, "AbsoluteWindowSize").Y) == 10 then
+				offset = 10 -- account for horizontal scroll bar, the accounting of which is present in the if statement below
+			end
+			
+			
+			__newindex(scroller, "CanvasPosition", Vector2_new(
+				__index(scroller, "CanvasPosition").X,
+				(__index(scroller, "AbsoluteCanvasSize").Y - __index(scroller, "AbsoluteWindowSize").Y - offset)
+				)
+			) 
 		end
 	end
 	
@@ -1687,29 +1783,31 @@ local function main() -- Script.MainScript
 		return args -- no unpack
 	end
 	
-	local function randomstr() -- actually outputs numbers but wtv
+	local function RandomString() -- actually outputs numbers but wtv
 		return tostring(math.random(10000, 99999))
 	end
 	
-	coroutine.wrap(function() -- handles stuff
+	coroutine.wrap(function() -- handles buttons in main gui
 		local exit = f_buttons.Exit
 		local mini = f_buttons.Minimize
+		
 		exit.MouseButton1Click:Connect(function()
 			script.Parent = nil
 			gui:Destroy()
+			
 			pcall(script.Destroy, script)
 		end)
+		
 		mini.MouseButton1Click:Connect(function()
 			main.Visible = not main.Visible
 		end)
+		
 		mainbutton.MouseButton1Click:Connect(function()
 			main.Visible = not main.Visible
 		end)
 	end)()
 	
 	coroutine.wrap(function() -- code handler
-		local numoflines = 1
-		
 		local orgAbsSizeX = code.AbsoluteSize.X
 		local orgTextBoundsX = code.TextBounds.X
 		local orgTextSize = code.AbsoluteSize.Y
@@ -1721,30 +1819,27 @@ local function main() -- Script.MainScript
 		code.TextSize = orgTextSize
 	
 		code:GetPropertyChangedSignal("Text"):Connect(function()
-			local txt = code.Text
+			local codeText = code.Text
+			local numLines = select(2, codeText:gsub("\n", "")) + 1
 	
-			txt:gsub("\n", function(a)
-				numoflines += 1
-			end)
-			
 			local maxofoneline, offset = 0, 0
 			local newTextBoundsX = code.TextBounds.X
-			
+	
 			if orgTextBoundsX > newTextBoundsX and #code.Text >= orgTextLen then
 				newTextBoundsX = orgTextBoundsX
 			else
 				orgTextBoundsX = newTextBoundsX
 			end
-			
+	
 			if newTextBoundsX > (orgAbsSizeX-20) then
 				maxofoneline = newTextBoundsX - (orgAbsSizeX-20)
 				offset = 0.15
 			end
-			
+	
 			orgTextLen = #code.Text
 	
-			code.Size = UDim2.new(0.9+(maxofoneline*factor+offset), 0, 0.15*numoflines, 0)
-			code.TextSize = math.round(code.AbsoluteSize.Y/numoflines)
+			code.Size = UDim2.new(0.9 + (maxofoneline * factor + offset), 0, 0.15 * numLines, 0)
+			code.TextSize = math.round(code.AbsoluteSize.Y/numLines)
 			code.TextWrapped = false
 			local ch = assigns:GetChildren()
 	
@@ -1758,42 +1853,40 @@ local function main() -- Script.MainScript
 				return n
 			end
 	
-			if #ch < numoflines then
-				for i = getmaxl()+1, numoflines do -- increase amount of children
+			if #ch < numLines then
+				for i = getmaxl() + 1, numLines do -- increase amount of children
 					local cl = assigns:FindFirstChild("Assigner"):Clone()
 					cl.Parent = assigns
 					cl.Position = UDim2.new(0, 0, 0.15*(i-1), 0)
 					cl:FindFirstChild("Int").Value = i
 					cl.Text = tostring(i) .. "."
 				end
-			elseif #ch > numoflines then -- decrease amount of children
+			elseif #ch > numLines then -- decrease amount of children
 				for _, v in pairs(ch) do
-					if v:FindFirstChild("Int").Value > numoflines then
+					if v:FindFirstChild("Int").Value > numLines then
 						v:Destroy()
 					end
 				end
 			end
-	
-			numoflines = 1
 		end)
 	end)()
 	
 	coroutine.wrap(function() -- load backup, if one
 		if isfile and readfile and isfile("europa/backup/saved.lua") then
 			code.Text = readfile("europa/backup/saved.lua")
-			setnotif("Code Notification", "Loaded last backup")
+			SetNotification("Code Notification", "Loaded last backup")
 		end
 	end)()
 	
 	coroutine.wrap(function() -- settings (to be made)
-		--[[
-			format: [pcall]
-		
-			pcall, deterred print, disable namecall/index/newindex hooks, disable code saving
-			logs - print: on/off, warn: on/off, error: on/off, info: on/off ([]Excluded)
-		]]
-		
-		
+			--[[
+				format: [pcall]
+			
+				pcall, deterred print, disable namecall/index/newindex hooks, disable code saving
+				logs - print: on/off, warn: on/off, error: on/off, info: on/off ([]Excluded)
+			]]
+	
+	
 	end)()
 	
 	coroutine.wrap(function() -- drag
@@ -1843,20 +1936,20 @@ local function main() -- Script.MainScript
 	
 		exec.MouseButton1Click:Connect(function()
 			if not pcall(function() return loadstring("assert(true, '?')") end) then -- this basically will render the gui useless lol
-				setnotif("Error", "Your executor does not have method 'loadstring'")
+				SetNotification("Error", "Your executor does not support method 'loadstring'")
 				return
 			end
 	
 			local thing = loadstring(code.Text)
 	
 			if type(thing) ~= "function" then
-				setnotif("Syntax Error", "Check your code for any issues and try again")
+				SetNotification("Syntax Error", "Check your code for any issues and try again")
 				return
 			end
 	
 			if pcallEnabled then			
 				local _, e = pcall(function() return thing() end)
-				if e then setnotif("Error In Execution", e) end
+				if e then SetNotification("Error In Execution", e) end
 			else
 				return coroutine.wrap(thing)()
 			end
@@ -1915,12 +2008,14 @@ local function main() -- Script.MainScript
 	
 			MessageOutFunction(final, Enum.MessageType.MessageOutput)
 		end, "print")
+		
 		getgenv().warn = newcclosure(function(...)
 			local args = safetostring(...)
 			local final = table.concat(args, " ")
 	
 			MessageOutFunction(final, Enum.MessageType.MessageWarning)
 		end, "warn")
+		
 		getgenv().error = newcclosure(function(...)
 			if not checkcaller() or (getthreadidentity and getthreadidentity() < 4 or true) then
 				return defError(...)
@@ -1931,6 +2026,7 @@ local function main() -- Script.MainScript
 			MessageOutFunction(final, Enum.MessageType.MessageError)
 			return coroutine.yield()
 		end, "error")
+		
 		getgenv().info = newcclosure(function(...)
 			local args = safetostring(...)
 			local final = table.concat(args, " ")
@@ -1943,10 +2039,11 @@ local function main() -- Script.MainScript
 			codeholder.Scroller.CanvasPosition = Vector2.zero
 			code.Size = UDim2_new(0.9, 0, 0.15, 0)
 		end)
+		
 		copy.MouseButton1Click:Connect(function()
-			if not setclipboard then setnotif("Error", "Your executor does not have method 'setclipboard'") return end
+			if not setclipboard then SetNotification("Error", "Your executor does not support method 'setclipboard'") return end
 			setclipboard(code.Text)
-			setnotif("setclipboard", "Operation Successful")
+			SetNotification("setclipboard", "Operation Successful")
 		end)
 	end)()
 	
@@ -1992,14 +2089,14 @@ local function main() -- Script.MainScript
 		local optswitch = bottom.Options
 		duoholder.AutomaticCanvasSize = Enum.AutomaticSize.XY
 		buttons.AutomaticCanvasSize = Enum.AutomaticSize.Y
-		
+	
 		if not buttons:FindFirstChildWhichIsA("UIListLayout") then
 			local UIListLayout = Instance.new("UIListLayout", buttons)
 			UIListLayout.FillDirection = Enum.FillDirection.Vertical
 			UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 			UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Top
 		end
-		
+	
 		coroutine.resume(coroutine.create(function() -- drag
 			local frame = duoviewer
 			local dragToggle = nil
@@ -2060,9 +2157,9 @@ local function main() -- Script.MainScript
 	
 		optionsStorage.OptionsS.CopyPath.MouseButton1Click:Connect(function()
 			if objval1.Value then
-				if not setclipboard then setnotif("Error", "Your executor does not have method 'setclipboard'") return end
+				if not setclipboard then SetNotification("Error", "Your executor does not support method 'setclipboard'") return end
 				setclipboard(objval1.Value:GetFullName())
-				setnotif("setclipboard", "Operation Successful")
+				SetNotification("setclipboard", "Operation Successful")
 			end
 		end)
 		optionsStorage.OptionsS:FindFirstChild("Destroy").MouseButton1Click:Connect(function()
@@ -2070,36 +2167,36 @@ local function main() -- Script.MainScript
 				objval1.Value:Destroy()
 				objval1.Value = nil
 				loadviewer()
-				setnotif("Destroy", "Operation Successful")
+				SetNotification("Destroy", "Operation Successful")
 			end
 		end)
 		optionsStorage.OptionsS.Disable.MouseButton1Click:Connect(function()
 			if objval1.Value and objval1.Value.ClassName ~= "ModuleScript" then
 				objval1.Value.Disabled = true
 				loadviewer()
-				setnotif("Disable", "Operation Successful")
+				SetNotification("Disable", "Operation Successful")
 			end
 		end)
 		optionsStorage.OptionsS.Enable.MouseButton1Click:Connect(function()
 			if objval1.Value and objval1.Value.ClassName ~= "ModuleScript" then
 				objval1.Value.Enabled = true
 				loadviewer()
-				setnotif("Enable", "Operation Successful")
+				SetNotification("Enable", "Operation Successful")
 			end
 		end)
 		optionsStorage.OptionsS.CopySource.MouseButton1Click:Connect(function()
 			if objval1.Value then
 				if not setclipboard then
-					setnotif("Error", "Your executor does not have method 'setclipboard'")
+					SetNotification("Error", "Your executor does not support method 'setclipboard'")
 					return
 				elseif not decompile then
-					setnotif("Error", "Your executor does not have method 'decompile'")
+					SetNotification("Error", "Your executor does not support method 'decompile'")
 					return
 				end
 				local source = decompile(objval1.Value)
 				setclipboard(source)
-				setnotif("decompile", "Operation Successful")
-				setnotif("setclipboard", "Operation Successful")
+				SetNotification("decompile", "Operation Successful")
+				SetNotification("setclipboard", "Operation Successful")
 			end
 		end)
 	
@@ -2151,21 +2248,21 @@ local function main() -- Script.MainScript
 	
 		local _saveins = buttons.SaveIns
 		_saveins.MouseButton1Click:Connect(function()
-			if not saveinstance then setnotif("Error", "Your executor does not have method 'saveinstance'") return end
+			if not saveinstance then SetNotification("Error", "Your executor does not support method 'saveinstance'") return end
 	
 			local s, e = pcall(saveinstance)
 	
 			if e then
-				setnotif("Error in saveinstance", e)
+				SetNotification("Error in saveinstance", e)
 			elseif s then
-				setnotif("saveinstance", "Operation Successful")
+				SetNotification("saveinstance", "Operation Successful")
 			end
 		end)
 	
 		local viewscripts = buttons.ViewScripts
 		viewscripts.MouseButton1Click:Connect(function()
-			if not getscripts then return setnotif("Error", "Your executor does not have method 'getscripts'") end
-			
+			if not getscripts then return SetNotification("Error", "Your executor does not support method 'getscripts'") end
+	
 			duoviewer.Visible = not duoviewer.Visible
 			if duoviewer.Visible then loadviewer() else assign() end -- assign here makes any objvalue nil
 		end)
@@ -2219,8 +2316,8 @@ local function main() -- Script.MainScript
 	
 		local dumpscripts = buttons.DumpScripts
 		dumpscripts.MouseButton1Click:Connect(function()
-			if not (isfolder or makefolder or writefile) then return setnotif("Error", "Your executor does not support file functions") end
-			
+			if not (isfolder or makefolder or writefile) then return SetNotification("Error", "Your executor does not support file functions") end
+	
 			local start = "europa/dumps/"
 			local path = start .. "Dump_" .. tostring(game.PlaceId) .. "_"
 	
@@ -2242,74 +2339,74 @@ local function main() -- Script.MainScript
 				if i%100 == 0 then task.wait() end
 			end
 	
-			setnotif("Dump Scripts", "Dumped Scripts at " .. path)
+			SetNotification("Dump Scripts", "Dumped Scripts at " .. path)
 		end)
-		
+	
 		local dumpgc = buttons.DumpGC
 		dumpgc.MouseButton1Click:Connect(function()
-			if not (getgc or writefile) then return setnotif("Error", "Your executor does not support 'getgc' and/or 'writefile'") end
-			
+			if not (getgc or writefile) then return SetNotification("Error", "Your executor does not support 'getgc' and/or 'writefile'") end
+	
 			local start = "europa/dumps/"
 			local path = start .. "GCDump_" .. tostring(game.PlaceId)
 			local valuetostring = loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/Megaprojects/refs/heads/main/valuetostring.lua"))()
-			
+	
 			local temp = nil;
-			
+	
 			for i = 1, 100 do -- max dumps for one place is 100
 				if not isfile(path .. "/Dump" .. tostring(i) .. ".txt") then
 					temp = tostring(i)
 					break
 				end
 			end
-			
+	
 			local filepath = path .. "/Dump" .. temp .. ".txt"
 			local dump = ""
 			local debounce = 0
-			
-			setnotif("Dump GC", "Dump has started; this may take a while...")
+	
+			SetNotification("Dump GC", "Dump has started; this may take a while...")
 			temp = nil
-			
+	
 			for i, v in getgc() do
 				if typeof(v) == "function" and islclosure(v) and not isourclosure(v) then
 					debounce += 1
 					if debounce%100 == 0 then task.wait() end
-					
+	
 					dump ..= "Function " .. tostring(debug.info(v, "f")) .. "\nSource: " .. debug.info(v, "s")
 						.. "\nName: " .. debug.info(v, "n") .. "\nLine: " .. debug.info(v, "l") .. "\nNum of Params: "
 						.. tostring((debug.info(v, "a"))) .. "\nVararg: " .. tostring(select(2, debug.info(v, "a"))) .. "\n\nConstants:\n";
-					
+	
 					for i, v in getconstants(v) do
 						dump ..= "\t" .. tostring(i) .. " - " .. (valuetostring(v) or "nil") .. " (of type: " .. typeof(v) .. ")\n"
 					end
-					
+	
 					dump ..= "\nUpvals:\n"
-					
+	
 					for i, v in getupvalues(v) do
 						dump ..= "\t" .. tostring(i) .. " - " .. (valuetostring(v) or "nil") .. " (of type: " .. typeof(v) .. ")\n"
 					end
 				end
 			end
-			
+	
 			writefile(filepath, dump)
-			setnotif("Dump GC", "Dumped GC at " .. filepath)
+			SetNotification("Dump GC", "Dumped GC at " .. filepath)
 		end)
-		
+	
 		local _hookmetamethod = clonefunction(hookmetamethod)
-		
+	
 		local disablenamecallhooks = buttons.DisableNamecallHooks
 		local disableindexhooks = buttons.DisableIndexHooks
 		local disablenewindexhooks = buttons.DisableNewIndexHooks
-		
+	
 		local list = {
 			__namecall = not namecallEnabled,
 			__index = not indexEnabled,
 			__newindex = not newindexEnabled
 		}
-		
+	
 		local function metamethodHandler(metamethod, boolean)
 			list[metamethod] = boolean
 		end
-
+	
 		if hookmetamethod then
 			getgenv().hookmetamethod = newcclosure(function(mt, method, deter)
 				if list[method] then
@@ -2318,38 +2415,38 @@ local function main() -- Script.MainScript
 				return _hookmetamethod(mt, method, deter)
 			end, "hookmetamethod")
 		end
-		
+	
 		disablenamecallhooks.MouseButton1Click:Connect(function()
-			if not hookmetamethod then setnotif("Error", "Your executor does not have method 'hookmetamethod'") return end
+			if not hookmetamethod then SetNotification("Error", "Your executor does not support method 'hookmetamethod'") return end
 			local new = ": OFF"
 			if not list.__namecall then
 				new = ": ON"
 			end
-			
+	
 			disablenamecallhooks.Text = "disable namecall hooks" .. new
 			metamethodHandler("__namecall", not list.__namecall)
 		end)
 		disableindexhooks.MouseButton1Click:Connect(function()
-			if not hookmetamethod then setnotif("Error", "Your executor does not have method 'hookmetamethod'") return end
+			if not hookmetamethod then SetNotification("Error", "Your executor does not support method 'hookmetamethod'") return end
 			local new = ": OFF"
 			if not list.__index then
 				new = ": ON"
 			end
-			
+	
 			disableindexhooks.Text = "disable index hooks" .. new
 			metamethodHandler("__index", not list.__index)
 		end)
 		disablenewindexhooks.MouseButton1Click:Connect(function()
-			if not hookmetamethod then setnotif("Error", "Your executor does not have method 'hookmetamethod'") return end
+			if not hookmetamethod then SetNotification("Error", "Your executor does not support method 'hookmetamethod'") return end
 			local new = ": OFF"
 			if not list.__newindex then
 				new = ": ON"
 			end
-			
+	
 			disablenewindexhooks.Text = "disable newindex hooks" .. new
 			metamethodHandler("__newindex", not list.__newindex)
 		end)
-		
+	
 		local deterredprintyields = buttons.DeterredPrintYields
 		deterredprintyields.MouseButton1Click:Connect(function()
 			printfunctionsyield = not printfunctionsyield
@@ -2357,10 +2454,10 @@ local function main() -- Script.MainScript
 			if printfunctionsyield then
 				new = ": ON"
 			end
-			
+	
 			deterredprintyields.Text = "deterred print yields" .. new
 		end)
-		
+	
 		local disablecodesaving = buttons.DisableCodeSaving
 		disablecodesaving.MouseButton1Click:Connect(function()
 			codeSavingEnabled = not codeSavingEnabled
@@ -2371,29 +2468,29 @@ local function main() -- Script.MainScript
 			if (isfile and delfile) and isfile("europa/backup/saved.lua") then
 				delfile("europa/backup/saved.lua")
 			end
-			
+	
 			disablecodesaving.Text = "disable code saving" .. new
 		end)
-		
+	
 		local savechanges = buttons.SaveEuropatechChanges
 		savechanges.MouseButton1Click:Connect(function()
-			if not (readfile and writefile) then return setnotif("Error", "Your executor does not support file functions") end
-			
-			setnotif("Error", "This button is not functional yet!")
+			if not (readfile and writefile) then return SetNotification("Error", "Your executor does not support file functions") end
+	
+			SetNotification("Error", "This button is not functional yet!")
 		end)
-		
+	
 		local savecode = buttons.SaveCode
 		savecode.MouseButton1Click:Connect(function()
-			if not (readfile and writefile) then return setnotif("Error", "Your executor does not support file functions") end
-			
-			setnotif("Error", "This button is not functional yet!")
+			if not (readfile and writefile) then return SetNotification("Error", "Your executor does not support file functions") end
+	
+			SetNotification("Error", "This button is not functional yet!")
 		end)
-		
+	
 		local loadcode = buttons.LoadCode
 		loadcode.MouseButton1Click:Connect(function()
-			if not (readfile and writefile) then return setnotif("Error", "Your executor does not support file functions") end
-			
-			setnotif("Error", "This button is not functional yet!")
+			if not (readfile and writefile) then return SetNotification("Error", "Your executor does not support file functions") end
+	
+			SetNotification("Error", "This button is not functional yet!")
 		end)
 	end)()
 	
@@ -2463,9 +2560,9 @@ local function main() -- Script.MainScript
 			v.MouseButton1Click:Connect(function()
 				local args;
 				if i == "AllBypasses" then
-					args = {nil, game:GetService("CoreGui").RobloxGui}
+					args = {nil, game:GetService("CoreGui") and game:GetService("CoreGui").RobloxGui}
 				else
-					args = {{[i] = true}, game:GetService("CoreGui").RobloxGui}
+					args = {{[i] = true}, game:GetService("CoreGui") and game:GetService("CoreGui").RobloxGui}
 				end
 	
 				local s, e = pcall(loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/refs/heads/main/true-secure-dex-bypasses.lua")),
@@ -2473,9 +2570,9 @@ local function main() -- Script.MainScript
 				)
 	
 				if s then
-					setnotif(i, "Bypass Loaded Successfully")
+					SetNotification(i, "Bypass Loaded Successfully")
 				else
-					setnotif("Error", "Error in loading bypass: " .. e)
+					SetNotification("Error", "Error in loading bypass: " .. e)
 				end
 			end)
 		end
@@ -2492,7 +2589,7 @@ local function main() -- Script.MainScript
 		local run = otherholder.Run
 		local name = otherholder:FindFirstChild("Name")
 		local desc = otherholder.Desc
-		
+	
 		theholder.AutomaticCanvasSize = Enum.AutomaticSize.Y
 	
 		coroutine.resume(coroutine.create(function() -- drag
@@ -2559,7 +2656,7 @@ local function main() -- Script.MainScript
 			["Vape v4"] = "Detections begone! Vape v4 bypasses almost any sort of physics and gui checks you can think of.",
 			["True Secure Dex"] = "Captivate the full ability to use Dex with true guaranteed security for your experience.",
 			["Dex"] = "No hooks? No problem! This Dex has 0 utilization of any hooks while still maintaining its stance as a force against detection vectors.",
-			["Airzy GC Viewer"] = "A viewer that allows you to analyze the garbage collection of any game and edit the internals of in-game scripts as you wish.",
+			["GC Viewer v2"] = "A viewer that allows you to analyze the garbage collection of any game and edit the internal components of in-game scripts as you wish.",
 			["Europa Anti-Kick"] = "Tired of client-side anticheats disconnecting you from the game? This will prevent that, and more, from happening!"
 		}
 	
@@ -2570,11 +2667,23 @@ local function main() -- Script.MainScript
 			["VV4"] = "https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/main/NewMainScript.lua",
 			["TSDex"] = "https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua",
 			["Dex"] = "https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua",
-			["GCView"] = "https://raw.githubusercontent.com/FaithfulAC/universal-stuff/refs/heads/main/Avex29GCViewer.lua",
+			["GCView"] = "https://api.luarmor.net/files/v3/loaders/a7bf1d042a5757c984086fc4efa90c79.lua",
 			["AntiKick"] = "https://raw.githubusercontent.com/FaithfulAC/Megaprojects/refs/heads/main/total_anti_disconnect.lua",
 		}
+		
+		-- in case the gcview link is something different (why no loadstring file huh???)
+		local s, readme = pcall(function() return game:HttpGet("https://raw.githubusercontent.com/Awakenchan/GcViewerV2/refs/heads/main/README.md") end)
+		
+		if s then
+			local link = readme:gsub("loadstring%(%s*game:HttpGet%(['\"](.-)['\"]%)%s*%)%s*%(%s*%)", "%1")
+			if loadtbl.GCView ~= link then
+				loadtbl.GCView = link
+			end
+		end
+		
+		s, readme = nil, nil
 	
-		local function setdesc(str)
+		local function setDesc(str)
 			if str == nil then
 				otherholder.Desc.Text = ""
 				otherholder:FindFirstChild("Name").Text = ""
@@ -2589,57 +2698,63 @@ local function main() -- Script.MainScript
 			end
 		end
 	
-		local function connect(ins, desc)
+		local function connClick(ins, desc)
 			ins.MouseButton1Click:Connect(function()
 				if selected == ins then
 					otherholder.Visible = false
 					selected = nil
-					setdesc(nil)
+					setDesc(nil)
 					return
 				end
 	
 				otherholder.Visible = true
-				setdesc(desc)
+				setDesc(desc)
 	
 				selected = ins
 			end)
 		end
 	
-		connect(options.SSpy, tbl["Simple Spy"])
-		connect(options.CmdX, tbl["CMD-X"])
-		connect(options.IY, tbl["Infinite Yield"])
-		connect(options.VV4, tbl["Vape v4"])
-		connect(options.TSD, tbl["True Secure Dex"])
-		connect(options.Dex, tbl["Dex"])
-		connect(options.GCView, tbl["Airzy GC Viewer"])
-		connect(options.AntiKick, tbl["Europa Anti-Kick"])
+		connClick(options.SSpy, tbl["Simple Spy"])
+		connClick(options.CmdX, tbl["CMD-X"])
+		connClick(options.IY, tbl["Infinite Yield"])
+		connClick(options.VV4, tbl["Vape v4"])
+		connClick(options.TSD, tbl["True Secure Dex"])
+		connClick(options.Dex, tbl["Dex"])
+		connClick(options.GCView, tbl["GC Viewer v2"])
+		connClick(options.AntiKick, tbl["Europa Anti-Kick"])
 	
 		run.MouseButton1Click:Connect(function()
 			if not selected then return end
 			local key = loadtbl[selected.Name]
 			if not key then return end
 	
-			if selected.Name ~= "Dex" and selected.Name ~= "TSDex" then
-				loadstring(game:HttpGet(key))()
-			elseif selected.Name == "Dex" then -- run true secure dex without bypasses
-				if run_on_actor then
-					setnotif("Dex Notification", "The script you have just loaded has been run under an actor, as your executor supports it")
-					
-					run_on_actor(Instance.new("Actor"), "local in_actor = true;\n\n" .. game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))
-				else
-					loadstring(game:HttpGet(key))(false)
-				end
-			elseif selected.Name == "TSDex" then
-				if run_on_actor then
-					setnotif("Dex Notification", "The script you have just loaded has been run under an actor, as your executor supports it")
-					
-					local f = Instance.new("Folder", game:GetService("CoreGui").RobloxGui)
-					f.Name = "DexHost"
-					loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses.lua"))(nil, f, true)
-					run_on_actor(Instance.new("Actor"), "local in_actor = true;\n\n" .. game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))
-				else
+			local s = pcall(function()
+				if selected.Name ~= "Dex" and selected.Name ~= "TSDex" then
 					loadstring(game:HttpGet(key))()
+				elseif selected.Name == "Dex" then -- run true secure dex without bypasses
+					if run_on_actor then
+						SetNotification("Dex Notification", "The script you have just loaded has been run under an actor, as your executor supports it")
+	
+						run_on_actor(Instance.new("Actor"), game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))
+					else
+						loadstring(game:HttpGet(key))(false)
+					end
+				elseif selected.Name == "TSDex" then
+					if run_on_actor then
+						SetNotification("Dex Notification", "The script you have just loaded has been run under an actor, as your executor supports it")
+	
+						local f = Instance.new("Folder", game:GetService("CoreGui") and game:GetService("CoreGui").RobloxGui)
+						f.Name = "DexHost"
+						loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses.lua"))(nil, f, true)
+						run_on_actor(Instance.new("Actor"), game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))
+					else
+						loadstring(game:HttpGet(key))()
+					end
 				end
+			end)
+			
+			if not s then
+				SetNotification("Error", "Your executor does not support method 'loadstring' / game:HttpGet()")
 			end
 		end)
 	end)()
@@ -2647,9 +2762,6 @@ local function main() -- Script.MainScript
 	coroutine.wrap(function() -- console
 		local console = gui.Console
 		local hide = console.Hide
-		local logservice = cloneref(game:GetService("LogService"))
-	
-		scroller = console.Scroller
 		scroller.AutomaticCanvasSize = Enum.AutomaticSize.XY
 	
 		local layout = Instance.new("UIListLayout", scroller)
@@ -2696,13 +2808,13 @@ local function main() -- Script.MainScript
 			end)
 		end))
 	
-		logservice.MessageOut:Connect(MessageOutFunction)
+		LogService.MessageOut:Connect(MessageOutFunction)
 	
 		local buttons = console.Buttons
 		local modes = buttons.Modes
 		local bottom = buttons.BottomConsole
 	
-		local function changething(btn, bool)
+		local function changeText(btn, bool)
 			if bool == false then -- because if it isnt excluded
 				btn.Text = btn.Name:gsub("^%u", string.lower) .. ": on"
 			else
@@ -2710,7 +2822,7 @@ local function main() -- Script.MainScript
 			end
 		end
 	
-		local function determinestring(label)
+		local function determineString(label)
 			if label.TextColor == BrickColor.Red() then
 				return "[ERROR]: "
 			elseif label.TextColor == BrickColor.Yellow() then
@@ -2721,47 +2833,53 @@ local function main() -- Script.MainScript
 			return ""
 		end
 	
-		modes.Info.MouseButton1Click:Connect(function() infoExcluded = not infoExcluded changething(modes.Info, infoExcluded) end)
-		modes.Print.MouseButton1Click:Connect(function() printExcluded = not printExcluded changething(modes.Print, printExcluded) end)
-		modes.Warn.MouseButton1Click:Connect(function() warnExcluded = not warnExcluded changething(modes.Warn, warnExcluded) end)
-		modes.Error.MouseButton1Click:Connect(function() errorExcluded = not errorExcluded changething(modes.Error, errorExcluded) end)
+		modes.Info.MouseButton1Click:Connect(function() infoExcluded = not infoExcluded changeText(modes.Info, infoExcluded) end)
+		modes.Print.MouseButton1Click:Connect(function() printExcluded = not printExcluded changeText(modes.Print, printExcluded) end)
+		modes.Warn.MouseButton1Click:Connect(function() warnExcluded = not warnExcluded changeText(modes.Warn, warnExcluded) end)
+		modes.Error.MouseButton1Click:Connect(function() errorExcluded = not errorExcluded changeText(modes.Error, errorExcluded) end)
+		
+		-- need to do not canAutoScroll to inverse logic of changeText
+		modes.Autoscroll.MouseButton1Click:Connect(function() canAutoScroll = not canAutoScroll changeText(modes.Autoscroll, not canAutoScroll) end)
 	
 		bottom.Clear.MouseButton1Click:Connect(function()
 			for i, v in pairs(scroller:GetChildren()) do
 				if v:IsA("TextLabel") and v.Name ~= "_Line_" then v:Destroy() end
 			end
-			setnotif("Cleared!")
+			SetNotification("Cleared!")
 		end)
 	
 		bottom.Copy.MouseButton1Click:Connect(function()
-			if not setclipboard then setnotif("Error", "Your executor does not have method 'setclipboard'") return end
+			if not setclipboard then SetNotification("Error", "Your executor does not support method 'setclipboard'") return end
 			local str = ""
 			for i, v in pairs(scroller:GetChildren()) do
 				if v:IsA("TextLabel") and v.Name ~= "_Line_" then str = str .. v.Text .. "\n" end
 			end
 			setclipboard(str)
-			setnotif("setclipboard", "Operation success")
+			SetNotification("setclipboard", "Operation success")
 		end)
 	
 		bottom.Save.MouseButton1Click:Connect(function()
-			if not writefile then setnotif("Error", "Your executor does not have method 'writefile'") return end
+			if not writefile then SetNotification("Error", "Your executor does not support method 'writefile'") return end
 			local str = "-- [europa_console_log]\n"
 			for i, v in pairs(scroller:GetChildren()) do
-				if v:IsA("TextLabel") and v.Name ~= "_Line_" then str = str .. (v:GetAttribute("Time") or " - [xx:xx:xx] -- ") .. determinestring(v) .. v.Text .. "\n" end
+				if v:IsA("TextLabel") and v.Name ~= "_Line_" then str = str .. (v:GetAttribute("Time") or " - [xx:xx:xx] -- ") .. determineString(v) .. v.Text .. "\n" end
 			end
-			writefile("europa/logs/" .. "Log_" .. tostring(game.PlaceId) .. "_" .. randomstr() .. ".txt", str)
+			writefile("europa/logs/" .. "Log_" .. tostring(game.PlaceId) .. "_" .. RandomString() .. ".txt", str)
 		end)
 	
 		local hidden = false
+		
 		hide.MouseButton1Click:Connect(function()
 			hidden = not hidden
 			if hidden == true then
 				hide.Text = "show"
+				
 				for i, v in pairs(modes:GetChildren()) do
 					if v:IsA("TextButton") then v.Visible = false end
 				end
 			else
 				hide.Text = "hide"
+				
 				for i, v in pairs(modes:GetChildren()) do
 					if v:IsA("TextButton") then v.Visible = true end
 				end
@@ -2771,17 +2889,17 @@ local function main() -- Script.MainScript
 	
 	coroutine.wrap(function()
 		if not (isfile and delfile and writefile) then return end
-		
+	
 		local savedCode = ""
 		while isalive() and gui.Parent ~= nil and task.wait(1) do pcall(function() savedCode = code.Text end) end
-		
+	
 		if savedCode ~= "" and codeSavingEnabled then
 			if isfile("europa/backup/saved.lua") then
 				delfile("europa/backup/saved.lua")
 			end
-			
+	
 			writefile("europa/backup/saved.lua", savedCode)
-			setnotif("Code Notification", "Disconnect from game detected; your code has been saved.")
+			SetNotification("Code Notification", "Disconnect from game detected; your code has been saved.")
 		end
 	end)()
 end
