@@ -32,7 +32,7 @@ local options = (...) or getgenv().DexOptions or getgenv().options or {
 	InstanceCount = true,
 	UI2DDrawcallCount = true,
 	UI2DTriangleCount = true,
-	GetFocusedTextBox = true,
+	--GetFocusedTextBox = true,
 	GuiObjects = true,
 	Weaktable = true
 }
@@ -600,6 +600,8 @@ task.spawn(function()
 	end)
 end)
 
+--[[
+
 -- forked textbox bypass
 task.spawn(function()
 	if not options.GetFocusedTextBox then return end
@@ -655,6 +657,8 @@ task.spawn(function()
 		return h2(...)
 	end)
 end)
+
+]]
 
 -- guiobjects circumnav. (you do a setcore to detect this and i kill you)
 task.spawn(function()
