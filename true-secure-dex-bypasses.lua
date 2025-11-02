@@ -209,7 +209,7 @@ if options.gcinfo then
 		local int = ...
 
 		if not checkcaller() and typeof(int) == "number" and int > 0 and int <= 2^26 then
-			gcinfo_ret += math.ceil(int/1000)
+			gcinfo_ret += math.ceil((int/100) * 3/2)
 		end
 
 		return TableCreateHook(...)
