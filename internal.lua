@@ -2674,9 +2674,10 @@ local function main() -- Script.MainScript
 		-- in case the gcview link is something different (why no loadstring file huh???)
 		local s, readme = pcall(function() return game:HttpGet("https://raw.githubusercontent.com/Awakenchan/GcViewerV2/refs/heads/main/README.md") end)
 		
-		if s then
-			local link = readme:gsub("loadstring%(%s*game:HttpGet%(['\"](.-)['\"]%)%s*%)%s*%(%s*%)", "%1")
-			if loadtbl.GCView ~= link then
+		if s then -- since awakenkn doesnt have the DECENCY to make the loadstring a separate file from the readme
+			local link;
+			readme:gsub("loadstring%(%s*game:HttpGet%(['\"](.-)['\"]%)%s*%)%s*%(%s*%)", function(a) link = a end)
+			if link and loadtbl.GCView ~= link then
 				loadtbl.GCView = link
 			end
 		end
