@@ -746,7 +746,7 @@ task.spawn(function()
 				local res = h(...)
 				local waitAmount = 30/gcinfo()
 
-				if gcinfo() > 30000 then -- screw it
+				if gcinfo() > 20000 then -- screw it
 					waitAmount = 0
 				end
 
