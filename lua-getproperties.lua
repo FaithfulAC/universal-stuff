@@ -20,7 +20,7 @@ end
 local propertiescache, functionscache, eventscache, callbackscache = {}, {}, {}, {}
 
 -- only used for getproperties as of now
-local function recursivesuperclassproperties(superclass, membertype, tbl)
+--[[local function recursivesuperclassproperties(superclass, membertype, tbl)
 	for _, evenmoreclass in ipairs(apiData.Classes) do
 		if evenmoreclass.Name == superclass then
 			for _, member in ipairs(evenmoreclass.Members) do
@@ -33,7 +33,7 @@ local function recursivesuperclassproperties(superclass, membertype, tbl)
 			end
 		end
 	end
-end
+end]]
 
 getgenv().getproperties = function(class)
 	local properties = {}
@@ -59,7 +59,7 @@ getgenv().getproperties = function(class)
 				end
 			end
 			
-			recursivesuperclassproperties(otherclass.Superclass, "Property", properties)
+			--recursivesuperclassproperties(otherclass.Superclass, "Property", properties)
 			break
 		end
 	end
