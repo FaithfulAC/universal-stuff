@@ -26,8 +26,8 @@ local IsA = clonefunction(game.IsA)
 
 local options = (...) or getgenv().DexOptions or getgenv().options or {
 	gcinfo = true,
-	GetTotalMemoryUsageMb = true,
-	GetMemoryUsageMbForTag = true,
+	--GetTotalMemoryUsageMb = true, // will be manually set if MemoryTrackingEnabled is true
+	--GetMemoryUsageMbForTag = true,
 	PreloadAsync = true,
 	InstanceCount = true,
 	UI2DDrawcallCount = true,
@@ -71,8 +71,19 @@ if select(3, ...) == true and cloneref(game) ~= game then -- means script is und
 end
 
 -- for realism of gcinfo, inscount, and memory spoofs
-local gcinfo_ret, inscount_ret, memtag_ret, totalmem_ret, drawcall_ret, triangle_ret
-	= gcinfo(), Stats.InstanceCount, Stats:GetMemoryUsageMbForTag("Gui"), Stats:GetTotalMemoryUsageMb(), Stats.UI2DDrawcallCount, Stats.UI2DTriangleCount;
+local gcinfo_ret, inscount_ret, --[[memtag_ret, totalmem_ret,]] drawcall_ret, triangle_ret
+	= gcinfo(), Stats.InstanceCount, --[[Stats:GetMemoryUsageMbForTag("Gui"), Stats:GetTotalMemoryUsageMb(),]] Stats.UI2DDrawcallCount, Stats.UI2DTriangleCount;
+
+local memtag_ret, totalmem_ret;
+
+if Stats.MemoryTrackingEnabled then
+	options.GetTotalMemoryUsageMb = true
+	options.GetMemoryUsageMbForTag = true
+	
+	memtag_ret, totalmem_ret = Stats:GetMemoryUsageMbForTag("Gui"), Stats:GetTotalMemoryUsageMb();
+else
+	memtag_ret, totalmem_ret = 0, 0;
+end
 
 local GetRandomMemoryIncrease = function()
 	return ((math.random(1e7, 1e9)*1005)+.5)/1e14
