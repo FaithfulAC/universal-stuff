@@ -2667,12 +2667,12 @@ local function main() -- Script.MainScript
 			["VV4"] = "https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/main/NewMainScript.lua",
 			["TSDex"] = "https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua",
 			["Dex"] = "https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua",
-			["GCView"] = "https://api.luarmor.net/files/v3/loaders/a7bf1d042a5757c984086fc4efa90c79.lua",
+			["GCView"] = "https://api.luarmor.net/files/v3/loaders/caffbda8eeb690826d7f1911098bd3f2.lua",
 			["AntiKick"] = "https://raw.githubusercontent.com/FaithfulAC/Megaprojects/refs/heads/main/total_anti_disconnect.lua",
 		}
 		
 		-- in case the gcview link is something different (why no loadstring file huh???)
-		local s, readme = pcall(function() return game:HttpGet("https://raw.githubusercontent.com/Awakenchan/GcViewerV2/refs/heads/main/README.md") end)
+		local s, readme = pcall(function() return game:HttpGet("https://raw.githubusercontent.com/Awakenchan/GcViewerV3/refs/heads/main/README.md") end)
 		
 		if s then -- since awakenkn doesnt have the DECENCY to make the loadstring a separate file from the readme
 			local link;
