@@ -1,5 +1,5 @@
 --[[
-loadstring(game:HttpGet(""))({
+loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/refs/heads/main/FunctionGrapher.lua"))({
 	-- required parameters
 	
 	Function = yourFunction,
