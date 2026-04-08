@@ -23,6 +23,10 @@ if typeof(params) ~= "table" then
 	return
 end
 
+if not (params.Function and params.Name) then
+	return
+end
+
 -- passed function must return a number
 if typeof(params.Function()) ~= "number" then
 	return
