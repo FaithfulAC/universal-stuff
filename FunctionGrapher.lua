@@ -1,4 +1,11 @@
 --[[
+why? because i want to visualize function outputs and make it compact and portable
+max amount of graphs you can have is 10, any more and they will simply not be created (unless you do some of your own tweaking)
+the graphs increase trianglecount by ALOT; it is recommended you have a trianglecount spoof just to be safe
+but close to no games have trianglecount detections you should be fine without a spoof
+]]
+
+--[[
 loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/refs/heads/main/FunctionGrapher.lua"))({
 	-- required parameters
 	
