@@ -43,20 +43,18 @@ local getgenv = getgenv or getfenv
 
 local screengui = Instance.new("ScreenGui")
 
-task.delay(1, coroutine.resume, coroutine.running())
-
 -- this is so ugly
 if ((not game:GetService("CoreGui")) and not game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui", 1 + 1e-3):FindFirstChild("GraphHost")) then
 	task.delay(1, coroutine.resume, coroutine.running())
-	screengui.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui", 1 + 1e-3) or nil
-elseif game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui", 1 + 1e-3):FindFirstChild("GraphHost") then
-	screengui = game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("GraphHost")
+	screengui.Parent = game:GetService("Players").LocalPlayer.PlayerGui or nil
 elseif game:GetService("CoreGui") then
 	if game:GetService("CoreGui"):FindFirstChild("GraphHost") then
 		screengui = game:GetService("CoreGui"):FindFirstChild("GraphHost")
 	else
 		screengui.Parent = game:GetService("CoreGui")
 	end
+elseif game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui", 1 + 1e-3):FindFirstChild("GraphHost") then
+	screengui = game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("GraphHost")
 end
 
 screengui.Name = "GraphHost"
