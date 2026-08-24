@@ -28,7 +28,7 @@ local options = (...) or getgenv().DexOptions or getgenv().options or {
 	gcinfo = true,
 	--GetTotalMemoryUsageMb = true, // will be manually set if MemoryTrackingEnabled is true
 	--GetMemoryUsageMbForTag = true,
-	PreloadAsync = true,
+	--PreloadAsync = true,
 	InstanceCount = true,
 	UI2DDrawcallCount = true,
 	UI2DTriangleCount = true,
@@ -135,7 +135,7 @@ if options.GetMemoryUsageMbForTag or options.InstanceCount or (options.UI2DDrawc
 		end
 	end)
 
-	local OrgClone;
+	--[[local OrgClone;
 
 	local markup = newcclosure(function(...)
 		local result = OrgClone(...)
@@ -170,7 +170,7 @@ if options.GetMemoryUsageMbForTag or options.InstanceCount or (options.UI2DDrawc
 	InsCountHook = hookfunction(getrenv().Instance.new, function(...)
 		local result = InsCountHook(...)
 
-		if not checkcaller() and typeof(result) == "Instance" then
+		if not checkcaller() and typeof(result) == "Instance" and result.Parent then
 			if GuiClasses[result.ClassName] then
 				memtag_ret += GuiClasses[result.ClassName]
 			end
@@ -184,7 +184,7 @@ if options.GetMemoryUsageMbForTag or options.InstanceCount or (options.UI2DDrawc
 	InsCountHook2 = hookfunction(getrenv().Instance.fromExisting, function(...)
 		local result = InsCountHook2(...)
 
-		if not checkcaller() and typeof(result) == "Instance" then
+		if not checkcaller() and typeof(result) == "Instance" and result.Parent then
 			if GuiClasses[result.ClassName] then
 				memtag_ret += GuiClasses[result.ClassName]
 			end
@@ -193,7 +193,7 @@ if options.GetMemoryUsageMbForTag or options.InstanceCount or (options.UI2DDrawc
 		end
 
 		return result
-	end)
+	end)]]
 end
 
 if options.UI2DDrawcallCount or options.UI2DTriangleCount then
