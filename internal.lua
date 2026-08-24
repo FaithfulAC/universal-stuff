@@ -1511,15 +1511,15 @@ local function main() -- Script.MainScript
 		getgenv().europa.gui, getgenv().europa.internal = Exec, Exec
 		SetNotification("Library", "Europa Library Loaded")
 	
-		task.delay(.105, function() -- hijack europa.loaddex and europa.loadtsdex if run_on_actor exists
+		task.delay(.105, function() -- hijack europa.loaddex and europa.loadtsdex if run_on_actor exists (commented out)
 			local newloaddex = function()
-				if run_on_actor then
+				--[[if run_on_actor then
 					SetNotification("Dex Notification", "The script you have just loaded has been run under an actor, as your executor supports it")
 	
 					run_on_actor(Instance.new("Actor"), game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))
-				else
+				else]]
 					loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/refs/heads/main/true-secure-dex.lua"))(false)
-				end
+				--end
 			end
 	
 			local newloadtsdex = function(a)
