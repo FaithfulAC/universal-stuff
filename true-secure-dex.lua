@@ -131,7 +131,16 @@ end
 
 task.wait(.2) -- give bypasses time to extract normal data and spoof around those ranges
 
-getgenv().Dex = game:GetObjects(DexAsset)[1]
+if getcustomasset then
+	if not readfile(foldername .. "/DexV4.rbxm") then
+		writefile(foldername .. "/DexV4.rbxm", game:HttpGet("https://github.com/FaithfulAC/universal-stuff/raw/refs/heads/main/DexV4.rbxm"))
+	end
+	
+	getgenv().Dex = game:GetObjects(getcustomasset(foldername .. "/DexV4.rbxm"))[1]
+else
+	getgenv().Dex = game:GetObjects(DexAsset)[1]
+end
+
 Dex.Parent = parent
 
 -- update textlabel to new version
