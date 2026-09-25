@@ -40,7 +40,7 @@ if not (params.Function and params.Name) then
 end
 
 -- typecheck
-if typeof(params.Function) ~= "function" or typeof(params.Name) ~= "name" then
+if typeof(params.Function) ~= "function" or typeof(params.Name) ~= "string" then
 	warn("Invalid Function/Name types")
 	return
 end
