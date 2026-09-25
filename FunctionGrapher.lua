@@ -24,18 +24,30 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-
 })
 ]]
 
-local params = (...)
+local params = (...) or {
+	Function = gcinfo, -- only an example
+	Name = "gcinfo",
+}
 
 if typeof(params) ~= "table" then
+	warn("Not a table")
 	return
 end
 
 if not (params.Function and params.Name) then
+	warn("No Function/Name key values")
+	return
+end
+
+-- typecheck
+if typeof(params.Function) ~= "function" or typeof(params.Name) ~= "name" then
+	warn("Invalid Function/Name types")
 	return
 end
 
 -- passed function must return a number
 if typeof(params.Function()) ~= "number" then
+	warn("Function param must return a number")
 	return
 end
 
