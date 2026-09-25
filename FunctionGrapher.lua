@@ -72,7 +72,7 @@ end
 screengui.Name = "GraphHost"
 getgenv().__GraphHost = screengui
 
-coroutine.wrap(function()
+task.delay(0, function()
 	if getgenv().GraphHostLoaded then
 		return
 	end
@@ -105,7 +105,8 @@ coroutine.wrap(function()
 
 	local originalPositions = {}
 
-	for i, frame in pairs(getgenv().__GraphHost:GetChildren()) do
+	for i, frame in pairs((getgenv().__GraphHost or screengui):GetChildren()) do
+		print("asdfassdfd")
 		if frame:IsA("Frame") and frame:FindFirstChild("Header") then
 			originalPositions[frame] = frame.Position
 
@@ -128,9 +129,9 @@ coroutine.wrap(function()
 
 	getgenv().__GraphHost.ChildAdded:Connect(function()
 		for i, frame in pairs(getgenv().__GraphHost:GetChildren()) do
-			if frame:IsA("Frame") and frame:FindFirstChild("Header") then
+			if frame:IsA("Frame") and frame:FindFirstChild("Header") and not originalPositions[frame] then
 				originalPositions[frame] = frame.Position
-
+				print("hiii")
 				local header = frame.Header
 
 				header.InputBegan:Connect(function(input)
@@ -206,7 +207,7 @@ coroutine.wrap(function()
 			end
 		end
 	end)
-end)();
+end);
 
 if not getgenv().GraphFrameCount then
 	getgenv().GraphFrameCount = 0
@@ -287,7 +288,7 @@ getgenv().GraphFrameCount += 1
 coroutine.wrap(function()
 	local script = Instance.new("Script", HostFrame)
 	script.Name = "Handler"
-	
+
 	local hint = script.Parent.Header
 
 	local hostFrame = script.Parent
@@ -399,7 +400,7 @@ coroutine.wrap(function()
 
 		xSize = xSize and xSize >= 2 and xSize or 10
 		ySize = ySize and ySize >= 2 and ySize or 10
-		
+
 		if xSize%2 ~= 0 then
 			xSize += 1
 		end
@@ -480,7 +481,7 @@ coroutine.wrap(function()
 	hint.Text = params.Name
 
 	-- create(func, forLoopInterval, delayBetweenEachFrame, xRange, yRange, intervalUntilDelay, numOfXLines, numOfYLines)
-	
+
 	while true do
 		create(
 			__FUNCTION,
