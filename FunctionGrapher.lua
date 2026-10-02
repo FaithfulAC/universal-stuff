@@ -106,7 +106,6 @@ task.delay(0, function()
 	local originalPositions = {}
 
 	for i, frame in pairs((getgenv().__GraphHost or screengui):GetChildren()) do
-		print("asdfassdfd")
 		if frame:IsA("Frame") and frame:FindFirstChild("Header") then
 			originalPositions[frame] = frame.Position
 
@@ -131,7 +130,6 @@ task.delay(0, function()
 		for i, frame in pairs(getgenv().__GraphHost:GetChildren()) do
 			if frame:IsA("Frame") and frame:FindFirstChild("Header") and not originalPositions[frame] then
 				originalPositions[frame] = frame.Position
-				print("hiii")
 				local header = frame.Header
 
 				header.InputBegan:Connect(function(input)
