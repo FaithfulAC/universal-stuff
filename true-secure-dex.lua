@@ -1,18 +1,5 @@
 --[[
-	how to load true secure dex (3 ways)
-	first is normal way
-	-- loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))()
-
-	second is with shortener (only for certain executors with expanded functions like macsploit)
-	-- (quickLoad or quickload)("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua")
-
-	third is with run_on_actor for max security against weaktables (it is imperative you run certain tsd bypasses before running this in an actor)
-	make sure you check the comment below this one because these lines of code won't work if your executor sucks and cant init an actor
-	-- local f = Instance.new("Folder", game:GetService("CoreGui").RobloxGui)
-	-- f.Name = "DexHost"
-	-- loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses.lua"))(nil, f, true)
-	-- run_on_actor(Instance.new("Actor"), game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))
-
+loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))()
 ]]
 
 local isfolder, makefolder, isfile, writefile, readfile =
