@@ -55,7 +55,7 @@ if not (isfile(path) and not notUpdated) then
 	writefile(path, game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/lua-getproperties.lua"))
 end
 
-local DEX_ASSETs = {
+local imageAssets = {
 	"ClassImages.png",
 	"arrowDown_dark.png",
 	"arrowRight_dark.png",
@@ -69,9 +69,9 @@ local DEX_ASSETs = {
 }
 
 -- create asset files for getcustomasset if executor supports it
-for _, DEX_ASSET in pairs(DEX_ASSETs) do
-	if not isfile("TSDex/"..DEX_ASSET) then
-		writefile("TSDex/"..DEX_ASSET, game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/TSD-script-storage/refs/heads/main/DEX_ASSETs/"..DEX_ASSET))
+for _, imageAsset in pairs(imageAssets) do
+	if not isfile("TSDex/" .. imageAsset) then
+		writefile("TSDex/" .. imageAsset, game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/TSD-script-storage/refs/heads/main/DexAssets/" .. imageAsset))
 	end
 end
 
