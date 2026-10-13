@@ -28,34 +28,34 @@ end
 ]]
 
 -- bypasses will not load when the script is under an actor because the bypasses should have been loaded before running under an actor (otherwise hooks wont work)
-local in_actor = inparallel and inparallel()
+local inActor = inparallel and inparallel()
 local LoadBypasses = LoadBypasses or (...)
-if LoadBypasses == nil and not in_actor then LoadBypasses = true end
+if LoadBypasses == nil and not inActor then LoadBypasses = true end
 
-local foldername = "TSDex"
-local path = foldername .. "/lua-getproperties.lua"
-local versionpath = foldername .. "/tsd-version.txt"
+local folderName = "TSDex"
+local path = folderName .. "/lua-getproperties.lua"
+local versionPath = folderName .. "/tsd-version.txt"
 
-if not isfolder(foldername) then
-	makefolder(foldername)
+if not isfolder(folderName) then
+	makefolder(folderName)
 end
 
-local newversion = game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/TSD-script-storage/main/tsd-version.txt")
-local notupdated = (not isfile(versionpath)) or (newversion ~= readfile(versionpath))
+local newVersion = game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/TSD-script-storage/main/tsd-version.txt")
+local notUpdated = (not isfile(versionPath)) or (newVersion ~= readfile(versionPath))
 
-if notupdated then
-	writefile(versionpath, newversion)
+if notUpdated then
+	writefile(versionPath, newVersion)
 end
 
 -- variables to send to scripts
-local Api, gets;
+local API, getPropertiesPayload;
 
 -- create lua getproperties file to use from for dex functions next time
-if not (isfile(path) and not notupdated) then
+if not (isfile(path) and not notUpdated) then
 	writefile(path, game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/lua-getproperties.lua"))
 end
 
-local dexAssets = {
+local DEX_ASSETs = {
 	"ClassImages.png",
 	"arrowDown_dark.png",
 	"arrowRight_dark.png",
@@ -69,24 +69,24 @@ local dexAssets = {
 }
 
 -- create asset files for getcustomasset if executor supports it
-for _, dexAsset in pairs(dexAssets) do
-	if not isfile("TSDex/"..dexAsset) then
-		writefile("TSDex/"..dexAsset, game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/TSD-script-storage/refs/heads/main/DexAssets/"..dexAsset))
+for _, DEX_ASSET in pairs(DEX_ASSETs) do
+	if not isfile("TSDex/"..DEX_ASSET) then
+		writefile("TSDex/"..DEX_ASSET, game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/TSD-script-storage/refs/heads/main/DEX_ASSETs/"..DEX_ASSET))
 	end
 end
 
 getgenv().cloneref = cloneref or function(...) return ... end
 
 repeat task.wait() until isfile(path) and readfile(path)
-Api, gets = unpack(loadstring(readfile(path))())
+API, getPropertiesPayload = unpack(loadstring(readfile(path))())
 
-local DexAsset = "rbxassetid://17769765246"
+local DEX_ASSET = "rbxassetid://17769765246"
 
  -- for GetAssetFetchStatus bypass
 if typeof(getgenv().AssetList) == "table" then
-	table.insert(getgenv().AssetList, DexAsset)
+	table.insert(getgenv().AssetList, DEX_ASSET)
 else
-	getgenv().AssetList = {DexAsset}
+	getgenv().AssetList = {DEX_ASSET}
 end
 
 -- global set compareinstances
@@ -113,13 +113,13 @@ end
 
 -- universal bypasses
 if LoadBypasses and (getrenv and hookmetamethod and hookfunction) then
-	task.spawn(loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses.lua")), nil, parent, in_actor)
+	task.spawn(loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex-bypasses.lua")), nil, parent, inActor)
 end
 
 task.wait(.2) -- give bypasses time to extract normal data and spoof around those ranges
 
 if getcustomasset then
-	local fileName = foldername .. "/DexV4.rbxm"
+	local fileName = folderName .. "/DexV4.rbxm"
 	
 	if not isfile(fileName) then
 		writefile(fileName, game:HttpGet("https://github.com/FaithfulAC/universal-stuff/raw/refs/heads/main/DexV4.rbxm"))
@@ -128,7 +128,7 @@ if getcustomasset then
 	
 	getgenv().Dex = game:GetObjects(getcustomasset(fileName))[1]
 else
-	getgenv().Dex = game:GetObjects(DexAsset)[1]
+	getgenv().Dex = game:GetObjects(DEX_ASSET)[1]
 end
 
 Dex.Parent = parent
@@ -136,7 +136,7 @@ Dex.Parent = parent
 -- update textlabel to new version
 for i, v in pairs(Dex:GetDescendants()) do
 	if v:IsA("TextLabel") and v.Name == "Version" then
-		v.Text = "v" .. newversion
+		v.Text = "v" .. newVersion
 	end
 end
 
@@ -145,8 +145,8 @@ local function GenerateRandomString(range1, range2)
 	local name = ""
 
 	for i = 1, math.random(range1, range2) do
-		local randint = math.random(#characters)
-		name = name .. string.sub(characters, randint, randint)
+		local randInt = math.random(#characters)
+		name = name .. string.sub(characters, randInt, randInt)
 	end
 
 	return name
@@ -156,55 +156,55 @@ end
 Dex.Name = GenerateRandomString(7, 15)
 
 -- drag begin
-local dragtarget = nil
-local dragstart = nil
-local startpos = nil
-local uis = cloneref(game:GetService("UserInputService"))
+local dragTarget = nil
+local dragStart = nil
+local startPos = nil
+local UserInputService = cloneref(game:GetService("UserInputService"))
 
-local types = {
+local userInputTypes1 = {
 	Enum.UserInputType.MouseButton1,
 	Enum.UserInputType.Touch
 }
 
-local types2 = {
+local userInputTypes2 = {
 	Enum.UserInputType.MouseMovement,
 	Enum.UserInputType.Touch
 }
 
 local function updateInput(input)
-	local delta = input.Position - dragstart
+	local delta = input.Position - dragStart
 	local position = UDim2.new(
-		startpos.X.Scale, startpos.X.Offset + delta.X,
-		startpos.Y.Scale, startpos.Y.Offset + delta.Y
+		startPos.X.Scale, startPos.X.Offset + delta.X,
+		startPos.Y.Scale, startPos.Y.Offset + delta.Y
 	)
-	dragtarget.Position = position
+	dragTarget.Position = position
 end
 
-for i, frame in pairs(Dex:GetChildren()) do
+for _, frame in pairs(Dex:GetChildren()) do
 	if frame:IsA("Frame") and frame:FindFirstChild("Header") then
 		local header = frame.Header
 		if header:FindFirstChild("FrameName") then
 			local label = header.FrameName 
 
 			label.InputBegan:Connect(function(input)
-				if table.find(types, input.UserInputType) and not dragtarget then
-					dragtarget = frame
-					dragstart = input.Position
-					startpos = frame.Position
+				if table.find(userInputTypes1, input.UserInputType) and not dragTarget then
+					dragTarget = frame
+					dragStart = input.Position
+					startPos = frame.Position
 				end
 			end)
 			label.InputEnded:Connect(function(input)
-				if table.find(types, input.UserInputType) and dragtarget == frame then
-					dragtarget = nil
-					dragstart, startpos = nil, nil
+				if table.find(userInputTypes1, input.UserInputType) and dragTarget == frame then
+					dragTarget = nil
+					dragStart, startPos = nil, nil
 				end
 			end)
 		end
 	end
 end
 
-uis.InputChanged:Connect(function(input)
-	if table.find(types2, input.UserInputType) and dragtarget then
+UserInputService.InputChanged:Connect(function(input)
+	if table.find(userInputTypes2, input.UserInputType) and dragTarget then
 		updateInput(input)
 	end
 end)
@@ -212,7 +212,7 @@ end)
 
 -- local orgfenv = getfenv()
 
-local scriptlist = {
+local scriptList = {
 	[1] = Dex:FindFirstChild("SCRIPT_Selection"),
 	[2] = Dex:FindFirstChild("SCRIPT_Explorer", true),
 	[3] = Dex:FindFirstChild("SCRIPT_Properties", true),
@@ -226,16 +226,16 @@ local list = {
 	[4] = "/Editor.lua"
 }
 
-for i, Script in pairs(scriptlist) do
+for i, storedScript in pairs(scriptList) do
 	-- set the scripts found in github to files in TSDex folder, so the script runs faster next time
 	local data;
-	if notupdated or (not isfile(foldername .. list[i])) then
+	if notUpdated or (not isfile(folderName .. list[i])) then
 		data = game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/TSD-script-storage/main" .. list[i])
-		writefile(foldername .. list[i], data)
+		writefile(folderName .. list[i], data)
 	else
-		data = readfile(foldername .. list[i])
+		data = readfile(folderName .. list[i])
 	end
 
-	local func = loadstring(data, "=" .. Script.Name)
-	task.spawn(func, Script, Api, gets, in_actor) -- sending data
+	local SCRIPT_FUNCTION = loadstring(data, "=" .. storedScript.Name)
+	task.spawn(SCRIPT_FUNCTION, storedScript, API, getPropertiesPayload, inActor) -- sending data
 end
