@@ -1,4 +1,5 @@
 --[[
+hey a rewrite of dex v4 (the model not the bypasses) is coming soon isnt that great guys
 loadstring(game:HttpGet("https://raw.githubusercontent.com/FaithfulAC/universal-stuff/main/true-secure-dex.lua"))()
 ]]
 
